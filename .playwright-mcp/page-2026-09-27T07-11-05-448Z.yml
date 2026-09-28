@@ -1,0 +1,101 @@
+- generic [ref=f9e58]:
+  - complementary [ref=f9e59]:
+    - generic [ref=f9e60]:
+      - generic [ref=f9e61]:
+        - link "arrow_back" [ref=f9e62] [cursor=pointer]:
+          - /url: /dashboard
+        - generic [ref=f9e64]: Trình chỉnh sửa
+      - button "Lưu & Xuất bản" [ref=f9e65]
+    - generic [ref=f9e66]:
+      - button "view_day Hero" [ref=f9e67]:
+        - generic [ref=f9e68]: view_day
+        - text: Hero
+      - button "timer Đếm" [ref=f9e69]:
+        - generic [ref=f9e70]: timer
+        - text: Đếm
+      - button "mail Thư" [ref=f9e71]:
+        - generic [ref=f9e72]: mail
+        - text: Thư
+      - button "timeline Sự kiện" [ref=f9e73]:
+        - generic [ref=f9e74]: timeline
+        - text: Sự kiện
+      - button "photo_library Ảnh" [ref=f9e75]:
+        - generic [ref=f9e76]: photo_library
+        - text: Ảnh
+    - generic [ref=f9e77]:
+      - generic [ref=f9e78]:
+        - heading "view_day Khối Tổng quan (Hero)" [level=3] [ref=f9e80]:
+          - generic [ref=f9e81]: view_day
+          - text: Khối Tổng quan (Hero)
+        - generic [ref=f9e82]:
+          - generic [ref=f9e83]: Tên cặp đôi
+          - generic [ref=f9e84]:
+            - textbox [ref=f9e85]: Bảo Long
+            - generic [ref=f9e86]: "&"
+            - textbox [ref=f9e87]: An Nhiên
+        - generic [ref=f9e88]:
+          - generic [ref=f9e89]: Tiêu đề lớn
+          - textbox [ref=f9e90]: Chuyện Tình Bảo Long & An Nhiên
+        - generic [ref=f9e91]:
+          - generic [ref=f9e92]: Câu trích dẫn ngắn
+          - textbox [ref=f9e93]: Yêu em từ cái nhìn đầu tiên, và sẽ yêu em đến hơi thở cuối cùng.
+      - generic [ref=f9e95]:
+        - generic [ref=f9e96]: tips_and_updates
+        - paragraph [ref=f9e97]:
+          - strong [ref=f9e98]: "Mẹo nhỏ:"
+          - text: Chỉnh sửa ở form bên trên, màn hình bên phải sẽ
+          - strong [ref=f9e99]: tự động cập nhật trực tiếp (Live Update)
+          - text: để bạn xem trước kết quả!
+  - main [ref=f9e100]:
+    - generic [ref=f9e107]:
+      - generic [ref=f9e108]: lock
+      - text: couplestory.site/51ce9658-7e59-4151-adeb-64f84960fd9a
+    - generic [ref=f9e110]:
+      - link "arrow_back" [ref=f9e111] [cursor=pointer]:
+        - /url: /templates
+      - generic [ref=f9e113]:
+        - img "Banner" [ref=f9e115]
+        - generic [ref=f9e117]:
+          - heading "Chuyện Tình Bảo Long & An Nhiên" [level=1] [ref=f9e118]
+          - generic [ref=f9e119]:
+            - generic [ref=f9e120]:
+              - img "Bảo Long" [ref=f9e121]
+              - paragraph [ref=f9e122]: Bảo Long
+            - generic [ref=f9e123]: favorite
+            - generic [ref=f9e125]:
+              - img "An Nhiên" [ref=f9e126]
+              - paragraph [ref=f9e127]: An Nhiên
+          - paragraph [ref=f9e128]: "\"Yêu em từ cái nhìn đầu tiên, và sẽ yêu em đến hơi thở cuối cùng.\""
+      - generic [ref=f9e134]:
+        - paragraph [ref=f9e135]: Chúng mình đã chung đôi được
+        - generic [ref=f9e136]:
+          - generic [ref=f9e137]: "365"
+          - generic [ref=f9e138]: Ngày
+      - generic [ref=f9e140]:
+        - generic [ref=f9e141]: "\""
+        - heading "Gửi An Nhiên yêu thương" [level=2] [ref=f9e142]
+        - paragraph [ref=f9e143]: Gửi An Nhiên của anh, Từ ngày có em, thế giới của anh trở nên rực rỡ và ấm áp hơn bao giờ hết. Cảm ơn em đã bước vào cuộc đời anh, chịu đựng sự bướng bỉnh và luôn nắm chặt tay anh trên mọi nẻo đường. Em là nắng ấm những ngày đông lạnh, là cơn gió mát giữa mùa hè oi bức. Em là tất cả những gì đẹp đẽ nhất mà cuộc đời đã dành tặng cho anh. Hãy cùng nhau viết tiếp những chương thật đẹp nhé!
+        - paragraph [ref=f9e144]: Mãi yêu em - Bảo Long
+      - generic [ref=f9e146]:
+        - heading "Hành trình của chúng mình" [level=2] [ref=f9e147]
+        - generic [ref=f9e148]:
+          - generic [ref=f9e153]:
+            - generic [ref=f9e154]: 2021-05-20
+            - heading "Lần Đầu Chạm Mặt" [level=3] [ref=f9e155]
+            - paragraph [ref=f9e156]: Tại quán cafe nhỏ trên phố cổ. Cơn mưa rào mùa hạ đã mang chúng mình đến với nhau. Anh ngồi góc cửa sổ, em bước vào với chiếc ô hồng. Ánh mắt chạm nhau, thế giới như dừng lại.
+          - generic [ref=f9e160]:
+            - generic [ref=f9e161]: 2021-08-15
+            - heading "Nụ Hôn Đầu Tiên" [level=3] [ref=f9e162]
+            - paragraph [ref=f9e163]: Bên bờ hồ trong gió, mọi thứ như ngừng lại, chỉ còn nhịp đập của hai trái tim. Ánh hoàng hôn nhuộm vàng cả không gian, và em đã cho anh nụ hôn ngọt ngào nhất.
+          - generic [ref=f9e167]:
+            - generic [ref=f9e168]: 2022-05-20
+            - heading "Kỷ Niệm Một Năm" [level=3] [ref=f9e169]
+            - paragraph [ref=f9e170]: 365 ngày bên nhau - mỗi ngày đều là một câu chuyện mới. Chúng mình đã đi qua bao mùa mưa nắng, nhưng tay vẫn nắm chặt tay, tim vẫn đập cùng nhịp.
+          - generic [ref=f9e174]:
+            - generic [ref=f9e175]: 2023-01-10
+            - heading "Chuyến Du Lịch Đà Lạt" [level=3] [ref=f9e176]
+            - paragraph [ref=f9e177]: Lạc giữa biển hoa dã quỳ vàng rực, chúng mình cùng nhau ngắm bình minh trên đỉnh Langbiang. Em nói muốn ở đây mãi mãi, anh nói chỉ cần có em là đâu cũng thành thiên đường.
+      - heading "Khoảnh khắc đáng nhớ" [level=2] [ref=f9e180]
+      - paragraph [ref=f9e193]:
+        - text: Tạo bởi
+        - generic [ref=f9e194]: CoupleStory.site

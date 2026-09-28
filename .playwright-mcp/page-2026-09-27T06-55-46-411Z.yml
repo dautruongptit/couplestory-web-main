@@ -1,0 +1,85 @@
+- main [ref=f6e3]:
+  - generic [ref=f6e5]:
+    - generic [ref=f6e6]:
+      - generic [ref=f6e7]:
+        - link "CoupleStory 💕" [ref=f6e8] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f6e9]: CoupleStory
+          - generic [ref=f6e10]: 💕
+        - generic [ref=f6e11]: Không gian riêng tư
+      - generic [ref=f6e14]:
+        - generic [ref=f6e15]:
+          - generic [ref=f6e16]: Digital Archive for Two
+          - heading "“Mỗi câu chuyện tình yêu đều là một kiệt tác, và nơi đây là phòng trưng bày của riêng hai bạn.”" [level=1] [ref=f6e17]
+          - paragraph [ref=f6e18]: Where eternal love stories are preserved forever...
+        - generic [ref=f6e20]:
+          - img "Romantic couple" [ref=f6e21]
+          - generic [ref=f6e23]:
+            - generic [ref=f6e24]:
+              - paragraph [ref=f6e25]: Minh & Lan
+              - paragraph [ref=f6e26]: 1,248 ngày chung đôi ở Đà Lạt
+            - generic [ref=f6e27]: favorite
+      - generic [ref=f6e29]:
+        - generic [ref=f6e30]:
+          - generic [ref=f6e31]:
+            - generic [ref=f6e32]: T
+            - generic [ref=f6e33]: M
+            - generic [ref=f6e34]: K
+          - generic [ref=f6e35]:
+            - paragraph [ref=f6e36]: Được tin tưởng bởi 5,000+ cặp đôi ❤️
+            - paragraph [ref=f6e37]: Khắp 63 tỉnh thành Việt Nam
+        - generic [ref=f6e38]:
+          - generic [ref=f6e39]:
+            - generic [ref=f6e40]: star
+            - generic [ref=f6e41]: star
+            - generic [ref=f6e42]: star
+            - generic [ref=f6e43]: star
+            - generic [ref=f6e44]: star
+          - generic [ref=f6e45]: 4.9/5
+    - generic [ref=f6e46]:
+      - navigation [ref=f6e47]:
+        - link "arrow_back Về trang chủ" [ref=f6e48] [cursor=pointer]:
+          - /url: /
+          - generic [ref=f6e49]: arrow_back
+          - generic [ref=f6e50]: Về trang chủ
+      - generic [ref=f6e51]:
+        - generic [ref=f6e52]:
+          - generic [ref=f6e53]: Chào mừng trở lại
+          - heading "Đăng nhập" [level=2] [ref=f6e54]
+          - paragraph [ref=f6e55]:
+            - text: Chào mừng bạn quay lại! Chưa có tài khoản?
+            - link "Đăng ký ngay" [ref=f6e56] [cursor=pointer]:
+              - /url: /register
+        - button "Tiếp tục với Google" [ref=f6e57]
+        - generic [ref=f6e64]: hoặc Đăng nhập bằng email
+        - generic [ref=f6e68]:
+          - generic [ref=f6e69]:
+            - generic [ref=f6e70]: Email của bạn
+            - generic [ref=f6e72]:
+              - textbox "Email của bạn" [ref=f6e73]:
+                - /placeholder: user@couplestory.site
+              - generic: mail
+          - generic [ref=f6e74]:
+            - generic [ref=f6e75]: Mật khẩu
+            - generic [ref=f6e77]:
+              - textbox "Mật khẩu" [ref=f6e78]:
+                - /placeholder: "******"
+              - button "Ẩn hiện mật khẩu" [ref=f6e79]:
+                - generic [ref=f6e80]: visibility
+          - generic [ref=f6e81]:
+            - generic [ref=f6e82] [cursor=pointer]:
+              - checkbox "Ghi nhớ đăng nhập" [ref=f6e83]
+              - generic [ref=f6e84]: Ghi nhớ đăng nhập
+            - link "Quên mật khẩu?" [ref=f6e85] [cursor=pointer]:
+              - /url: /forgot-password
+          - button "Đăng nhập vào CoupleStory favorite" [ref=f6e86]:
+            - generic [ref=f6e87]: Đăng nhập vào CoupleStory
+            - generic [ref=f6e88]: favorite
+      - paragraph [ref=f6e90]:
+        - text: Bằng cách đăng nhập, bạn đồng ý với
+        - link "Điều khoản dịch vụ" [ref=f6e91] [cursor=pointer]:
+          - /url: /#terms
+        - text: và
+        - link "Chính sách bảo mật" [ref=f6e92] [cursor=pointer]:
+          - /url: /#privacy
+        - text: của CoupleStory.

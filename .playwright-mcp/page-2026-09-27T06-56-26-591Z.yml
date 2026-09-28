@@ -1,0 +1,130 @@
+- generic [ref=f6e93]:
+  - complementary [ref=f6e94]:
+    - generic [ref=f6e95]:
+      - link "CoupleStory favorite" [ref=f6e96] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f6e97]: CoupleStory
+        - generic [ref=f6e98]: favorite
+      - navigation [ref=f6e99]:
+        - link "home Dashboard" [ref=f6e100] [cursor=pointer]:
+          - /url: /dashboard
+          - generic [ref=f6e101]: home
+          - generic [ref=f6e102]: Dashboard
+        - link "person Tài khoản" [ref=f6e103] [cursor=pointer]:
+          - /url: /account
+          - generic [ref=f6e104]: person
+          - generic [ref=f6e105]: Tài khoản
+        - link "workspace_premium Nâng cấp" [ref=f6e106] [cursor=pointer]:
+          - /url: /dashboard/upgrade
+          - generic [ref=f6e107]: workspace_premium
+          - generic [ref=f6e108]: Nâng cấp
+    - generic [ref=f6e109]:
+      - link "add Tạo Story mới" [ref=f6e110] [cursor=pointer]:
+        - /url: /templates
+        - generic [ref=f6e111]: add
+        - generic [ref=f6e112]: Tạo Story mới
+      - generic [ref=f6e113]:
+        - generic [ref=f6e114]: U
+        - generic [ref=f6e116]:
+          - generic [ref=f6e117]: user
+          - generic [ref=f6e120]: user@couplestory.site
+  - generic [ref=f6e121]:
+    - banner [ref=f6e122]:
+      - button "notifications" [ref=f6e125]
+      - button "U" [ref=f6e129]
+    - main [ref=f6e131]:
+      - main [ref=f6e132]:
+        - generic [ref=f6e133]:
+          - generic [ref=f6e134]:
+            - generic [ref=f6e135]:
+              - generic [ref=f6e136]:
+                - generic [ref=f6e137]: favorite
+                - generic [ref=f6e138]: HÀNH TRÌNH TÌNH YÊU
+              - heading "Chào buổi sáng, user ✨" [level=1] [ref=f6e139]
+              - paragraph [ref=f6e140]: Bạn đang có 1 câu chuyện tình yêu được lưu giữ trên nền tảng.
+            - button "add Tạo Story mới" [ref=f6e142]:
+              - generic [ref=f6e143]: add
+              - generic [ref=f6e144]: Tạo Story mới
+          - generic [ref=f6e145]:
+            - generic [ref=f6e146]:
+              - generic [ref=f6e147]:
+                - generic [ref=f6e148]: Story đang hoạt động
+                - generic [ref=f6e149]: GÓI MIỄN PHÍ
+              - generic [ref=f6e151]:
+                - generic [ref=f6e152]: "1"
+                - generic [ref=f6e153]: / 3 Story
+            - generic [ref=f6e156]:
+              - generic [ref=f6e157]: Lượt xem & Chúc mừng
+              - generic [ref=f6e158]:
+                - generic [ref=f6e159]:
+                  - generic [ref=f6e160]: 2,486
+                  - generic [ref=f6e161]: +12%
+                - generic [ref=f6e163]:
+                  - generic [ref=f6e164]: "38"
+                  - generic [ref=f6e165]: lời chúc
+            - generic [ref=f6e166]:
+              - generic [ref=f6e167]:
+                - generic [ref=f6e168]: auto_awesome
+                - generic [ref=f6e169]: Nâng cấp Premium
+              - paragraph [ref=f6e170]:
+                - text: Mở khóa
+                - strong [ref=f6e171]: Template VIP
+                - text: ", tên miền riêng, xóa watermark."
+              - link "Xem gói nâng cấp arrow_forward" [ref=f6e172] [cursor=pointer]:
+                - /url: /dashboard/upgrade
+                - generic [ref=f6e173]: Xem gói nâng cấp
+                - generic [ref=f6e174]: arrow_forward
+          - generic [ref=f6e175]:
+            - heading "auto_stories Tất cả Story của bạn" [level=2] [ref=f6e176]:
+              - generic [ref=f6e177]: auto_stories
+              - text: Tất cả Story của bạn
+            - generic [ref=f6e178]:
+              - article [ref=f6e179]:
+                - generic [ref=f6e180]:
+                  - generic [ref=f6e181]: image
+                  - generic:
+                    - generic:
+                      - generic: 💕
+                      - text: PUBLISHED
+                    - generic: ĐANG HOẠT ĐỘNG
+                - generic [ref=f6e183]:
+                  - generic [ref=f6e184]:
+                    - heading "Bảo Long & An Nhiên" [level=3] [ref=f6e185]
+                    - link "public baolong-annhien.couplestory.site arrow_outward" [ref=f6e186] [cursor=pointer]:
+                      - /url: /demo/51ce9658-7e59-4151-adeb-64f84960fd9a
+                      - generic [ref=f6e187]: public
+                      - generic [ref=f6e188]: baolong-annhien.couplestory.site
+                      - generic [ref=f6e189]: arrow_outward
+                  - generic [ref=f6e190]:
+                    - generic [ref=f6e191]:
+                      - generic [ref=f6e192]: "Kịch bản:"
+                      - generic [ref=f6e193]:
+                        - generic [ref=f6e194]: 💕
+                        - text: sweet-polaroid
+                    - generic [ref=f6e195]:
+                      - generic [ref=f6e196]: "Cặp đôi:"
+                      - generic [ref=f6e197]: Bảo Long & An Nhiên
+                  - generic [ref=f6e199]:
+                    - generic [ref=f6e200]: event
+                    - text: 20/5/2021
+                  - generic [ref=f6e201]:
+                    - link "edit Chỉnh sửa" [ref=f6e202] [cursor=pointer]:
+                      - /url: /editor/51ce9658-7e59-4151-adeb-64f84960fd9a
+                      - generic [ref=f6e203]: edit
+                      - generic [ref=f6e204]: Chỉnh sửa
+                    - link "visibility Xem" [ref=f6e205] [cursor=pointer]:
+                      - /url: /demo/51ce9658-7e59-4151-adeb-64f84960fd9a
+                      - generic [ref=f6e206]: visibility
+                      - generic [ref=f6e207]: Xem
+                    - button "delete" [ref=f6e208]
+              - generic [ref=f6e210] [cursor=pointer]:
+                - generic [ref=f6e211]: favorite
+                - generic [ref=f6e213]:
+                  - heading "Tạo thêm một câu chuyện" [level=3] [ref=f6e214]
+                  - paragraph [ref=f6e215]:
+                    - text: Bạn còn
+                    - generic [ref=f6e216]: 2 lượt tạo Story
+                    - text: trong tài khoản.
+                - generic [ref=f6e217]:
+                  - generic [ref=f6e218]: add_circle
+                  - generic [ref=f6e219]: + Tạo Story mới

@@ -1,0 +1,139 @@
+- generic [ref=f2e3]:
+  - complementary [ref=f2e4]:
+    - generic [ref=f2e5]:
+      - link "CoupleStory favorite" [ref=f2e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f2e7]: CoupleStory
+        - generic [ref=f2e8]: favorite
+      - navigation [ref=f2e9]:
+        - link "home Dashboard" [ref=f2e10] [cursor=pointer]:
+          - /url: /dashboard
+          - generic [ref=f2e11]: home
+          - generic [ref=f2e12]: Dashboard
+        - link "person Tài khoản" [ref=f2e13] [cursor=pointer]:
+          - /url: /account
+          - generic [ref=f2e14]: person
+          - generic [ref=f2e15]: Tài khoản
+        - link "workspace_premium Nâng cấp" [ref=f2e16] [cursor=pointer]:
+          - /url: /dashboard/upgrade
+          - generic [ref=f2e17]: workspace_premium
+          - generic [ref=f2e18]: Nâng cấp
+    - generic [ref=f2e19]:
+      - link "add Tạo Story mới" [ref=f2e20] [cursor=pointer]:
+        - /url: /templates
+        - generic [ref=f2e21]: add
+        - generic [ref=f2e22]: Tạo Story mới
+      - generic [ref=f2e23]:
+        - generic [ref=f2e24]: U
+        - generic [ref=f2e26]:
+          - generic [ref=f2e27]: user
+          - generic [ref=f2e30]: user@couplestory.site
+  - generic [ref=f2e31]:
+    - banner [ref=f2e32]:
+      - button "notifications" [ref=f2e35]
+      - button "U" [ref=f2e39]
+    - main [ref=f2e41]:
+      - main [ref=f2e42]:
+        - generic [ref=f2e43]:
+          - generic [ref=f2e44]:
+            - generic [ref=f2e45]:
+              - generic [ref=f2e46]:
+                - generic [ref=f2e47]: favorite
+                - generic [ref=f2e48]: HÀNH TRÌNH TÌNH YÊU
+              - heading "Chào buổi sáng, user ✨" [level=1] [ref=f2e49]
+              - paragraph [ref=f2e50]: Bạn đang có 1 câu chuyện tình yêu được lưu giữ trên nền tảng.
+            - button "add Tạo Story mới" [ref=f2e52]:
+              - generic [ref=f2e53]: add
+              - generic [ref=f2e54]: Tạo Story mới
+          - generic [ref=f2e58]:
+            - generic [ref=f2e59]:
+              - generic [ref=f2e60]:
+                - generic [ref=f2e61]: Story đang hoạt động
+                - generic [ref=f2e62]: GÓI MIỄN PHÍ
+              - generic [ref=f2e64]:
+                - generic [ref=f2e65]: "1"
+                - generic [ref=f2e66]: / 3 Story
+            - generic [ref=f2e69]:
+              - generic [ref=f2e70]: Lượt xem & Chúc mừng
+              - generic [ref=f2e71]:
+                - generic [ref=f2e72]:
+                  - generic [ref=f2e73]: 2,486
+                  - generic [ref=f2e74]: +12%
+                - generic [ref=f2e76]:
+                  - generic [ref=f2e77]: "38"
+                  - generic [ref=f2e78]: lời chúc
+            - generic [ref=f2e79]:
+              - generic [ref=f2e80]:
+                - generic [ref=f2e81]: auto_awesome
+                - generic [ref=f2e82]: Nâng cấp Premium
+              - paragraph [ref=f2e83]:
+                - text: Mở khóa
+                - strong [ref=f2e84]: Template VIP
+                - text: ", tên miền riêng, xóa watermark."
+              - link "Xem gói nâng cấp arrow_forward" [ref=f2e85] [cursor=pointer]:
+                - /url: /dashboard/upgrade
+                - generic [ref=f2e86]: Xem gói nâng cấp
+                - generic [ref=f2e87]: arrow_forward
+          - generic [ref=f2e88]:
+            - heading "auto_stories Tất cả Story của bạn" [level=2] [ref=f2e89]:
+              - generic [ref=f2e90]: auto_stories
+              - text: Tất cả Story của bạn
+            - generic [ref=f2e91]:
+              - article [ref=f2e92]:
+                - generic [ref=f2e93]:
+                  - generic [ref=f2e94]: image
+                  - generic:
+                    - generic:
+                      - generic: 💕
+                      - text: PUBLISHED
+                    - generic: ĐANG HOẠT ĐỘNG
+                - generic [ref=f2e96]:
+                  - generic [ref=f2e97]:
+                    - heading "Bảo Long & An Nhiên" [level=3] [ref=f2e98]
+                    - link "public baolong-annhien.couplestory.site arrow_outward" [ref=f2e99] [cursor=pointer]:
+                      - /url: /demo/51ce9658-7e59-4151-adeb-64f84960fd9a
+                      - generic [ref=f2e100]: public
+                      - generic [ref=f2e101]: baolong-annhien.couplestory.site
+                      - generic [ref=f2e102]: arrow_outward
+                  - generic [ref=f2e103]:
+                    - generic [ref=f2e104]:
+                      - generic [ref=f2e105]: "Kịch bản:"
+                      - generic [ref=f2e106]:
+                        - generic [ref=f2e107]: 💕
+                        - text: sunset-horizon
+                    - generic [ref=f2e108]:
+                      - generic [ref=f2e109]: "Cặp đôi:"
+                      - generic [ref=f2e110]: Bảo Long & An Nhiên
+                  - generic [ref=f2e112]:
+                    - generic [ref=f2e113]: event
+                    - text: 20/5/2021
+                  - generic [ref=f2e114]:
+                    - link "edit Chỉnh sửa" [ref=f2e115] [cursor=pointer]:
+                      - /url: /editor/51ce9658-7e59-4151-adeb-64f84960fd9a
+                      - generic [ref=f2e116]: edit
+                      - generic [ref=f2e117]: Chỉnh sửa
+                    - link "visibility Xem" [ref=f2e118] [cursor=pointer]:
+                      - /url: /demo/51ce9658-7e59-4151-adeb-64f84960fd9a
+                      - generic [ref=f2e119]: visibility
+                      - generic [ref=f2e120]: Xem
+                    - button "delete" [ref=f2e121]
+              - generic [ref=f2e123] [cursor=pointer]:
+                - generic [ref=f2e124]: favorite
+                - generic [ref=f2e126]:
+                  - heading "Tạo thêm một câu chuyện" [level=3] [ref=f2e127]
+                  - paragraph [ref=f2e128]:
+                    - text: Bạn còn
+                    - generic [ref=f2e129]: 2 lượt tạo Story
+                    - text: trong tài khoản.
+                - generic [ref=f2e130]:
+                  - generic [ref=f2e131]: add_circle
+                  - generic [ref=f2e132]: + Tạo Story mới
+      - generic [ref=f2e135]:
+        - generic [ref=f2e136]:
+          - generic [ref=f2e137]: warning
+          - generic [ref=f2e139]:
+            - heading "Xóa story này?" [level=3] [ref=f2e140]
+            - paragraph [ref=f2e141]: Toàn bộ nội dung, ảnh và sự kiện trong story sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác.
+        - generic [ref=f2e142]:
+          - button "Giữ lại" [active] [ref=f2e143]
+          - button "Xóa story" [ref=f2e144]

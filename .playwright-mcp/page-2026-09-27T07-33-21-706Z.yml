@@ -1,0 +1,50 @@
+- generic [ref=f1e3]:
+  - complementary [ref=f1e4]:
+    - generic [ref=f1e5]:
+      - link "CoupleStory favorite" [ref=f1e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=f1e7]: CoupleStory
+        - generic [ref=f1e8]: favorite
+      - navigation [ref=f1e9]:
+        - link "home Dashboard" [ref=f1e10] [cursor=pointer]:
+          - /url: /dashboard
+          - generic [ref=f1e11]: home
+          - generic [ref=f1e12]: Dashboard
+        - link "person Tài khoản" [ref=f1e13] [cursor=pointer]:
+          - /url: /account
+          - generic [ref=f1e14]: person
+          - generic [ref=f1e15]: Tài khoản
+        - link "workspace_premium Nâng cấp" [ref=f1e16] [cursor=pointer]:
+          - /url: /dashboard/upgrade
+          - generic [ref=f1e17]: workspace_premium
+          - generic [ref=f1e18]: Nâng cấp
+    - generic [ref=f1e19]:
+      - link "add Tạo Story mới" [ref=f1e20] [cursor=pointer]:
+        - /url: /templates
+        - generic [ref=f1e21]: add
+        - generic [ref=f1e22]: Tạo Story mới
+      - generic [ref=f1e23]:
+        - generic [ref=f1e24]: U
+        - generic [ref=f1e26]:
+          - generic [ref=f1e27]: user
+          - generic [ref=f1e30]: user@couplestory.site
+  - generic [ref=f1e31]:
+    - banner [ref=f1e32]:
+      - button "notifications" [ref=f1e35]
+      - button "U" [ref=f1e39]
+    - main [ref=f1e41]:
+      - main [ref=f1e42]:
+        - generic [ref=f1e43]:
+          - generic [ref=f1e44]:
+            - generic [ref=f1e45]:
+              - generic [ref=f1e46]:
+                - generic [ref=f1e47]: favorite
+                - generic [ref=f1e48]: HÀNH TRÌNH TÌNH YÊU
+              - heading "Chào buổi sáng, user ✨" [level=1] [ref=f1e49]
+              - paragraph [ref=f1e50]: Chào mừng bạn đến với CoupleStory! Hãy bắt đầu tạo câu chuyện tình yêu đầu tiên.
+            - button "add Tạo Story mới" [ref=f1e52]:
+              - generic [ref=f1e53]: add
+              - generic [ref=f1e54]: Tạo Story mới
+          - generic [ref=f1e55]:
+            - generic [ref=f1e56]: progress_activity
+            - generic [ref=f1e57]: Đang tải story của bạn...

@@ -1,0 +1,50 @@
+- generic [ref=e3]:
+  - complementary [ref=e4]:
+    - generic [ref=e5]:
+      - link "CoupleStory favorite" [ref=e6] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e7]: CoupleStory
+        - generic [ref=e8]: favorite
+      - navigation [ref=e9]:
+        - link "home Dashboard" [ref=e10] [cursor=pointer]:
+          - /url: /dashboard
+          - generic [ref=e11]: home
+          - generic [ref=e12]: Dashboard
+        - link "person Tài khoản" [ref=e13] [cursor=pointer]:
+          - /url: /account
+          - generic [ref=e14]: person
+          - generic [ref=e15]: Tài khoản
+        - link "workspace_premium Nâng cấp" [ref=e16] [cursor=pointer]:
+          - /url: /dashboard/upgrade
+          - generic [ref=e17]: workspace_premium
+          - generic [ref=e18]: Nâng cấp
+    - generic [ref=e19]:
+      - link "add Tạo Story mới" [ref=e20] [cursor=pointer]:
+        - /url: /templates
+        - generic [ref=e21]: add
+        - generic [ref=e22]: Tạo Story mới
+      - generic [ref=e23]:
+        - generic [ref=e24]: U
+        - generic [ref=e26]:
+          - generic [ref=e27]: user
+          - generic [ref=e30]: user@couplestory.site
+  - generic [ref=e31]:
+    - banner [ref=e32]:
+      - button "notifications" [ref=e35]
+      - button "U" [ref=e39]
+    - main [ref=e41]:
+      - main [ref=e42]:
+        - generic [ref=e43]:
+          - generic [ref=e44]:
+            - generic [ref=e45]:
+              - generic [ref=e46]:
+                - generic [ref=e47]: favorite
+                - generic [ref=e48]: HÀNH TRÌNH TÌNH YÊU
+              - heading "Chào buổi sáng, user ✨" [level=1] [ref=e49]
+              - paragraph [ref=e50]: Chào mừng bạn đến với CoupleStory! Hãy bắt đầu tạo câu chuyện tình yêu đầu tiên.
+            - button "add Tạo Story mới" [ref=e52]:
+              - generic [ref=e53]: add
+              - generic [ref=e54]: Tạo Story mới
+          - generic [ref=e55]:
+            - generic [ref=e56]: progress_activity
+            - generic [ref=e57]: Đang tải story của bạn...
