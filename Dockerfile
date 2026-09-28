@@ -1,12 +1,13 @@
 # --- Build stage ---
 FROM node:20-alpine AS build
+RUN corepack enable && corepack prepare pnpm@latest --activate
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN pnpm import && pnpm install
 COPY . .
 ARG VITE_GOOGLE_CLIENT_ID
 ENV VITE_GOOGLE_CLIENT_ID=$VITE_GOOGLE_CLIENT_ID
-RUN npm run build
+RUN pnpm run build
 
 # --- Runtime stage ---
 FROM nginx:alpine
