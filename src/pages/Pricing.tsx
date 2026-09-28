@@ -2,7 +2,7 @@ import { usePlans } from '../hooks/usePlans';
 import { formatPrice } from '../utils/formatPrice';
 
 export default function Pricing() {
-  const { plans, loading } = usePlans();
+  const { plans } = usePlans();
   const free = plans.find(p => p.code === 'FREE');
   const pro = plans.find(p => p.code === 'PRO');
   const couple = plans.find(p => p.code === 'COUPLE');
