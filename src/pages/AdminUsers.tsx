@@ -366,7 +366,7 @@ export default function AdminUsers() {
                       <div className="flex flex-col space-y-1">
                         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-secondary font-bold w-fit">
                           <span className="material-symbols-outlined text-[13px]">verified</span>
-                          <span>PRO MAX</span>
+                          <span>PREMIUM</span>
                         </span>
                         <span className="text-on-surface-variant font-label-sm text-label-sm flex items-center gap-1">
                           <span className="material-symbols-outlined text-[14px] text-outline">palette</span>
@@ -612,7 +612,7 @@ export default function AdminUsers() {
                       <div className="flex flex-col space-y-1">
                         <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container font-label-sm text-label-sm text-secondary font-bold w-fit">
                           <span className="material-symbols-outlined text-[13px]">domain_verification</span>
-                          <span>PRO MAX</span>
+                          <span>PREMIUM</span>
                         </span>
                         <span className="text-on-surface-variant font-label-sm text-label-sm flex items-center gap-1">
                           <span className="material-symbols-outlined text-[14px] text-outline">palette</span>

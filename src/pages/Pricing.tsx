@@ -4,9 +4,9 @@ import { formatPrice } from '../utils/formatPrice';
 export default function Pricing() {
   const { plans } = usePlans();
   const free = plans.find(p => p.code === 'FREE');
-  const pro = plans.find(p => p.code === 'PRO');
+  const pro = plans.find(p => p.code === 'PLUS');
   const couple = plans.find(p => p.code === 'COUPLE');
-  const proMax = plans.find(p => p.code === 'PRO_MAX');
+  const proMax = plans.find(p => p.code === 'PREMIUM');
 
   return (
     <div className="min-h-screen">
@@ -136,7 +136,7 @@ export default function Pricing() {
                 </ul>
               </div>
               <a className="w-full inline-flex items-center justify-center px-4 py-3 rounded-full font-label-md text-label-md text-primary-container bg-surface-container-low hover:bg-surface-container transition-colors duration-150" href="#">
-                Chọn gói {pro?.name ?? 'Pro'}
+                Chọn gói {pro?.name ?? 'PLUS'}
               </a>
             </div>
             <div className="relative flex flex-col justify-between rounded-lg bg-surface-container-lowest p-space-lg shadow-[0_16px_40px_rgba(255,77,141,0.22)] lg:-translate-y-2 lg:scale-[1.03] z-20 overflow-hidden">
@@ -190,7 +190,7 @@ export default function Pricing() {
             <div className="flex flex-col justify-between rounded-lg bg-surface-container-lowest p-space-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div>
                 <div className="inline-flex items-center px-3 py-1 rounded-full bg-[#FFF7E4] text-[#D97706] font-label-sm text-label-sm mb-space-md font-semibold">
-                  ⭐ ĐẲNG CẤP PRO MAX
+                  ⭐ ĐẲNG CẤP PREMIUM
                 </div>
                 <div className="flex items-baseline gap-1 mb-1">
                   <span className="font-headline-lg text-headline-lg text-on-surface font-bold">{formatPrice(proMax?.price ?? 119000)}</span>
@@ -228,7 +228,7 @@ export default function Pricing() {
                 </ul>
               </div>
               <a className="w-full inline-flex items-center justify-center px-4 py-3 rounded-full font-label-md text-label-md text-amber-800 bg-amber-50 hover:bg-amber-100 transition-colors duration-150" href="#">
-                Chọn gói PRO MAX ⭐
+                Chọn gói PREMIUM ⭐
               </a>
             </div>
           </div>
@@ -249,13 +249,13 @@ export default function Pricing() {
               <thead>
                 <tr className="bg-surface-container-high/40">
                   <th className="p-4 sm:p-5 w-2/5 font-title-md text-title-md text-on-surface">Tính năng chính</th>
-                  <th className="p-4 sm:p-5 w-3/20 text-center font-title-md text-title-md text-on-surface">{free?.name ?? 'Free'}</th>
-                  <th className="p-4 sm:p-5 w-3/20 text-center font-title-md text-title-md text-on-surface">{pro?.name ?? 'Pro'}</th>
+                  <th className="p-4 sm:p-5 w-3/20 text-center font-title-md text-title-md text-on-surface">{free?.name ?? 'FREE'}</th>
+                  <th className="p-4 sm:p-5 w-3/20 text-center font-title-md text-title-md text-on-surface">{pro?.name ?? 'PLUS'}</th>
                   <th className="p-4 sm:p-5 w-1/5 text-center font-title-md text-title-md text-primary bg-primary-container/10 rounded-t-lg">
                     <span className="inline-block px-2 py-0.5 rounded-full bg-primary-container text-on-tertiary text-xs mr-1">HOT</span>
                     {couple?.name ?? 'Couple'}
                   </th>
-                  <th className="p-4 sm:p-5 w-3/20 text-center font-title-md text-title-md text-amber-700">{proMax?.name ?? 'Pro Max'}</th>
+                  <th className="p-4 sm:p-5 w-3/20 text-center font-title-md text-title-md text-amber-700">{proMax?.name ?? 'PREMIUM'}</th>
                 </tr>
               </thead>
               <tbody className="font-body-sm text-body-sm text-on-surface divide-y divide-surface-container">
@@ -466,13 +466,13 @@ export default function Pricing() {
                 <span className="faq-icon material-symbols-outlined text-primary-container transition-transform duration-200 shrink-0">add</span>
               </div>
               <div className="faq-answer hidden pt-4 text-on-secondary-container font-body-md text-body-md leading-relaxed">
-                Trang web chỉ hiển thị cho những ai có đường link trực tiếp. Ngoài ra từ gói Pro trở lên, bạn có thể cài đặt <strong>Mật khẩu bảo vệ trang web</strong> để chỉ những người có mật mã mới được phép truy cập.
+                Trang web chỉ hiển thị cho những ai có đường link trực tiếp. Ngoài ra từ gói PLUS trở lên, bạn có thể cài đặt <strong>Mật khẩu bảo vệ trang web</strong> để chỉ những người có mật mã mới được phép truy cập.
               </div>
             </div>
             <div className="faq-item rounded-lg bg-surface-container-lowest p-6 shadow-sm transition-all duration-200 cursor-pointer" onClick={() => {}}>
               <div className="flex items-center justify-between gap-4">
                 <h3 className="font-title-lg text-title-lg text-on-surface font-semibold text-left">
-                  Làm thế nào để gắn Tên miền riêng (ví dụ: longannhien.com) ở gói PRO MAX?
+                  Làm thế nào để gắn Tên miền riêng (ví dụ: longannhien.com) ở gói PREMIUM?
                 </h3>
                 <span className="faq-icon material-symbols-outlined text-primary-container transition-transform duration-200 shrink-0">add</span>
               </div>

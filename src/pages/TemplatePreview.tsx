@@ -5,6 +5,8 @@ import { getTemplateTheme } from '@/data/templateThemes';
 import DynamicStoryTemplate from '@/templates/DynamicStoryTemplate';
 import TemplateRomanticAnniversary from '@/templates/TemplateRomanticAnniversary';
 import TemplateMemoryWall from '@/templates/TemplateMemoryWall';
+import TemplateAnniversaryJourney from '@/templates/TemplateAnniversaryJourney';
+import { getOccasionTemplate } from '@/templates/occasionRegistry';
 
 function mapPublicStoryToStoryData(res: any, templateCode: string): StoryData {
   const photos: any[] = res.gallery || [];
@@ -175,6 +177,14 @@ export default function TemplatePreview() {
 
   if (templateCode === 'memory-wall') {
     return <TemplateMemoryWall storyData={data} />;
+  }
+
+  if (templateCode === 'anniversary-journey') {
+    return <TemplateAnniversaryJourney storyData={data} />;
+  }
+
+  if (getOccasionTemplate(templateCode)) {
+    return <DynamicStoryTemplate storyData={{ ...data, template_id: templateCode! }} />;
   }
 
   return <DynamicStoryTemplate storyData={data} />;

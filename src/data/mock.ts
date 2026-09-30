@@ -16,7 +16,21 @@ export const mockTemplates: Template[] = [
     thumbnail: 'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&q=80',
     type: 'PREMIUM',
     description: 'Phong cách sang trọng, lãng mạn như một cuốn tạp chí cưới.'
-  }
+  },
+  {
+    id: '3',
+    name: 'Anniversary Journey',
+    code: 'anniversary-journey',
+    thumbnail: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&q=80',
+    type: 'PREMIUM',
+    description: 'Hành trình tình yêu theo từng cột mốc, với hiệu ứng road animation lãng mạn.'
+  },
+  { id: '4', name: 'Wedding Cinematic', code: 'wedding-cinematic', thumbnail: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80', type: 'PREMIUM', description: 'Đám cưới điện ảnh nền tối, vàng kim sang trọng.' },
+  { id: '5', name: 'Wedding Garden Bloom', code: 'wedding-garden-bloom', thumbnail: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&q=80', type: 'PREMIUM', description: 'Đám cưới vườn hoa sáng, xanh sage và hồng đất.' },
+  { id: '6', name: 'Birthday Neon Party', code: 'birthday-neon-party', thumbnail: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&q=80', type: 'PREMIUM', description: 'Sinh nhật neon Y2K nền tối, phong cách Gen Z.' },
+  { id: '7', name: 'Birthday Soft Yume', code: 'birthday-soft-yume', thumbnail: 'https://images.unsplash.com/photo-1558636508-e0db3814bd1d?auto=format&fit=crop&q=80', type: 'FREE', description: 'Sinh nhật pastel mộng mơ với sao lấp lánh.' },
+  { id: '8', name: 'Confession Typewriter', code: 'confession-typewriter', thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&q=80', type: 'FREE', description: 'Tỏ tình bằng lá thư đánh máy trong phong bì bí mật.' },
+  { id: '9', name: 'Confession Midnight Bloom', code: 'confession-midnight-bloom', thumbnail: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80', type: 'PREMIUM', description: 'Tỏ tình đêm tím huyền ảo với nút "Để em nghĩ" chạy trốn.' }
 ];
 
 export const mockStories: Story[] = [
@@ -34,7 +48,7 @@ export const mockPlans: Plan[] = [
   {
     id: '1',
     code: 'FREE',
-    name: 'Free',
+    name: 'FREE',
     price: 0,
     description: 'Miễn phí vĩnh viễn với các tính năng cơ bản.',
     features: ['Miễn phí trọn đời', 'Template cơ bản', 'Tối đa 20 ảnh', '1 Story'],
@@ -48,8 +62,8 @@ export const mockPlans: Plan[] = [
   },
   {
     id: '2',
-    code: 'PRO',
-    name: 'Pro',
+    code: 'PLUS',
+    name: 'PLUS',
     price: 49000,
     description: 'Lưu giữ kỷ niệm vĩnh viễn không bao giờ hết hạn.',
     features: ['Trọn đời', 'Lưu trữ không giới hạn', 'Bảo mật mã PIN', 'Nhạc nền tự chọn'],
@@ -64,7 +78,7 @@ export const mockPlans: Plan[] = [
   {
     id: '3',
     code: 'COUPLE',
-    name: 'Couple',
+    name: 'COUPLE',
     price: 69000,
     description: 'Dành cho hai người muốn cùng vun đắp không gian tình yêu.',
     features: ['Trọn đời', '2 tài khoản đồng sáng tạo', 'Template độc quyền', 'Không giới hạn ảnh'],
@@ -78,8 +92,8 @@ export const mockPlans: Plan[] = [
   },
   {
     id: '4',
-    code: 'PRO_MAX',
-    name: 'Pro Max',
+    code: 'PREMIUM',
+    name: 'PREMIUM',
     price: 119000,
     description: 'Trải nghiệm sang trọng đỉnh cao với tên miền riêng.',
     features: ['Trọn đời', 'Tên miền riêng', 'Toàn bộ tính năng Couple', 'Thiệp cưới điện tử'],

@@ -5,9 +5,9 @@ import { formatPrice } from '../utils/formatPrice';
 export default function Home() {
   const { plans } = usePlans();
   const free = plans.find(p => p.code === 'FREE');
-  const pro = plans.find(p => p.code === 'PRO');
+  const pro = plans.find(p => p.code === 'PLUS');
   const couple = plans.find(p => p.code === 'COUPLE');
-  const proMax = plans.find(p => p.code === 'PRO_MAX');
+  const proMax = plans.find(p => p.code === 'PREMIUM');
 
   return (
     <div className="min-h-screen">
@@ -272,7 +272,7 @@ export default function Home() {
             <div className="relative aspect-[3/4] w-full overflow-hidden bg-surface-container">
               <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Sunset golden hour beach photography on a couple website template, warm honey light, cinematic flares, elegant script calligraphy and heart timeline milestones." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP-5iocu2Onp-9wMHPXqHDgvykGcd5Sn_v7cg5jGKsPB0IUD3lYoAY0dVye5-diwlV35OHdsnNXPkrSNUS8yQTC79qgAoljdgVmy4DmLnXZYuo2snBMSgyBLKNRJ2Zc1pxO1lTaB6U4eXJJ2KQztKB71OKtoGWpRpCL9MMo7Feoc4TlpO2Pt3g3zOUzVLKJfjtW7cLeTQgnAzY6fMaNkYxxtkKLRelI-cWg3ST9r7NvPn2MSMrW25o" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
-              <span className="absolute top-4 left-4 font-label-sm text-label-sm bg-primary-container text-on-primary px-3 py-1 rounded-full font-semibold">GÓI PRO MAX</span>
+              <span className="absolute top-4 left-4 font-label-sm text-label-sm bg-primary-container text-on-primary px-3 py-1 rounded-full font-semibold">GÓI PREMIUM</span>
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[2px] bg-black/20">
                 <a className="px-space-lg py-2.5 bg-on-primary text-primary font-label-md text-label-md font-semibold rounded-full shadow-lg hover:scale-105 transition-transform" href="#">Xem trước mẫu</a>
               </div>
@@ -306,7 +306,7 @@ export default function Home() {
             <div className="relative aspect-[3/4] w-full overflow-hidden bg-surface-container">
               <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" data-alt="Haute couture romance couple template set in European cafe Paris vibes, black and pink rose tones, classy editorial portraits and music player widget." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBELsFoEKuBAdiwFqMbboE94JraMHO0ms7SpB-NTS3E3GBYO0VzBC1YFJw63aJB2kHwlNfGPvL9hM2LR6yFDOQctrTYME_LgZl-dhMEyrrkysw4VnzVSQIeBthzudZAk4uXBkKiDRwYu4nEeUoWI18pxcpzsVGy1P9Zqt7abZFLsYYigJB6rI5L6-r4l_RbshJj11B3vvngx-FPLYLWaTRhdk-6BKY3SgDKbLaGcrVHd-Xcr--v5lhn" />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
-              <span className="absolute top-4 left-4 font-label-sm text-label-sm bg-primary-container text-on-primary px-3 py-1 rounded-full font-semibold">GÓI PRO MAX</span>
+              <span className="absolute top-4 left-4 font-label-sm text-label-sm bg-primary-container text-on-primary px-3 py-1 rounded-full font-semibold">GÓI PREMIUM</span>
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[2px] bg-black/20">
                 <a className="px-space-lg py-2.5 bg-on-primary text-primary font-label-md text-label-md font-semibold rounded-full shadow-lg hover:scale-105 transition-transform" href="#">Xem trước mẫu</a>
               </div>
@@ -469,8 +469,8 @@ export default function Home() {
           <div className="bg-surface-container-lowest rounded-2xl p-space-lg shadow-sm flex flex-col justify-between">
             <div>
               <div className="mb-4">
-                <span className="font-label-sm text-label-sm text-secondary uppercase tracking-wider font-semibold">Gói Pro</span>
-                <h3 className="font-headline-md text-headline-md text-on-surface mt-1">{pro?.name?.toUpperCase() ?? 'PRO'}</h3>
+                <span className="font-label-sm text-label-sm text-secondary uppercase tracking-wider font-semibold">Gói PLUS</span>
+                <h3 className="font-headline-md text-headline-md text-on-surface mt-1">{pro?.name?.toUpperCase() ?? 'PLUS'}</h3>
                 <div className="mt-4 flex items-baseline gap-1">
                   <span className="font-headline-lg text-headline-lg text-on-surface font-bold">{formatPrice(pro?.price ?? 49000)}</span>
                   <span className="font-body-sm text-body-sm text-on-surface-variant">/ trọn đời</span>
@@ -513,7 +513,7 @@ export default function Home() {
             <div>
               <div className="mb-4">
                 <span className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider font-semibold">Gói Nâng Cao</span>
-                <h3 className="font-headline-md text-headline-md text-on-surface mt-1">{proMax?.name?.toUpperCase() ?? 'PRO MAX'}</h3>
+                <h3 className="font-headline-md text-headline-md text-on-surface mt-1">{proMax?.name?.toUpperCase() ?? 'PREMIUM'}</h3>
                 <div className="mt-4 flex items-baseline gap-1">
                   <span className="font-headline-lg text-headline-lg text-on-surface font-bold">{formatPrice(proMax?.price ?? 119000)}</span>
                   <span className="font-body-sm text-body-sm text-on-surface-variant">/ trọn đời</span>
@@ -527,7 +527,7 @@ export default function Home() {
                 <li className="flex items-center gap-2"><span className="material-symbols-outlined text-primary text-[18px]">check</span> Hỗ trợ tùy biến riêng 1-1</li>
               </ul>
             </div>
-            <Link className="mt-space-lg w-full text-center py-2.5 rounded-full font-label-md text-label-md text-primary bg-surface-container hover:bg-surface-container-high transition-colors font-medium" data-path="bang-gia" to="/pricing">Chọn gói PRO MAX</Link>
+            <Link className="mt-space-lg w-full text-center py-2.5 rounded-full font-label-md text-label-md text-primary bg-surface-container hover:bg-surface-container-high transition-colors font-medium" data-path="bang-gia" to="/pricing">Chọn gói PREMIUM</Link>
           </div>
         </div>
       </section>

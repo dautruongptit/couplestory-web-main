@@ -118,7 +118,7 @@ export default function AdminRevenue() {
               <div className="bg-outline-variant h-full" style={{width: '12%'}} />
             </div>
             <div className="flex justify-between items-center text-outline text-[12px] pt-1">
-              <span>Pro Max 26%</span>
+              <span>PREMIUM 26%</span>
               <span>Permanent 12%</span>
             </div>
           </div>
@@ -264,8 +264,8 @@ export default function AdminRevenue() {
                 <select className="h-10 px-3.5 rounded-full bg-surface-container-low text-on-surface font-label-sm text-label-sm focus:outline-none cursor-pointer">
                   <option>Tất cả gói cước</option>
                   <option>Couple (69k)</option>
-                  <option>Pro Max (119k)</option>
-                  <option>Pro (49k)</option>
+                  <option>PREMIUM (119k)</option>
+                  <option>PLUS (49k)</option>
                   <option>Trial (0đ)</option>
                 </select>
                 <select className="h-10 px-3.5 rounded-full bg-surface-container-low text-on-surface font-label-sm text-label-sm focus:outline-none cursor-pointer">
@@ -381,7 +381,7 @@ export default function AdminRevenue() {
                     </div>
                   </td>
                   <td className="py-3.5 px-4">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-label-sm font-bold bg-secondary-fixed text-on-secondary-fixed-variant">PRO MAX</span>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-label-sm font-bold bg-secondary-fixed text-on-secondary-fixed-variant">PREMIUM</span>
                     <div className="font-bold text-on-surface mt-0.5">119.000₫</div>
                   </td>
                   <td className="py-3.5 px-4">
@@ -534,7 +534,7 @@ export default function AdminRevenue() {
                     </div>
                   </td>
                   <td className="py-3.5 px-4">
-                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-label-sm font-bold bg-secondary-fixed text-on-secondary-fixed-variant">PRO MAX</span>
+                    <span className="inline-flex items-center px-2.5 py-0.5 rounded-full font-label-sm text-label-sm font-bold bg-secondary-fixed text-on-secondary-fixed-variant">PREMIUM</span>
                     <div className="font-bold text-on-surface mt-0.5">119.000₫</div>
                   </td>
                   <td className="py-3.5 px-4">
@@ -657,7 +657,7 @@ export default function AdminRevenue() {
               <div className="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between">
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="font-title-md text-title-md font-bold text-on-surface">Pro Max</span>
+                    <span className="font-title-md text-title-md font-bold text-on-surface">PREMIUM</span>
                     <span className="px-1.5 py-0.2 rounded bg-secondary-fixed text-secondary text-[10px] font-bold">VIP</span>
                   </div>
                   <div className="font-label-sm text-label-sm text-outline">Tên miền riêng .love/.site trọn đời</div>
@@ -669,7 +669,7 @@ export default function AdminRevenue() {
               </div>
               <div className="p-space-sm rounded-lg bg-surface-container-low flex items-center justify-between">
                 <div>
-                  <span className="font-title-md text-title-md font-bold text-on-surface">Pro</span>
+                  <span className="font-title-md text-title-md font-bold text-on-surface">PLUS</span>
                   <div className="font-label-sm text-label-sm text-outline">Lưu giữ trọn đời • Khóa mã PIN</div>
                 </div>
                 <div className="text-right">

@@ -4,7 +4,7 @@ import { formatPrice } from '../utils/formatPrice';
 export default function DashboardUpgrade() {
   const { plans } = usePlans();
   const couple = plans.find(p => p.code === 'COUPLE');
-  const proMax = plans.find(p => p.code === 'PRO_MAX');
+  const proMax = plans.find(p => p.code === 'PREMIUM');
 
   return (
     <>
@@ -298,7 +298,7 @@ export default function DashboardUpgrade() {
           <div className="bg-surface-container-low rounded-lg p-space-lg flex flex-col justify-between space-y-space-md hover:shadow-md transition-shadow">
             <div className="space-y-space-sm">
               <span className="font-title-md text-title-md text-tertiary font-bold flex items-center gap-1.5">
-                <span className="material-symbols-outlined text-[20px]">diamond</span> Pro Max
+                <span className="material-symbols-outlined text-[20px]">diamond</span> PREMIUM
               </span>
               <div className="flex items-baseline gap-1.5">
                 <span className="font-headline-lg text-headline-lg text-on-surface font-bold">{formatPrice(proMax?.price ?? 119000)}</span>
@@ -329,7 +329,7 @@ export default function DashboardUpgrade() {
               </ul>
             </div>
             <button className="w-full py-space-sm rounded-full bg-surface-container-highest text-on-surface font-title-md hover:bg-primary hover:text-on-primary transition-all duration-200">
-              Nâng cấp Pro Max
+              Nâng cấp PREMIUM
             </button>
           </div>
         </div>

@@ -5,7 +5,7 @@ import { formatPrice } from '../utils/formatPrice';
 export default function Checkout() {
   const { plans } = usePlans();
   const couple = plans.find(p => p.code === 'COUPLE');
-  const proMax = plans.find(p => p.code === 'PRO_MAX');
+  const proMax = plans.find(p => p.code === 'PREMIUM');
 
   return (
     <div className="min-h-screen">

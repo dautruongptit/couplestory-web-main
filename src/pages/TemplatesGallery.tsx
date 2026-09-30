@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
+import { OCCASION_TEMPLATES } from '@/templates/occasionRegistry';
 export default function TemplatesGallery() {
   const { isAuthenticated } = useAuth();
   return (
@@ -186,6 +187,109 @@ export default function TemplatesGallery() {
               </Link>
             </div>
           </article>
+
+          {/* Anniversary Journey */}
+          <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+            <div>
+              <div className="relative w-full aspect-[4/3] overflow-hidden" style={{background: 'linear-gradient(180deg, #fff9f3 0%, #f5e4de 50%, #eccbc7 100%)'}}>
+                <img className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 opacity-50" src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80" alt="Anniversary Journey template" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#fff9f3]/90 via-[#f5e4de]/30 to-transparent" />
+                <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                  <span className="text-4xl">🗺️</span>
+                  <p style={{fontFamily: "'Instrument Serif', serif"}} className="text-3xl text-[#a95671] mt-2 italic drop-shadow-sm">Our Journey</p>
+                  <p className="font-body-sm text-[#74604e] mt-1" style={{fontFamily: "'Gochi Hand', cursive"}}>a little love. a lot of memories.</p>
+                </div>
+                <div className="absolute top-4 left-4 flex items-center gap-2">
+                  <span className="px-3 py-1 bg-[#eccbc7]/90 backdrop-blur-md text-[#a95671] rounded-full font-label-sm text-label-sm uppercase tracking-wider shadow-sm flex items-center gap-1">
+                    <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
+                    Mới
+                  </span>
+                  <span className="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-md text-on-surface rounded-full font-label-sm text-label-sm">
+                    Gói Couple
+                  </span>
+                </div>
+                <div className="absolute bottom-4 left-4 flex items-center gap-2">
+                  <span className="w-3 h-3 rounded-full bg-[#a95671] shadow-sm" />
+                  <span className="font-label-sm text-label-sm text-white drop-shadow-sm">Warm Cream & Rose</span>
+                </div>
+              </div>
+              <div className="p-space-lg">
+                <div className="flex items-center justify-between gap-space-sm mb-space-xs">
+                  <h2 className="font-headline-md text-headline-md text-on-surface">Anniversary Journey</h2>
+                  <div className="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-full">
+                    <span className="material-symbols-outlined text-primary-container text-[16px]" style={{fontVariationSettings: '"FILL" 1'}}>star</span>
+                    <span className="font-title-md text-title-md font-bold text-on-surface">5.0</span>
+                    <span className="font-label-sm text-label-sm text-on-surface-variant">(New)</span>
+                  </div>
+                </div>
+                <p className="font-body-sm text-body-sm text-on-surface-variant mb-space-md line-clamp-2">
+                  Hành trình tình yêu theo từng cột mốc với road animation cuộn theo scroll, ảnh polaroid và music player lãng mạn.
+                </p>
+                <div className="flex flex-wrap gap-space-xs mb-space-lg">
+                  <span className="px-2.5 py-1 rounded-md bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">Road Animation</span>
+                  <span className="px-2.5 py-1 rounded-md bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">Ảnh Polaroid</span>
+                  <span className="px-2.5 py-1 rounded-md bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">Music Player</span>
+                </div>
+              </div>
+            </div>
+            <div className="px-space-lg pb-space-lg pt-0 flex items-center gap-space-sm">
+              <Link className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-surface-container-low hover:bg-surface-container text-on-surface transition-colors flex items-center justify-center gap-1" to="/preview/anniversary-journey">
+                <span className="material-symbols-outlined text-[18px]">visibility</span>
+                Xem Demo
+              </Link>
+              <Link className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" to={isAuthenticated ? "/dashboard?applyTemplate=anniversary-journey" : "/register"}>
+                Dùng Mẫu Này
+              </Link>
+            </div>
+          </article>
+
+          {OCCASION_TEMPLATES.map(t => (
+            <article key={t.code} className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+              <div>
+                <div className="relative w-full aspect-[4/3] overflow-hidden" style={{ background: t.gradient }}>
+                  <img className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 opacity-40" src={t.image} alt={`${t.name} template`} />
+                  <div className="absolute inset-0 flex flex-col items-center justify-center text-center px-4">
+                    <span className="text-4xl">{t.icon}</span>
+                    <p className="text-2xl font-bold mt-2 drop-shadow-sm" style={{ color: t.accent }}>{t.tagline}</p>
+                  </div>
+                  <div className="absolute top-4 left-4 flex items-center gap-2">
+                    <span className="px-3 py-1 bg-white/90 backdrop-blur-md rounded-full font-label-sm text-label-sm uppercase tracking-wider shadow-sm flex items-center gap-1" style={{ color: t.accent }}>
+                      <span className="material-symbols-outlined text-[14px]">auto_awesome</span>
+                      Mới
+                    </span>
+                    <span className="px-3 py-1 bg-surface-container-lowest/90 backdrop-blur-md text-on-surface rounded-full font-label-sm text-label-sm">
+                      {t.occasionLabel}
+                    </span>
+                  </div>
+                  <div className="absolute bottom-4 left-4 flex items-center gap-2">
+                    <span className="w-3 h-3 rounded-full shadow-sm" style={{ background: t.accent }} />
+                    <span className="font-label-sm text-label-sm text-white drop-shadow-sm">{t.palette}</span>
+                  </div>
+                </div>
+                <div className="p-space-lg">
+                  <div className="flex items-center justify-between gap-space-sm mb-space-xs">
+                    <h2 className="font-headline-md text-headline-md text-on-surface">{t.name}</h2>
+                  </div>
+                  <p className="font-body-sm text-body-sm text-on-surface-variant mb-space-md line-clamp-2">{t.description}</p>
+                  <div className="flex flex-wrap gap-space-xs mb-space-lg">
+                    {t.tags.map(tag => (
+                      <span key={tag} className="px-2.5 py-1 rounded-md bg-surface-container-low font-label-sm text-label-sm text-on-surface-variant">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+              <div className="px-space-lg pb-space-lg pt-0 flex items-center gap-space-sm">
+                <Link className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-surface-container-low hover:bg-surface-container text-on-surface transition-colors flex items-center justify-center gap-1" to={`/preview/${t.code}`}>
+                  <span className="material-symbols-outlined text-[18px]">visibility</span>
+                  Xem Demo
+                </Link>
+                <Link className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" to={isAuthenticated ? `/dashboard?applyTemplate=${t.code}` : '/register'}>
+                  Dùng Mẫu Này
+                </Link>
+              </div>
+            </article>
+          ))}
+
           <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
             <div>
               <div className="relative w-full aspect-[4/3] bg-surface-container overflow-hidden">

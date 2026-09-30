@@ -4,9 +4,9 @@ import { formatPrice } from '../utils/formatPrice';
 export default function PricingMobile() {
   const { plans } = usePlans();
   const free = plans.find(p => p.code === 'FREE');
-  const pro = plans.find(p => p.code === 'PRO');
+  const pro = plans.find(p => p.code === 'PLUS');
   const couple = plans.find(p => p.code === 'COUPLE');
-  const proMax = plans.find(p => p.code === 'PRO_MAX');
+  const proMax = plans.find(p => p.code === 'PREMIUM');
 
   return (
     <>
@@ -71,7 +71,7 @@ export default function PricingMobile() {
           <div className="flex justify-between items-start mb-space-sm">
             <div>
               <span className="font-label-sm text-label-sm tracking-wider uppercase text-on-surface-variant">Khởi đầu êm đềm</span>
-              <h3 className="font-headline-md text-headline-md text-on-surface mt-0.5">{free?.name ?? 'Free'}</h3>
+              <h3 className="font-headline-md text-headline-md text-on-surface mt-0.5">{free?.name ?? 'FREE'}</h3>
             </div>
             <span className="px-2.5 py-1 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm">Trọn đời</span>
           </div>
@@ -103,7 +103,7 @@ export default function PricingMobile() {
           <div className="flex justify-between items-start mb-space-sm">
             <div>
               <span className="font-label-sm text-label-sm tracking-wider uppercase text-on-surface-variant">Lưu giữ bền lâu</span>
-              <h3 className="font-headline-md text-headline-md text-on-surface mt-0.5">{pro?.name ?? 'Pro'}</h3>
+              <h3 className="font-headline-md text-headline-md text-on-surface mt-0.5">{pro?.name ?? 'PLUS'}</h3>
             </div>
             <span className="px-2.5 py-1 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm font-semibold">Trọn đời</span>
           </div>
@@ -131,7 +131,7 @@ export default function PricingMobile() {
             </div>
           </div>
           <button className="w-full py-3 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-variant transition-transform active:scale-95 shadow-sm">
-            Chọn gói Pro
+            Chọn gói PLUS
           </button>
         </div>
         {/* PLAN 3: COUPLE (FEATURED) */}
@@ -190,12 +190,12 @@ export default function PricingMobile() {
             </button>
           </div>
         </div>
-        {/* PLAN 4: PRO MAX */}
+        {/* PLAN 4: PREMIUM */}
         <div className="p-space-md rounded-lg bg-surface-container-lowest shadow-md flex flex-col justify-between transition-all">
           <div className="flex justify-between items-start mb-space-sm">
             <div>
               <div className="flex items-center gap-1.5">
-                <h3 className="font-headline-md text-headline-md text-on-surface">{proMax?.name ?? 'Pro Max'}</h3>
+                <h3 className="font-headline-md text-headline-md text-on-surface">{proMax?.name ?? 'PREMIUM'}</h3>
                 <span className="px-2 py-0.5 rounded-full bg-secondary-container text-on-secondary-container font-label-sm text-label-sm font-bold">VIP ⭐</span>
               </div>
               <span className="font-label-sm text-label-sm tracking-wider uppercase text-on-surface-variant mt-0.5 block">Tuyệt tác cá nhân hóa</span>
@@ -226,7 +226,7 @@ export default function PricingMobile() {
             </div>
           </div>
           <button className="w-full py-3 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-variant transition-transform active:scale-95 shadow-sm">
-            Chọn gói PRO MAX
+            Chọn gói PREMIUM
           </button>
         </div>
       </section>
@@ -258,7 +258,7 @@ export default function PricingMobile() {
                 </span>
                 <span className="font-title-md text-title-md text-on-surface">Đồng chỉnh sửa 2 người</span>
               </div>
-              <span className="px-2 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm font-semibold">💑 COUPLE &amp; PRO MAX</span>
+              <span className="px-2 py-0.5 rounded-full bg-primary-container text-on-primary font-label-sm text-label-sm font-semibold">💑 COUPLE &amp; PREMIUM</span>
             </div>
             <p className="font-body-sm text-body-sm text-on-surface-variant">
               Cả bạn và người yêu đều có tài khoản riêng, cùng đăng ảnh, ghi nhật ký hẹn hò theo thời gian thực mà không cần chia sẻ mật mã cá nhân.
@@ -318,7 +318,7 @@ export default function PricingMobile() {
                 </span>
                 <span className="font-title-md text-title-md text-on-surface">Tên miền &amp; Xoá Logo</span>
               </div>
-              <span className="font-label-sm text-label-sm text-secondary font-bold">Gói PRO MAX</span>
+              <span className="font-label-sm text-label-sm text-secondary font-bold">Gói PREMIUM</span>
             </div>
             <p className="font-body-sm text-body-sm text-on-surface-variant">
               Dành trọn vẹn sự chú ý cho câu chuyện tình yêu với địa chỉ web mang tên hai người.
@@ -352,7 +352,7 @@ export default function PricingMobile() {
               <span className="material-symbols-outlined text-primary text-[22px] transition-transform duration-200 group-open:rotate-180 shrink-0">expand_more</span>
             </summary>
             <div className="pt-3 font-body-sm text-body-sm text-on-surface-variant leading-relaxed">
-              Toàn bộ các gói trả phí của CoupleStory (Pro, COUPLE, PRO MAX) đều là <strong>thanh toán trọn đời</strong>. Bạn không phải lo lắng về việc gia hạn định kỳ hay mất đi kỷ nguyên tình cảm của mình vì quên đóng phí.
+              Toàn bộ các gói trả phí của CoupleStory (PLUS, COUPLE, PREMIUM) đều là <strong>thanh toán trọn đời</strong>. Bạn không phải lo lắng về việc gia hạn định kỳ hay mất đi kỷ nguyên tình cảm của mình vì quên đóng phí.
             </div>
           </details>
           {/* FAQ 3 */}

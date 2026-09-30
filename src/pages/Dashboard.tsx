@@ -340,7 +340,7 @@ export default function Dashboard() {
     ? <><span className="text-primary italic">{names[0]}</span> &amp; <span className="text-primary italic">{names[1]}</span></>
     : <span className="text-primary italic">{names[0]}</span>;
 
-  const planLabel = user?.plan === 'PRO_MAX' ? 'GÓI PRO MAX' : user?.plan === 'COUPLE' ? 'GÓI COUPLE' : user?.plan === 'PRO' ? 'GÓI PRO' : 'GÓI FREE';
+  const planLabel = user?.plan === 'PREMIUM' ? 'GÓI PREMIUM' : user?.plan === 'COUPLE' ? 'GÓI COUPLE' : user?.plan === 'PLUS' ? 'GÓI PLUS' : 'GÓI FREE';
 
   return (
     <>

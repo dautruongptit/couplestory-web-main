@@ -3,9 +3,11 @@ import { useParams, Link } from 'react-router-dom';
 import type { StoryData } from '@/data/mockScenarios';
 import { getTemplateTheme, type TemplateTheme } from '@/data/templateThemes';
 import { apiClient } from '@/services/api';
+import { getOccasionTemplate } from './occasionRegistry';
 
 const TemplateRomanticAnniversary = lazy(() => import('./TemplateRomanticAnniversary'));
 const TemplateMemoryWall = lazy(() => import('./TemplateMemoryWall'));
+const TemplateAnniversaryJourney = lazy(() => import('./TemplateAnniversaryJourney'));
 
 export default function DynamicStoryTemplate({ storyData }: { storyData?: StoryData }) {
   const { scenarioId } = useParams();
@@ -117,6 +119,24 @@ export default function DynamicStoryTemplate({ storyData }: { storyData?: StoryD
     return (
       <Suspense fallback={<div className="p-8 text-center text-xl min-h-screen flex items-center justify-center">Đang tải...</div>}>
         <TemplateMemoryWall storyData={data} />
+      </Suspense>
+    );
+  }
+
+  if (data.template_id === 'anniversary-journey') {
+    return (
+      <Suspense fallback={<div className="p-8 text-center text-xl min-h-screen flex items-center justify-center">Đang tải...</div>}>
+        <TemplateAnniversaryJourney storyData={data} />
+      </Suspense>
+    );
+  }
+
+  const occasion = getOccasionTemplate(data.template_id);
+  if (occasion) {
+    const OccasionComponent = occasion.component;
+    return (
+      <Suspense fallback={<div className="p-8 text-center text-xl min-h-screen flex items-center justify-center">Đang tải...</div>}>
+        <OccasionComponent storyData={data} />
       </Suspense>
     );
   }

@@ -164,7 +164,7 @@ export function DashboardLayout() {
             <div className="flex flex-col min-w-0 flex-1">
               <span className="font-title-md text-on-surface truncate leading-tight text-[14px]">{user?.name}</span>
               <span className="font-body-sm text-on-surface-variant truncate leading-tight text-[11px]">
-                {user?.plan === 'PRO_MAX' ? 'Pro Max' : user?.plan === 'COUPLE' ? 'Couple' : user?.plan === 'PRO' ? 'Pro' : 'Free'}
+                {user?.plan === 'PREMIUM' ? 'PREMIUM' : user?.plan === 'COUPLE' ? 'COUPLE' : user?.plan === 'PLUS' ? 'PLUS' : 'FREE'}
               </span>
             </div>
           </div>
