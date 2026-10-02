@@ -153,7 +153,7 @@ export function DashboardLayout() {
           </nav>
         </div>
         <div className="flex flex-col gap-space-md">
-          <Link to="/templates" className="w-full flex items-center justify-center gap-space-xs py-space-sm px-space-md bg-primary-container text-on-primary rounded-full font-title-md hover:opacity-95 transition-opacity shadow-sm">
+          <Link to="/create" className="w-full flex items-center justify-center gap-space-xs py-space-sm px-space-md bg-primary-container text-on-primary rounded-full font-title-md hover:opacity-95 transition-opacity shadow-sm">
             <span className="material-symbols-outlined text-[18px]">add</span>
             <span>Tạo Story mới</span>
           </Link>

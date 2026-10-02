@@ -6,6 +6,7 @@ import TemplateRomanticAnniversary from '@/templates/TemplateRomanticAnniversary
 import TemplateMemoryWall from '@/templates/TemplateMemoryWall';
 import { apiClient } from '@/services/api';
 import { toast } from '@/utils/toast';
+import { useTemplates } from '@/hooks/useTemplates';
 
 interface ServerPhoto {
   id: string;
@@ -23,6 +24,11 @@ export default function StoryEditor() {
   const [photos, setPhotos] = useState<ServerPhoto[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { templates } = useTemplates();
+  const currentTemplate = templates.find(t => t.code === story?.template_id);
+  const maxVisible = currentTemplate?.maxDisplayEvents ?? 6;
+  const minPublish = currentTemplate?.minEventsForPublish ?? 2;
+  const visibleCount = story ? story.timeline_block.events.filter(e => e.is_visible !== false).length : 0;
 
   useEffect(() => {
     if (!scenarioId) return;
@@ -76,7 +82,9 @@ export default function StoryEditor() {
               id: e.id,
               date: e.date || e.eventDate || '',
               title: e.title || '',
-              description: e.description || '',
+              description: e.message || '',
+              location: e.location || '',
+              is_visible: e.isVisible !== false,
               media_url: e.imageUrl || e.mediaUrl || '',
             })),
           },
@@ -124,6 +132,11 @@ export default function StoryEditor() {
       }
 
       // Timeline events
+      const incomplete = story.timeline_block.events.some(e => !e.title.trim() || !e.description.trim());
+      if (story.timeline_block.is_enabled && incomplete) {
+        toast('Mỗi sự kiện cần có tiêu đề và lời nhắn', 'error');
+        return;
+      }
       if (story.timeline_block.is_enabled) {
         const existingEvents = await apiClient.get(`/stories/${scenarioId}/events`);
         const existingIds = new Set((existingEvents as any[]).map((e: any) => e.id));
@@ -139,7 +152,13 @@ export default function StoryEditor() {
         // Create or update events
         for (let i = 0; i < story.timeline_block.events.length; i++) {
           const ev = story.timeline_block.events[i];
-          const payload = { title: ev.title, description: ev.description, eventDate: ev.date, order: i };
+          const payload = {
+            title: ev.title,
+            message: ev.description,
+            location: ev.location || undefined,
+            eventDate: ev.date || undefined,
+            order: i,
+          };
           if (ev.id && existingIds.has(ev.id)) {
             await apiClient.put(`/stories/${scenarioId}/events/${ev.id}`, payload);
           } else {
@@ -147,12 +166,17 @@ export default function StoryEditor() {
             story.timeline_block.events[i] = { ...ev, id: (created as any).id };
           }
         }
+
+        const visibleIds = story.timeline_block.events
+          .filter(e => e.is_visible !== false && e.id)
+          .map(e => e.id);
+        await apiClient.put(`/stories/${scenarioId}/events/visibility`, visibleIds);
       }
 
       toast('Đã lưu thành công', 'success');
     } catch (error) {
       console.error("Failed to save", error);
-      toast('Lỗi khi lưu', 'error');
+      toast((error as any)?.message || 'Lỗi khi lưu', 'error');
     } finally {
       setIsSaving(false);
     }
@@ -279,7 +303,7 @@ export default function StoryEditor() {
                 <button
                   type="button"
                   onClick={() => {
-                    const events = [...story.timeline_block.events, { id: '', date: '', title: '', description: '', media_url: '' }];
+                    const events = [...story.timeline_block.events, { id: '', date: '', title: '', description: '', location: '', is_visible: visibleCount < maxVisible, media_url: '' }];
                     setStory({ ...story, timeline_block: { ...story.timeline_block, is_enabled: true, events } });
                   }}
                   className="px-3 py-1.5 bg-primary text-on-primary rounded-full font-label-sm hover:bg-primary/90 transition-colors flex items-center gap-1"
@@ -288,6 +312,10 @@ export default function StoryEditor() {
                   Thêm sự kiện
                 </button>
               </div>
+
+              <p className="font-body-sm text-on-surface-variant -mt-2">
+                Hiển thị {visibleCount}/{maxVisible} kỷ niệm trên mẫu này (cần tối thiểu {minPublish} để xuất bản). Kỷ niệm không chọn vẫn được lưu.
+              </p>
 
               {story.timeline_block.events.length === 0 && (
                 <div className="text-center py-8 text-on-surface-variant">
@@ -315,6 +343,7 @@ export default function StoryEditor() {
                   <input
                     type="text"
                     placeholder="Tiêu đề sự kiện"
+                    maxLength={100}
                     value={ev.title}
                     onChange={e => {
                       const events = [...story.timeline_block.events];
@@ -333,9 +362,22 @@ export default function StoryEditor() {
                     }}
                     className="w-full h-10 px-3 rounded-lg bg-surface border border-outline-variant/50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
                   />
+                  <input
+                    type="text"
+                    placeholder="Địa điểm (không bắt buộc)"
+                    maxLength={150}
+                    value={ev.location || ''}
+                    onChange={e => {
+                      const events = [...story.timeline_block.events];
+                      events[idx] = { ...events[idx], location: e.target.value };
+                      setStory({ ...story, timeline_block: { ...story.timeline_block, events } });
+                    }}
+                    className="w-full h-10 px-3 rounded-lg bg-surface border border-outline-variant/50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
+                  />
                   <textarea
-                    rows={2}
-                    placeholder="Mô tả ngắn..."
+                    rows={3}
+                    maxLength={500}
+                    placeholder="Lời nhắn về kỷ niệm này..."
                     value={ev.description}
                     onChange={e => {
                       const events = [...story.timeline_block.events];
@@ -344,6 +386,19 @@ export default function StoryEditor() {
                     }}
                     className="w-full p-3 rounded-lg bg-surface border border-outline-variant/50 text-sm focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary resize-none"
                   />
+                  <label className="flex items-center gap-2 text-sm text-on-surface-variant">
+                    <input
+                      type="checkbox"
+                      checked={ev.is_visible !== false}
+                      disabled={ev.is_visible === false && visibleCount >= maxVisible}
+                      onChange={e => {
+                        const events = [...story.timeline_block.events];
+                        events[idx] = { ...events[idx], is_visible: e.target.checked };
+                        setStory({ ...story, timeline_block: { ...story.timeline_block, events } });
+                      }}
+                    />
+                    Hiển thị trên trang
+                  </label>
                 </div>
               ))}
             </div>

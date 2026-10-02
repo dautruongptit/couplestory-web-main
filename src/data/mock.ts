@@ -1,37 +1,4 @@
-import type { Template, Story, Plan } from '../types';
-
-export const mockTemplates: Template[] = [
-  {
-    id: '1',
-    name: 'Minimal Couple',
-    code: 'minimal-couple',
-    thumbnail: 'https://images.unsplash.com/photo-1515934751635-c81c6bc9a2d8?auto=format&fit=crop&q=80',
-    type: 'FREE',
-    description: 'Phong cách tối giản, tập trung vào hình ảnh và khoảng trắng.'
-  },
-  {
-    id: '2',
-    name: 'Eternal Love',
-    code: 'eternal-love',
-    thumbnail: 'https://images.unsplash.com/photo-1518173946687-a4c8892bbd9f?auto=format&fit=crop&q=80',
-    type: 'PREMIUM',
-    description: 'Phong cách sang trọng, lãng mạn như một cuốn tạp chí cưới.'
-  },
-  {
-    id: '3',
-    name: 'Anniversary Journey',
-    code: 'anniversary-journey',
-    thumbnail: 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&q=80',
-    type: 'PREMIUM',
-    description: 'Hành trình tình yêu theo từng cột mốc, với hiệu ứng road animation lãng mạn.'
-  },
-  { id: '4', name: 'Wedding Cinematic', code: 'wedding-cinematic', thumbnail: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&q=80', type: 'PREMIUM', description: 'Đám cưới điện ảnh nền tối, vàng kim sang trọng.' },
-  { id: '5', name: 'Wedding Garden Bloom', code: 'wedding-garden-bloom', thumbnail: 'https://images.unsplash.com/photo-1464366400600-7168b8af9bc3?auto=format&fit=crop&q=80', type: 'PREMIUM', description: 'Đám cưới vườn hoa sáng, xanh sage và hồng đất.' },
-  { id: '6', name: 'Birthday Neon Party', code: 'birthday-neon-party', thumbnail: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&q=80', type: 'PREMIUM', description: 'Sinh nhật neon Y2K nền tối, phong cách Gen Z.' },
-  { id: '7', name: 'Birthday Soft Yume', code: 'birthday-soft-yume', thumbnail: 'https://images.unsplash.com/photo-1558636508-e0db3814bd1d?auto=format&fit=crop&q=80', type: 'FREE', description: 'Sinh nhật pastel mộng mơ với sao lấp lánh.' },
-  { id: '8', name: 'Confession Typewriter', code: 'confession-typewriter', thumbnail: 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&q=80', type: 'FREE', description: 'Tỏ tình bằng lá thư đánh máy trong phong bì bí mật.' },
-  { id: '9', name: 'Confession Midnight Bloom', code: 'confession-midnight-bloom', thumbnail: 'https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&q=80', type: 'PREMIUM', description: 'Tỏ tình đêm tím huyền ảo với nút "Để em nghĩ" chạy trốn.' }
-];
+import type { Story, Plan } from '../types';
 
 export const mockStories: Story[] = [
   {

@@ -49,7 +49,7 @@ function mapPublicStoryToStoryData(res: any, templateCode: string): StoryData {
         id: e.id,
         date: e.eventDate || '',
         title: e.title || '',
-        description: e.description || '',
+        description: e.message || '',
         media_url: e.photoUrl || '',
       })),
     },

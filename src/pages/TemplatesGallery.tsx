@@ -1,8 +1,30 @@
-import { Link } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
 import { OCCASION_TEMPLATES, SHOW_OCCASION_TEMPLATES } from '@/templates/occasionRegistry';
+import { canUsePackage } from '@/data/templatePackages';
+import { useTemplates } from '@/hooks/useTemplates';
+
+function UseTemplateLink({ code, className }: { code: string; className: string }) {
+  const { isAuthenticated, user } = useAuth();
+  const { templates } = useTemplates();
+  const required = templates.find(t => t.code === code)?.package;
+  if (!isAuthenticated) {
+    return <Link className={className} to="/register">Dùng Mẫu Này</Link>;
+  }
+  if (required && !canUsePackage(user?.plan, required)) {
+    return (
+      <Link className={className} to="/dashboard/upgrade" title={`Cần gói ${required}`}>
+        <span className="material-symbols-outlined text-[18px]">lock</span>
+        Nâng cấp {required}
+      </Link>
+    );
+  }
+  return <Link className={className} to={`/dashboard?applyTemplate=${code}`}>Dùng Mẫu Này</Link>;
+}
+
 export default function TemplatesGallery() {
-  const { isAuthenticated } = useAuth();
+  const [searchParams] = useSearchParams();
+  const isLoveStory = searchParams.get('type') === 'LOVE_STORY';
   return (
     <div className="min-h-screen">
 <div>
@@ -17,6 +39,12 @@ export default function TemplatesGallery() {
                 <span className="w-2 h-2 rounded-full bg-primary-container animate-pulse" />
                 Được cập nhật hàng tháng
               </div>
+              {isLoveStory && (
+                <div className="mb-space-md flex items-center gap-space-sm">
+                  <span className="px-3 py-1 rounded-full bg-primary-container text-on-primary font-label-md text-label-md font-semibold">❤️ Love Story</span>
+                  <Link to="/create" className="font-label-md text-label-md text-primary hover:underline">Đổi loại</Link>
+                </div>
+              )}
               <h1 className="font-headline-xl text-headline-xl text-on-surface tracking-tight mb-space-sm">
                 Kho Giao Diện Kỷ Niệm Tình Yêu
               </h1>
@@ -129,9 +157,7 @@ export default function TemplatesGallery() {
                 <span className="material-symbols-outlined text-[18px]">visibility</span>
                 Xem Demo
               </Link>
-              <Link className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" to={isAuthenticated ? "/dashboard?applyTemplate=romantic-anniversary" : "/register"}>
-                D&#xF9;ng M&#x1EA7;u N&#xE0;y
-              </Link>
+              <UseTemplateLink code="romantic-anniversary" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
           </article>
           <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
@@ -182,9 +208,7 @@ export default function TemplatesGallery() {
                 <span className="material-symbols-outlined text-[18px]">visibility</span>
                 Xem Demo
               </Link>
-              <Link className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" to={isAuthenticated ? "/dashboard?applyTemplate=memory-wall" : "/register"}>
-                D&#xF9;ng M&#x1EA7;u N&#xE0;y
-              </Link>
+              <UseTemplateLink code="memory-wall" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
           </article>
 
@@ -237,9 +261,7 @@ export default function TemplatesGallery() {
                 <span className="material-symbols-outlined text-[18px]">visibility</span>
                 Xem Demo
               </Link>
-              <Link className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" to={isAuthenticated ? "/dashboard?applyTemplate=anniversary-journey" : "/register"}>
-                Dùng Mẫu Này
-              </Link>
+              <UseTemplateLink code="anniversary-journey" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
           </article>
 
@@ -283,9 +305,7 @@ export default function TemplatesGallery() {
                   <span className="material-symbols-outlined text-[18px]">visibility</span>
                   Xem Demo
                 </Link>
-                <Link className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" to={isAuthenticated ? `/dashboard?applyTemplate=${t.code}` : '/register'}>
-                  Dùng Mẫu Này
-                </Link>
+                <UseTemplateLink code={t.code} className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
               </div>
             </article>
           ))}
@@ -332,9 +352,7 @@ export default function TemplatesGallery() {
                 <span className="material-symbols-outlined text-[18px]">visibility</span>
                 Xem Demo
               </Link>
-              <Link className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" to={isAuthenticated ? "/dashboard?applyTemplate=minimal-couple" : "/register"}>
-                Dùng Mầu Này
-              </Link>
+              <UseTemplateLink code="minimal-couple" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
           </article>
           <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
@@ -380,9 +398,7 @@ export default function TemplatesGallery() {
                 <span className="material-symbols-outlined text-[18px]">visibility</span>
                 Xem Demo
               </Link>
-              <Link className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" to={isAuthenticated ? "/dashboard?applyTemplate=eternal-love" : "/register"}>
-                Dùng Mầu Này
-              </Link>
+              <UseTemplateLink code="eternal-love" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
           </article>
           <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
@@ -424,9 +440,7 @@ export default function TemplatesGallery() {
                 <span className="material-symbols-outlined text-[18px]">visibility</span>
                 Xem Demo
               </Link>
-              <Link className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" to={isAuthenticated ? "/dashboard?applyTemplate=autumn-paris" : "/register"}>
-                Dùng Mầu Này
-              </Link>
+              <UseTemplateLink code="autumn-paris" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
           </article>
           <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
@@ -468,9 +482,7 @@ export default function TemplatesGallery() {
                 <span className="material-symbols-outlined text-[18px]">visibility</span>
                 Xem Demo
               </Link>
-              <Link className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" to={isAuthenticated ? "/dashboard?applyTemplate=sunset-horizon" : "/register"}>
-                Dùng Mầu Này
-              </Link>
+              <UseTemplateLink code="sunset-horizon" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
           </article>
           <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
@@ -512,9 +524,7 @@ export default function TemplatesGallery() {
                 <span className="material-symbols-outlined text-[18px]">visibility</span>
                 Xem Demo
               </Link>
-              <Link className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" to={isAuthenticated ? "/dashboard?applyTemplate=sweet-polaroid" : "/register"}>
-                Dùng Mầu Này
-              </Link>
+              <UseTemplateLink code="sweet-polaroid" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
           </article>
           <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
@@ -556,9 +566,7 @@ export default function TemplatesGallery() {
                 <span className="material-symbols-outlined text-[18px]">visibility</span>
                 Xem Demo
               </Link>
-              <Link className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" to={isAuthenticated ? "/dashboard?applyTemplate=royal-wedding" : "/register"}>
-                Dùng Mầu Này
-              </Link>
+              <UseTemplateLink code="royal-wedding" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
           </article>
         </div>

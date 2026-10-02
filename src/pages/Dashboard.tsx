@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { apiClient } from '@/services/api';
 import { toast } from '@/utils/toast';
 import ConfirmModal from '@/components/ConfirmModal';
+import { usePlans } from '@/hooks/usePlans';
 
 export interface StoryResponse {
   id: string;
@@ -259,7 +260,8 @@ export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const maxStories = user?.plan === 'free' ? 1 : user?.plan === 'premium' ? 10 : 3;
+  const { plans } = usePlans();
+  const maxStories = plans.find(p => p.code === (user?.plan ?? 'FREE'))?.maxStories ?? 1;
 
   const [stories, setStories] = useState<StoryResponse[]>([]);
   const [loading, setLoading] = useState(true);
@@ -273,15 +275,7 @@ export default function Dashboard() {
   useEffect(() => {
     apiClient.get('/stories')
       .then(async (data) => {
-        const storiesList = Array.isArray(data) ? data : [];
-        if (applyTemplate) {
-          if (storiesList.length >= maxStories) {
-            toast(`Bạn đã đạt giới hạn ${maxStories} Story. Vui lòng xóa Story cũ hoặc nâng cấp gói.`, 'error');
-          } else {
-            setShowWizard(true);
-          }
-        }
-        setStories(storiesList);
+        setStories(Array.isArray(data) ? data : []);
       })
       .catch(err => {
         console.error(err);
@@ -290,6 +284,15 @@ export default function Dashboard() {
       .finally(() => setLoading(false));
   }, [location.search]);
 
+  useEffect(() => {
+    if (!applyTemplate || loading || plans.length === 0) return;
+    if (stories.length >= maxStories) {
+      toast(`Bạn đã đạt giới hạn ${maxStories} Story. Vui lòng xóa Story cũ hoặc nâng cấp gói.`, 'error');
+    } else {
+      setShowWizard(true);
+    }
+  }, [applyTemplate, loading, plans.length]);
+
   const displayStories = stories;
 
   const openWizard = () => {
@@ -297,7 +300,7 @@ export default function Dashboard() {
       toast(`Bạn đã đạt giới hạn ${maxStories} Story. Vui lòng xóa Story cũ hoặc nâng cấp gói.`, 'error');
       return;
     }
-    setShowWizard(true);
+    navigate('/create');
   };
 
   const handleCreated = (newStory: StoryResponse) => {

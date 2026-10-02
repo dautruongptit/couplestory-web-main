@@ -5,13 +5,22 @@ export interface User {
   role: 'USER' | 'ADMIN';
 }
 
+export type ContentType = 'LOVE_STORY' | 'LOVE_CARD';
+export type PackageCode = 'FREE' | 'PLUS' | 'COUPLE' | 'PREMIUM';
+
 export interface Template {
   id: string;
-  name: string;
   code: string;
-  thumbnail: string;
-  type: 'FREE' | 'PREMIUM';
-  description: string;
+  name: string;
+  type: ContentType;
+  package: PackageCode;
+  description: string | null;
+  previewImage: string | null;
+  recommendedEvents: number;
+  maxDisplayEvents: number;
+  minEventsForPublish: number;
+  sortOrder: number;
+  isActive: boolean;
 }
 
 export interface Story {

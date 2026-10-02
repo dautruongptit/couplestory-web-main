@@ -48,6 +48,8 @@ export interface StoryData {
       title: string;
       description: string;
       media_url: string;
+      location?: string;
+      is_visible?: boolean;
     }>;
   };
 

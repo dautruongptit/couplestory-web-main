@@ -9,6 +9,7 @@ import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import PricingResponsive from '@/pages/PricingResponsive';
 import TemplatesGallery from '@/pages/TemplatesGallery';
+import CreateType from '@/pages/CreateType';
 import Dashboard from '@/pages/Dashboard';
 import DashboardUpgrade from '@/pages/DashboardUpgrade';
 import Checkout from '@/pages/Checkout';
@@ -32,6 +33,7 @@ export const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: 'templates', element: <TemplatesGallery /> },
       { path: 'pricing',   element: <PricingResponsive /> },
+      { path: 'create',    element: <ProtectedRoute><CreateType /></ProtectedRoute> },
     ],
   },
 

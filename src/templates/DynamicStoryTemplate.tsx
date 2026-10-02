@@ -70,7 +70,7 @@ export default function DynamicStoryTemplate({ storyData }: { storyData?: StoryD
                 id: e.id,
                 date: e.date || e.eventDate || '',
                 title: e.title || '',
-                description: e.description || '',
+                description: e.message || '',
                 media_url: e.imageUrl || e.mediaUrl || '',
               })),
             },
