@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import type { StoryData } from '@/data/mockScenarios';
 import DynamicStoryTemplate from '@/templates/DynamicStoryTemplate';
 import TemplateRomanticAnniversary from '@/templates/TemplateRomanticAnniversary';
@@ -19,6 +19,7 @@ interface ServerPhoto {
 
 export default function StoryEditor() {
   const { scenarioId } = useParams();
+  const navigate = useNavigate();
   const [story, setStory] = useState<StoryData | null>(null);
   const [activeTab, setActiveTab] = useState<'hero' | 'counter' | 'letter' | 'timeline' | 'gallery'>('hero');
   const [isSaving, setIsSaving] = useState(false);
@@ -111,8 +112,8 @@ export default function StoryEditor() {
     fetchData();
   }, [scenarioId]);
 
-  const handleSave = async () => {
-    if (!story || !scenarioId) return;
+  const handleSave = async (): Promise<boolean> => {
+    if (!story || !scenarioId) return false;
     setIsSaving(true);
     try {
       // Basic story details
@@ -139,7 +140,7 @@ export default function StoryEditor() {
       const incomplete = story.timeline_block.events.some(e => !e.title.trim() || !e.description.trim());
       if (story.timeline_block.is_enabled && incomplete) {
         toast('Mỗi sự kiện cần có tiêu đề và lời nhắn', 'error');
-        return;
+        return false;
       }
       if (story.timeline_block.is_enabled) {
         const existingEvents = await apiClient.get(`/stories/${scenarioId}/events`);
@@ -178,9 +179,11 @@ export default function StoryEditor() {
       }
 
       toast('Đã lưu thành công', 'success');
+      return true;
     } catch (error) {
       console.error("Failed to save", error);
       toast((error as any)?.message || 'Lỗi khi lưu', 'error');
+      return false;
     } finally {
       setIsSaving(false);
     }
@@ -251,7 +254,15 @@ export default function StoryEditor() {
             onClick={handleSave}
             disabled={isSaving}
             className={`px-4 py-1.5 ${isSaving ? 'bg-primary/50' : 'bg-primary'} text-on-primary rounded-full font-label-md hover:bg-primary/90 transition-colors shadow-sm`}>
-            {isSaving ? 'Đang lưu...' : 'Lưu & Xuất bản'}
+            {isSaving ? 'Đang lưu...' : 'Lưu'}
+          </button>
+          <button
+            type="button"
+            disabled={isSaving}
+            onClick={async () => { if (await handleSave()) navigate(`/editor/${scenarioId}/preview`); }}
+            className="px-4 py-1.5 bg-primary-container text-on-primary rounded-full font-label-md hover:opacity-90 transition-opacity shadow-sm disabled:opacity-50"
+          >
+            Xem trước
           </button>
         </div>
 

@@ -7,62 +7,7 @@ import TemplateRomanticAnniversary from '@/templates/TemplateRomanticAnniversary
 import TemplateMemoryWall from '@/templates/TemplateMemoryWall';
 import TemplateAnniversaryJourney from '@/templates/TemplateAnniversaryJourney';
 import { getOccasionTemplate } from '@/templates/occasionRegistry';
-
-function mapPublicStoryToStoryData(res: any, templateCode: string): StoryData {
-  const photos: any[] = res.gallery || [];
-  const coverUrl = res.coverPhotoUrl || (photos.length > 0 ? photos[0].url : '');
-
-  return {
-    id: res.id || 'preview',
-    slug: res.subdomain || 'preview',
-    template_id: templateCode,
-    status: 'published',
-    global_config: {
-      purpose: 'anniversary',
-      theme_color: '#ff4d8d',
-      is_music_autoplay: false,
-    },
-    hero_block: {
-      is_enabled: true,
-      title: res.title || `${res.coupleName1 || ''} & ${res.coupleName2 || ''}`,
-      partner_a: { name: res.coupleName1 || '', avatar_url: 'https://api.dicebear.com/7.x/notionists/svg?seed=A', gender: 'male' },
-      partner_b: { name: res.coupleName2 || '', avatar_url: 'https://api.dicebear.com/7.x/notionists/svg?seed=B', gender: 'female' },
-      banner_images: coverUrl ? [coverUrl] : [],
-      short_quote: res.shortQuote || '',
-    },
-    counter_block: {
-      is_enabled: !!res.startDate,
-      mode: 'count_up',
-      target_date: res.startDate ? `${res.startDate}T00:00:00Z` : '',
-      label_text: 'Chúng mình đã chung đôi được',
-    },
-    letter_block: {
-      is_enabled: !!res.loveLetter,
-      heading: res.loveLetter?.heading || 'Gửi người yêu thương,',
-      content: res.loveLetter?.content || '',
-      signature: res.loveLetter?.signature || '',
-    },
-    timeline_block: {
-      is_enabled: (res.events || []).length > 0,
-      section_title: 'Hành trình của chúng mình',
-      events: (res.events || []).map((e: any) => ({
-        id: e.id,
-        date: e.eventDate || '',
-        title: e.title || '',
-        description: e.message || '',
-        media_url: e.photoUrl || '',
-      })),
-    },
-    gallery_block: {
-      is_enabled: photos.length > 0,
-      section_title: 'Khoảnh khắc đáng nhớ',
-      images: photos.map((p: any) => ({
-        url: p.url || '',
-        caption: '',
-      })),
-    },
-  };
-}
+import { mapPublicStoryToStoryData } from '@/utils/publicStory';
 
 function getFallbackData(templateCode: string): StoryData {
   return {

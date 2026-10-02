@@ -23,6 +23,9 @@ import { EternalLovePage, MinimalCouplePage } from '@/templates/TemplateEternalL
 import DynamicStoryTemplate from '@/templates/DynamicStoryTemplate';
 import TemplatePreview from '@/pages/TemplatePreview';
 import StoryEditor from '@/pages/StoryEditor';
+import StoryPreview from '@/pages/StoryPreview';
+import StoryPublished from '@/pages/StoryPublished';
+import PublicStory from '@/pages/PublicStory';
 
 export const router = createBrowserRouter([
   // ── Public – with Navbar/Footer ──────────────────────────
@@ -67,6 +70,9 @@ export const router = createBrowserRouter([
   { path: '/preview/:templateCode', element: <TemplatePreview /> },
   { path: '/demo/:scenarioId', element: <DynamicStoryTemplate /> },
   { path: '/editor/:scenarioId', element: <ProtectedRoute><StoryEditor /></ProtectedRoute> },
+  { path: '/editor/:scenarioId/preview', element: <ProtectedRoute><StoryPreview /></ProtectedRoute> },
+  { path: '/editor/:scenarioId/published', element: <ProtectedRoute><StoryPublished /></ProtectedRoute> },
+  { path: '/s/:slug', element: <PublicStory /> },
 
   // ── Error pages ───────────────────────────────────────────
   { path: '/403', element: <Forbidden403 /> },

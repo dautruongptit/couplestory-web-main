@@ -23,12 +23,15 @@ export default function DynamicStoryTemplate({ storyData }: { storyData?: StoryD
     if (scenarioId) {
       const fetchData = async () => {
         try {
-          const [storyRes, eventsRes, messagesRes, photosRes] = await Promise.all([
+          const [storyRes, allEvents, messagesRes, photosRes, templatesRes] = await Promise.all([
             apiClient.get(`/stories/${scenarioId}`),
             apiClient.get(`/stories/${scenarioId}/events`),
             apiClient.get(`/stories/${scenarioId}/messages`),
-            apiClient.get(`/stories/${scenarioId}/photos`)
+            apiClient.get(`/stories/${scenarioId}/photos`),
+            apiClient.get('/templates').catch(() => [])
           ]);
+          const maxEvents = (templatesRes as any[]).find(t => t.code === storyRes.templateCode)?.maxDisplayEvents ?? 6;
+          const eventsRes = (allEvents as any[]).filter(e => e.isVisible !== false).slice(0, maxEvents);
 
           const loveLetter = messagesRes.find((m: any) => m.type === 'love_letter' || m.type === 'final_message');
 
