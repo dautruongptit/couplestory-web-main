@@ -7,6 +7,7 @@ import TemplateMemoryWall from '@/templates/TemplateMemoryWall';
 import { apiClient } from '@/services/api';
 import { toast } from '@/utils/toast';
 import { useTemplates } from '@/hooks/useTemplates';
+import ChangeTemplateModal from '@/components/ChangeTemplateModal';
 
 interface ServerPhoto {
   id: string;
@@ -24,6 +25,8 @@ export default function StoryEditor() {
   const [photos, setPhotos] = useState<ServerPhoto[]>([]);
   const [isUploading, setIsUploading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [storyType, setStoryType] = useState('LOVE_STORY');
+  const [showChangeTemplate, setShowChangeTemplate] = useState(false);
   const { templates } = useTemplates();
   const currentTemplate = templates.find(t => t.code === story?.template_id);
   const maxVisible = currentTemplate?.maxDisplayEvents ?? 6;
@@ -97,6 +100,7 @@ export default function StoryEditor() {
             })),
           },
         };
+        setStoryType(storyRes.type || 'LOVE_STORY');
         setStory(mappedData);
         setPhotos(photosRes.map((p: any) => ({ id: p.id, url: p.url, thumbnailUrl: p.thumbnailUrl, filenameOriginal: p.filenameOriginal, sortOrder: p.sortOrder })));
       } catch (error) {
@@ -184,8 +188,47 @@ export default function StoryEditor() {
 
   if (!story) return <div className="flex h-screen items-center justify-center">Đang tải...</div>;
 
+  const openChangeTemplate = () => {
+    if (story.timeline_block.events.some(e => !e.id)) {
+      toast('Hãy bấm lưu các sự kiện mới trước khi đổi mẫu', 'error');
+      return;
+    }
+    setShowChangeTemplate(true);
+  };
+
+  const handleTemplateChanged = (templateCode: string, serverEvents: { id: string; isVisible: boolean }[]) => {
+    const visibleById = new Map(serverEvents.map(e => [e.id, e.isVisible]));
+    setStory({
+      ...story,
+      template_id: templateCode,
+      timeline_block: {
+        ...story.timeline_block,
+        events: story.timeline_block.events.map(e => ({ ...e, is_visible: visibleById.get(e.id) ?? e.is_visible })),
+      },
+    });
+    setShowChangeTemplate(false);
+  };
+
+  // The live preview shows exactly what the public page will: visible events only, capped by the template.
+  const previewStory: StoryData = {
+    ...story,
+    timeline_block: {
+      ...story.timeline_block,
+      events: story.timeline_block.events.filter(e => e.is_visible !== false).slice(0, maxVisible),
+    },
+  };
+
   return (
     <div className="flex h-screen bg-surface overflow-hidden">
+      {showChangeTemplate && (
+        <ChangeTemplateModal
+          storyId={scenarioId!}
+          storyType={storyType}
+          currentCode={story.template_id}
+          onClose={() => setShowChangeTemplate(false)}
+          onChanged={handleTemplateChanged}
+        />
+      )}
       {/* LEFT SIDEBAR - EDITOR PANELS */}
       <aside className="w-[400px] flex-shrink-0 bg-surface-container-lowest border-r border-outline-variant/30 flex flex-col z-20 shadow-xl">
         {/* Editor Header */}
@@ -194,9 +237,17 @@ export default function StoryEditor() {
             <Link to="/dashboard" className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors text-on-surface-variant">
               <span className="material-symbols-outlined text-[20px]">arrow_back</span>
             </Link>
-            <span className="font-title-md text-on-surface font-semibold truncate max-w-[200px]">Trình chỉnh sửa</span>
+            <span className="font-title-md text-on-surface font-semibold truncate max-w-[110px]">Chỉnh sửa</span>
           </div>
-          <button 
+          <button
+            type="button"
+            onClick={openChangeTemplate}
+            className="px-3 py-1.5 rounded-full bg-surface-container text-on-surface font-label-md hover:bg-surface-container-high transition-colors flex items-center gap-1"
+          >
+            <span className="material-symbols-outlined text-[16px]">style</span>
+            Đổi mẫu
+          </button>
+          <button
             onClick={handleSave}
             disabled={isSaving}
             className={`px-4 py-1.5 ${isSaving ? 'bg-primary/50' : 'bg-primary'} text-on-primary rounded-full font-label-md hover:bg-primary/90 transition-colors shadow-sm`}>
@@ -544,10 +595,10 @@ export default function StoryEditor() {
           <div className="pointer-events-none absolute inset-0 z-50 shadow-[inset_0_0_0_1px_rgba(0,0,0,0.05)] rounded-b-xl"></div>
           {/* RENDER DYNAMIC TEMPLATE HERE WITH LIVE DATA */}
           {story.template_id === 'romantic-anniversary'
-            ? <TemplateRomanticAnniversary storyData={story} />
+            ? <TemplateRomanticAnniversary storyData={previewStory} />
             : story.template_id === 'memory-wall'
-            ? <TemplateMemoryWall storyData={story} />
-            : <DynamicStoryTemplate storyData={story} />
+            ? <TemplateMemoryWall storyData={previewStory} />
+            : <DynamicStoryTemplate storyData={previewStory} />
           }
         </div>
       </main>
