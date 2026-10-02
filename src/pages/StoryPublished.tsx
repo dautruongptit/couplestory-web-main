@@ -11,16 +11,10 @@ interface StoryInfo {
   id: string;
   slug: string;
   title: string;
+  coupleName1: string;
+  coupleName2: string;
   status: string;
   expiresAt?: string | null;
-}
-
-const NEXT_PLAN: Record<string, string> = { FREE: 'PLUS', PLUS: 'COUPLE', COUPLE: 'PREMIUM' };
-const UNLIMITED = 1_000_000;
-
-function formatDate(iso: string): string {
-  const d = new Date(iso);
-  return `${String(d.getDate()).padStart(2, '0')}/${String(d.getMonth() + 1).padStart(2, '0')}/${d.getFullYear()}`;
 }
 
 export default function StoryPublished() {
@@ -28,99 +22,164 @@ export default function StoryPublished() {
   const { user } = useAuth();
   const { plans } = usePlans();
   const [story, setStory] = useState<StoryInfo | null>(null);
-  const [storyCount, setStoryCount] = useState<number | null>(null);
   const [failed, setFailed] = useState(false);
 
   useEffect(() => {
-    Promise.all([apiClient.get(`/stories/${scenarioId}`), apiClient.get('/stories')])
-      .then(([s, list]) => {
-        setStory(s);
-        setStoryCount(Array.isArray(list) ? list.length : null);
-      })
+    apiClient.get(`/stories/${scenarioId}`)
+      .then(setStory)
       .catch(() => setFailed(true));
   }, [scenarioId]);
 
-  if (failed) {
-    return <div className="min-h-screen flex items-center justify-center">Không tải được thông tin website.</div>;
-  }
-  if (!story) {
-    return <div className="min-h-screen flex items-center justify-center">Đang tải...</div>;
-  }
+  if (failed) return <div className="flex items-center justify-center min-h-[60vh] text-[#594046]">Không tải được thông tin.</div>;
+  if (!story) return <div className="flex items-center justify-center min-h-[60vh] text-[#8d7076]">Đang tải...</div>;
 
   const planCode = user?.plan ?? 'FREE';
-  const plan = plans.find(p => p.code === planCode);
-  const nextCode = NEXT_PLAN[planCode];
-  const nextPlan = plans.find(p => p.code === nextCode);
   const url = getStoryPublicUrl(story.slug);
-  const showQuota = !!plan && plan.maxStories < UNLIMITED && storyCount !== null;
-  const showExpiry = planCode !== 'PREMIUM' && !!story.expiresAt;
-  const framedQr = planCode !== 'FREE';
+  const coupleNames = `${story.coupleName1 || ''} & ${story.coupleName2 || ''}`.trim();
 
   const copy = async () => {
     try {
       await navigator.clipboard.writeText(url);
-      toast('Đã sao chép link', 'success');
-    } catch {
-      toast('Không sao chép được, hãy chép thủ công', 'error');
-    }
+      toast('Đã sao chép đường dẫn', 'success');
+    } catch { toast('Không sao chép được', 'error'); }
   };
 
+  const shareLinks = [
+    { icon: '/icons/facebook.svg', label: 'Facebook', color: 'bg-[#1877f2]/10 text-[#1877f2] hover:bg-[#1877f2]/20', href: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}` },
+    { icon: '/icons/messenger.svg', label: 'Messenger', color: 'bg-[#0084ff]/10 text-[#0084ff] hover:bg-[#0084ff]/20', href: `https://www.facebook.com/dialog/send?link=${encodeURIComponent(url)}` },
+    { icon: '/icons/zalo.svg', label: 'Zalo', color: 'bg-[#0068ff]/10 text-[#0068ff] hover:bg-[#0068ff]/20', href: `https://zalo.me/share?url=${encodeURIComponent(url)}` },
+    { icon: '/icons/instagram.svg', label: 'Instagram', color: 'bg-[#e4405f]/10 text-[#e4405f] hover:bg-[#e4405f]/20', href: '#' },
+  ];
+
   return (
-    <main className="min-h-screen bg-surface flex items-center justify-center px-4 py-10">
-      <div className="w-full max-w-lg bg-surface-container-lowest rounded-3xl shadow-xl p-8 flex flex-col items-center text-center gap-5">
-        <div className="w-16 h-16 rounded-full bg-primary-container/20 flex items-center justify-center">
-          <span className="material-symbols-outlined text-primary text-[36px]">check_circle</span>
-        </div>
-        <div>
-          <h1 className="font-headline-md text-on-surface">Website của bạn đã được đăng!</h1>
-          <p className="font-body-md text-on-surface-variant mt-1">{story.title}</p>
-        </div>
-
-        <div className="w-full rounded-xl bg-surface-container px-4 py-3 font-mono text-sm text-on-surface break-all">{url}</div>
-
-        <div className="flex gap-3 w-full">
-          <a
-            href={url}
-            target="_blank"
-            rel="noreferrer"
-            className="flex-1 px-4 py-2.5 rounded-full bg-primary text-on-primary font-label-md flex items-center justify-center gap-1"
-          >
-            <span className="material-symbols-outlined text-[18px]">open_in_new</span>
-            Xem website
-          </a>
-          <button
-            type="button"
-            onClick={copy}
-            className="flex-1 px-4 py-2.5 rounded-full bg-surface-container text-on-surface font-label-md flex items-center justify-center gap-1 hover:bg-surface-container-high"
-          >
-            <span className="material-symbols-outlined text-[18px]">content_copy</span>
-            Sao chép link
-          </button>
+    <div className="px-4 md:px-6 py-6 flex justify-center">
+      <div className="w-full max-w-[640px]">
+        {/* Breadcrumb */}
+        <div className="flex items-center gap-1.5 text-xs text-[#8d7076] mb-6">
+          <Link to="/dashboard" className="hover:text-[#ff4d8d]">Story của tôi</Link>
+          <span>›</span>
+          <span className="text-[#594046] truncate max-w-[200px]">{coupleNames}</span>
+          <span>›</span>
+          <span className="text-[#ff4d8d] font-medium">● Xuất bản thành công</span>
         </div>
 
-        <div className={framedQr ? 'p-4 rounded-2xl bg-white border-4 border-primary-container shadow-md' : 'p-2 bg-white'}>
-          <QRCodeSVG value={url} size={framedQr ? 160 : 140} />
-          {framedQr && <p className="font-label-sm text-primary mt-2">Quét để xem câu chuyện của chúng mình</p>}
-        </div>
-
-        {(showQuota || showExpiry || planCode === 'FREE') && (
-          <ul className="w-full text-left font-body-sm text-on-surface-variant flex flex-col gap-1.5">
-            {showQuota && <li>Đã dùng {storyCount} / {plan!.maxStories} website</li>}
-            {showExpiry && <li>Hết hạn ngày {formatDate(story.expiresAt!)}</li>}
-            {planCode === 'FREE' && <li>Trang đang có watermark "Made with CoupleStory".</li>}
-          </ul>
-        )}
-
-        {nextPlan && (
-          <div className="w-full rounded-xl bg-primary-container/10 px-4 py-3 text-left">
-            <p className="font-title-md text-on-surface">Nâng cấp lên {nextPlan.name}</p>
-            <p className="font-body-sm text-on-surface-variant">{nextPlan.description}</p>
-            <Link to="/dashboard/upgrade" className="inline-block mt-2 font-label-md text-primary hover:underline">Xem gói →</Link>
+        {/* Main card */}
+        <div className="bg-white rounded-2xl border border-[#f0e4e8] shadow-sm p-5 sm:p-8 flex flex-col items-center text-center">
+          {/* Success icon */}
+          <div className="relative mb-5">
+            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-[#ff4d8d] to-[#e63e7b] flex items-center justify-center shadow-[0_8px_24px_rgba(255,77,141,0.3)]">
+              <span className="material-symbols-outlined text-white text-[32px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+            </div>
+            <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center border-2 border-white">
+              <span className="material-symbols-outlined text-white text-[14px]">check</span>
+            </div>
           </div>
-        )}
 
-        <Link to="/dashboard" className="font-label-md text-on-surface-variant hover:text-primary">Về trang quản lý</Link>
+          <p className="text-[10px] font-bold text-[#ff4d8d] tracking-widest uppercase mb-1">✨ ĐÃ LÊN SÓNG ✨</p>
+          <h1 className="text-2xl font-bold text-[#2e1220] mb-1">Câu chuyện đã xuất bản!</h1>
+          <p className="text-sm text-[#594046] mb-6">
+            Trang web tình yêu của <strong>{coupleNames}</strong> đã sẵn sàng để gửi trao, kết nối và lưu giữ những khoảnh khắc ngọt ngào nhất.
+          </p>
+
+          {/* URL box */}
+          <div className="w-full rounded-xl bg-[#faf7f8] border border-[#f0e4e8] p-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 mb-5">
+            <div className="flex items-center gap-2 flex-1 min-w-0">
+              <span className="material-symbols-outlined text-[18px] text-[#8d7076] shrink-0">language</span>
+              <div className="text-left min-w-0">
+                <p className="text-[10px] text-[#8d7076] font-medium">Đường dẫn Website Tình yêu</p>
+                <p className="text-sm text-[#2e1220] font-medium truncate">{url}</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 justify-end">
+              <span className="text-[10px] text-[#8d7076] font-medium whitespace-nowrap hidden sm:inline">Công khai (Public)</span>
+              <button onClick={copy} className="px-3 py-1.5 rounded-lg bg-[#2e1220] text-white text-xs font-semibold hover:bg-[#1a0a12] transition-colors flex items-center gap-1 shrink-0">
+                <span className="material-symbols-outlined text-[14px]">content_copy</span>
+                Sao chép link
+              </button>
+            </div>
+          </div>
+
+          {/* QR code */}
+          <div className="rounded-2xl bg-[#faf7f8] border border-[#f0e4e8] p-6 mb-5 w-full max-w-[340px]">
+            <div className="flex flex-col items-center gap-3">
+              <div className="bg-white p-3 rounded-xl shadow-sm">
+                <QRCodeSVG value={url} size={140} />
+              </div>
+              <div>
+                <p className="font-bold text-sm text-[#2e1220] flex items-center justify-center gap-1">
+                  <span className="material-symbols-outlined text-[#ff4d8d] text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+                  Mã QR tình yêu
+                </p>
+                <p className="text-xs text-[#8d7076] mt-0.5">Quét bằng camera điện thoại để mở ngay album kỷ niệm.</p>
+              </div>
+              <div className="flex gap-2">
+                <button className="px-3 py-1.5 rounded-lg bg-[#fff0f4] text-[#ff4d8d] text-xs font-semibold hover:bg-[#ffe8ef] transition-colors flex items-center gap-1">
+                  <span className="material-symbols-outlined text-[14px]">download</span>
+                  Tải ảnh PNG
+                </button>
+                <button className="px-3 py-1.5 rounded-lg bg-[#fff0f4] text-[#ff4d8d] text-xs font-semibold hover:bg-[#ffe8ef] transition-colors flex items-center gap-1">
+                  <span className="material-symbols-outlined text-[14px]">print</span>
+                  In thiệp
+                </button>
+              </div>
+            </div>
+          </div>
+
+          {/* Share buttons */}
+          <div className="w-full mb-5">
+            <p className="text-[10px] font-bold text-[#8d7076] tracking-widest uppercase mb-3">HOẶC CHIA SẺ NGAY QUA</p>
+            <div className="grid grid-cols-4 gap-2">
+              {shareLinks.map(s => (
+                <a key={s.label} href={s.href} target="_blank" rel="noreferrer" className={`flex flex-col items-center gap-1.5 py-3 rounded-xl text-xs font-semibold transition-colors ${s.color}`}>
+                  <span className="text-lg">{s.label === 'Facebook' ? '📘' : s.label === 'Messenger' ? '💬' : s.label === 'Zalo' ? '💎' : '📸'}</span>
+                  {s.label}
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Upgrade prompt for FREE */}
+          {planCode !== 'PREMIUM' && (
+            <div className="w-full rounded-xl bg-gradient-to-r from-[#fff0f4] to-[#ffe8ef] border border-[#ffe0eb] p-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-5">
+              <span className="material-symbols-outlined text-[#ff4d8d] text-[20px] hidden sm:block" style={{ fontVariationSettings: "'FILL' 1" }}>bookmark</span>
+              <div className="flex-1 text-left">
+                <p className="text-sm font-semibold text-[#2e1220]">Lưu giữ trang web vĩnh viễn</p>
+                <p className="text-xs text-[#594046]">
+                  {planCode === 'FREE' ? 'Bản miễn phí hết hạn sau 30 ngày. Đừng để ký ức bị gián đoạn.' : 'Nâng cấp để mở thêm tính năng.'}
+                </p>
+              </div>
+              <Link to="/dashboard/upgrade" className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#ff4d8d] to-[#e63e7b] text-white text-xs font-semibold shadow-md hover:shadow-lg transition-all whitespace-nowrap">
+                Nâng cấp ngay →
+              </Link>
+            </div>
+          )}
+
+          {/* Bottom links */}
+          <div className="flex items-center justify-center gap-6 text-xs text-[#594046] pt-2">
+            <Link to={`/editor/${scenarioId}`} className="flex items-center gap-1 hover:text-[#ff4d8d] transition-colors">
+              <span className="material-symbols-outlined text-[14px]">tune</span>
+              Chỉnh sửa nội dung
+            </Link>
+            <span className="text-[#e1bec5]">●</span>
+            <Link to="/create" className="flex items-center gap-1 hover:text-[#ff4d8d] transition-colors">
+              <span className="material-symbols-outlined text-[14px]">favorite</span>
+              Tạo thêm Story
+            </Link>
+          </div>
+        </div>
+
+        {/* View live button */}
+        <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
+          <Link to="/dashboard" className="px-5 py-2.5 rounded-xl bg-white border border-[#f0e4e8] text-sm font-medium text-[#594046] hover:bg-[#fff5f9] transition-colors flex items-center gap-1.5">
+            <span className="material-symbols-outlined text-[16px]">arrow_back</span>
+            Quay về Dashboard
+          </Link>
+          <a href={url} target="_blank" rel="noreferrer" className="px-5 py-2.5 rounded-xl bg-white border border-[#f0e4e8] text-sm font-medium text-[#ff4d8d] hover:bg-[#fff5f9] transition-colors flex items-center gap-1.5">
+            Xem trực tiếp
+            <span className="material-symbols-outlined text-[16px]">open_in_new</span>
+          </a>
+        </div>
       </div>
-    </main>
+    </div>
   );
 }

@@ -36,7 +36,7 @@ export default function AdminOrders() {
     o.type === 'UPGRADE' ? `Nâng cấp ${o.planCode}` : `Gia hạn ${o.renewTerm === '3M' ? '3 tháng' : '1 năm'}`;
 
   return (
-    <main className="w-full pt-16 bg-surface min-h-screen px-space-lg py-space-md">
+    <main className="w-full bg-[#faf7f8] min-h-screen px-4 md:px-6 py-6">
       <h1 className="font-headline-lg text-on-surface mb-1">Đơn hàng chờ xác nhận</h1>
       <p className="font-body-md text-on-surface-variant mb-space-lg">
         Đối chiếu nội dung chuyển khoản với mã đơn, rồi xác nhận. Xác nhận sẽ nâng gói hoặc gia hạn website ngay.
@@ -45,8 +45,33 @@ export default function AdminOrders() {
       {loading && <p>Đang tải...</p>}
       {!loading && orders.length === 0 && <p className="text-on-surface-variant">Không có đơn nào đang chờ.</p>}
 
+      {/* Mobile card view */}
       {orders.length > 0 && (
-        <div className="overflow-x-auto rounded-lg bg-surface-container-lowest shadow-sm">
+        <div className="flex flex-col gap-3 lg:hidden">
+          {orders.map(o => (
+            <div key={o.id} className="rounded-xl bg-surface-container-lowest shadow-sm p-4 space-y-2">
+              <p className="font-title-md text-on-surface truncate">{o.userEmail}</p>
+              <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm text-on-surface-variant">
+                <span>{describe(o)}</span>
+                <span className="font-semibold text-on-surface">{formatPrice(o.amount)}</span>
+              </div>
+              <p className="font-mono text-xs text-on-surface-variant">{o.transferCode}</p>
+              <p className="text-xs text-on-surface-variant">{new Date(o.createdAt).toLocaleString('vi-VN')}</p>
+              <button
+                type="button"
+                onClick={() => confirm(o.id)}
+                className={`w-full mt-1 px-4 py-2 rounded-full font-label-md ${armed === o.id ? 'bg-error text-on-error' : 'bg-primary text-on-primary'}`}
+              >
+                {armed === o.id ? 'Bấm lần nữa để xác nhận' : 'Đã nhận tiền'}
+              </button>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* Desktop table view */}
+      {orders.length > 0 && (
+        <div className="hidden lg:block overflow-x-auto rounded-lg bg-surface-container-lowest shadow-sm">
           <table className="w-full text-left">
             <thead className="bg-surface-container-low font-label-md text-on-surface-variant">
               <tr>

@@ -264,7 +264,8 @@ export default function Navbar() {
   }, [location]);
 
   const navLinks = [
-    { to: '/templates', label: 'Template' },
+    { to: '/#features', label: 'Tính năng' },
+    { to: '/templates', label: 'Kho giao diện' },
     { to: '/pricing', label: 'Bảng giá' },
     { to: '/s/eternal', label: 'Xem demo' },
   ];
@@ -345,8 +346,9 @@ export default function Navbar() {
                   Đăng nhập
                 </Link>
                 <Link to="/register"
-                  className="inline-flex items-center px-4 py-2 rounded-full bg-[#ff4d8d] text-white font-label-md text-label-md font-semibold shadow-[0_4px_16px_rgba(255,77,141,0.35)] hover:bg-[#b90a5a] hover:scale-[1.02] active:scale-[0.98] transition-all">
-                  Bắt đầu miễn phí
+                  className="inline-flex items-center px-4 sm:px-5 py-2 rounded-full bg-gradient-to-r from-[#ff4d8d] to-[#e63e7b] text-white font-label-md text-label-md font-semibold shadow-[0_4px_16px_rgba(255,77,141,0.35)] hover:shadow-[0_6px_20px_rgba(255,77,141,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all">
+                  <span className="hidden sm:inline">Bắt đầu miễn phí</span>
+                  <span className="sm:hidden">Đăng ký</span>
                 </Link>
               </>
             )}

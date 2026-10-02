@@ -61,11 +61,15 @@ export const router = createBrowserRouter([
       { path: 'admin/revenue',     element: <AdminRoute><AdminRevenue /></AdminRoute> },
       { path: 'admin/orders',      element: <AdminRoute><AdminOrders /></AdminRoute> },
       { path: 'admin/music',       element: <AdminRoute><AdminMusic /></AdminRoute> },
+
+      // Protected pages inside sidebar layout
+      { path: 'account',           element: <ProtectedRoute><Account /></ProtectedRoute> },
+      { path: 'editor/:scenarioId/published', element: <ProtectedRoute><StoryPublished /></ProtectedRoute> },
+      { path: 'orders/:orderId',   element: <ProtectedRoute><OrderPayment /></ProtectedRoute> },
     ],
   },
 
-  // ── Protected – standalone ────────────────────────────────
-  { path: '/account',           element: <ProtectedRoute><Account /></ProtectedRoute> },
+  // ── Protected – standalone (no sidebar) ────────────────────
   { path: '/checkout',          element: <ProtectedRoute><Checkout /></ProtectedRoute> },
   { path: '/checkout/success',  element: <ProtectedRoute><CheckoutSuccess /></ProtectedRoute> },
 
@@ -76,9 +80,7 @@ export const router = createBrowserRouter([
   { path: '/demo/:scenarioId', element: <DemoStory /> },
   { path: '/editor/:scenarioId', element: <ProtectedRoute><StoryEditor /></ProtectedRoute> },
   { path: '/editor/:scenarioId/preview', element: <ProtectedRoute><StoryPreview /></ProtectedRoute> },
-  { path: '/editor/:scenarioId/published', element: <ProtectedRoute><StoryPublished /></ProtectedRoute> },
   { path: '/s/:slug', element: <PublicStory /> },
-  { path: '/orders/:orderId', element: <ProtectedRoute><OrderPayment /></ProtectedRoute> },
 
   // ── Error pages ───────────────────────────────────────────
   { path: '/403', element: <Forbidden403 /> },

@@ -6,6 +6,7 @@ import { toast } from '@/utils/toast';
 import ConfirmModal from '@/components/ConfirmModal';
 import RenewModal from '@/components/RenewModal';
 import { usePlans } from '@/hooks/usePlans';
+import { useTemplates } from '@/hooks/useTemplates';
 
 export interface StoryResponse {
   id: string;
@@ -19,297 +20,75 @@ export interface StoryResponse {
   expiresAt?: string | null;
 }
 
-// ============================================================
-// WIZARD: Tạo Story mới theo từng bước
-// ============================================================
-
-const PURPOSE_OPTIONS = [
-  { id: 'confession', icon: '💌', label: 'Tỏ tình / Thả thính', desc: 'Gửi lời yêu thương đến crush' },
-  { id: 'anniversary', icon: '🎉', label: 'Kỷ niệm ngày yêu', desc: '100 ngày, 1 năm, 1000 ngày...' },
-  { id: 'apology', icon: '🥺', label: 'Xin lỗi / Làm hòa', desc: 'Vì lỡ làm người ấy buồn...' },
-  { id: 'wedding', icon: '💍', label: 'Đám cưới / Save the Date', desc: 'Thiệp cưới & đếm ngược ngày trọng đại' },
-  { id: 'diary', icon: '📖', label: 'Nhật ký tình yêu', desc: 'Ghi lại mọi khoảnh khắc hàng ngày' },
-];
-
-function CreateStoryWizard({ onClose, onCreated, presetTemplateCode, prefill }: { onClose: () => void; onCreated: (story: StoryResponse) => void; presetTemplateCode?: string; prefill?: StoryResponse }) {
-  const [step, setStep] = useState(presetTemplateCode ? 2 : 1);
-  const [purpose, setPurpose] = useState('');
-  const [partnerAName, setPartnerAName] = useState(prefill?.coupleName1 || '');
-  const [partnerBName, setPartnerBName] = useState(prefill?.coupleName2 || '');
-  const [title, setTitle] = useState('');
-  const [startDate, setStartDate] = useState(prefill?.startDate || '');
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const selectedPurpose = PURPOSE_OPTIONS.find(p => p.id === purpose);
-
-  const handleFinish = async () => {
-    try {
-      setIsSubmitting(true);
-      const newStory = await apiClient.post('/stories', {
-        coupleName1: partnerAName,
-        coupleName2: partnerBName,
-        startDate,
-        title: title || undefined,
-        templateCode: presetTemplateCode || purpose
-      });
-      onCreated(newStory);
-    } catch (error: any) {
-      console.error(error);
-      toast(error?.message || 'Có lỗi xảy ra khi tạo story', 'error');
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  return (
-    <div className="fixed inset-0 z-[100] bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-surface rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="sticky top-0 bg-surface z-10 px-8 pt-8 pb-4 border-b border-outline-variant/30">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="font-label-sm text-primary uppercase tracking-widest">Bước {step} / 2</p>
-              <h2 className="font-headline-md text-on-surface mt-1">
-                {step === 1 && 'Hôm nay bạn muốn làm gì đặc biệt?'}
-                {step === 2 && 'Thông tin cặp đôi'}
-              </h2>
-            </div>
-            <button onClick={onClose} className="w-10 h-10 rounded-full bg-surface-container hover:bg-surface-container-high flex items-center justify-center text-on-surface-variant transition-colors">
-              <span className="material-symbols-outlined">close</span>
-            </button>
-          </div>
-          {/* Progress bar */}
-          <div className="flex gap-2 mt-4">
-            {[1, 2].map(s => (
-              <div key={s} className={`h-1.5 flex-1 rounded-full transition-colors duration-300 ${s <= step ? 'bg-primary-container' : 'bg-surface-container'}`} />
-            ))}
-          </div>
-        </div>
-
-        {/* Content */}
-        <div className="p-8">
-          {/* STEP 1: Chọn mục đích */}
-          {step === 1 && (
-            <div className="grid grid-cols-1 gap-3">
-              {PURPOSE_OPTIONS.map(opt => (
-                <button
-                  key={opt.id}
-                  onClick={() => { setPurpose(opt.id); setStep(2); }}
-                  className={`flex items-center gap-4 p-5 rounded-2xl border-2 text-left transition-all duration-200 hover:shadow-md hover:scale-[1.01] active:scale-[0.99] ${
-                    purpose === opt.id
-                      ? 'border-primary-container bg-primary-container/10 shadow-sm'
-                      : 'border-outline-variant/30 bg-surface-container-lowest hover:border-primary/30'
-                  }`}
-                >
-                  <span className="text-3xl">{opt.icon}</span>
-                  <div className="flex-1">
-                    <p className="font-title-md text-on-surface">{opt.label}</p>
-                    <p className="font-body-sm text-on-surface-variant">{opt.desc}</p>
-                  </div>
-                  <span className="material-symbols-outlined text-outline text-[20px]">chevron_right</span>
-                </button>
-              ))}
-            </div>
-          )}
-
-          {/* STEP 2: Thông tin cặp đôi */}
-          {step === 2 && (
-            <div className="flex flex-col gap-6">
-              <p className="font-body-md text-on-surface-variant flex items-center gap-2">
-                {selectedPurpose ? (
-                  <>
-                    <span className="text-xl">{selectedPurpose.icon}</span>
-                    Kịch bản: <strong className="text-on-surface">{selectedPurpose.label}</strong>
-                  </>
-                ) : (
-                  <>Đang tạo Story với mẫu giao diện bạn đã chọn.</>
-                )}
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <label className="font-label-md text-on-surface" htmlFor="partnerA">Tên bạn</label>
-                  <input
-                    id="partnerA"
-                    value={partnerAName}
-                    onChange={e => setPartnerAName(e.target.value)}
-                    className="h-12 px-4 rounded-xl bg-surface-container-lowest border border-outline-variant/50 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                    placeholder="Ví dụ: Bảo Long"
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <label className="font-label-md text-on-surface" htmlFor="partnerB">Tên người ấy</label>
-                  <input
-                    id="partnerB"
-                    value={partnerBName}
-                    onChange={e => setPartnerBName(e.target.value)}
-                    className="h-12 px-4 rounded-xl bg-surface-container-lowest border border-outline-variant/50 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                    placeholder="Ví dụ: An Nhiên"
-                  />
-                </div>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label className="font-label-md text-on-surface" htmlFor="title">Tiêu đề Story <span className="text-outline font-normal">(không bắt buộc)</span></label>
-                <input
-                  id="title"
-                  value={title}
-                  onChange={e => setTitle(e.target.value)}
-                  className="h-12 px-4 rounded-xl bg-surface-container-lowest border border-outline-variant/50 text-on-surface placeholder:text-outline focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                  placeholder={purpose === 'wedding' ? 'Ví dụ: Save The Date' : purpose === 'apology' ? 'Ví dụ: Anh Xin Lỗi Em' : 'Ví dụ: Happy 1st Anniversary'}
-                />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label className="font-label-md text-on-surface" htmlFor="startDate">
-                  {purpose === 'wedding' ? 'Ngày cưới dự kiến' : purpose === 'confession' ? 'Ngày gặp nhau lần đầu' : 'Ngày bắt đầu yêu'}
-                  <span className="text-outline font-normal ml-1">(không bắt buộc)</span>
-                </label>
-                <input
-                  id="startDate"
-                  type="date"
-                  value={startDate}
-                  onChange={e => setStartDate(e.target.value)}
-                  className="h-12 px-4 rounded-xl bg-surface-container-lowest border border-outline-variant/50 text-on-surface focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-                />
-              </div>
-
-              {/* Gợi ý: sau này sẽ thêm phần upload ảnh / nhạc ở đây */}
-              <div className="bg-surface-container-low p-4 rounded-xl flex items-start gap-3">
-                <span className="material-symbols-outlined text-primary text-[20px] mt-0.5">lightbulb</span>
-                <div>
-                  <p className="font-title-md text-on-surface text-sm">Chưa có ảnh cũng không sao!</p>
-                  <p className="font-body-sm text-on-surface-variant">Bạn có thể tải ảnh lên sau trong phần Chỉnh sửa. Hệ thống sẽ dùng ảnh mặc định cho bạn trước.</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3 pt-2">
-                {!presetTemplateCode && (
-                  <button onClick={() => setStep(1)} className="px-6 py-3 rounded-full bg-surface-container text-on-surface font-title-md hover:bg-surface-container-high transition-colors">
-                    ← Quay lại
-                  </button>
-                )}
-                <button
-                  onClick={handleFinish}
-                  disabled={!partnerAName.trim() || !partnerBName.trim() || isSubmitting}
-                  className="flex-1 px-6 py-3 rounded-full bg-primary-container text-on-primary font-title-md shadow-md hover:opacity-95 transition-all disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
-                >
-                  <span className="material-symbols-outlined text-[20px]">auto_awesome</span>
-                  {isSubmitting ? 'Đang tạo...' : 'Tạo Story ngay!'}
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-    </div>
-  );
+function daysSince(dateStr?: string): number | null {
+  if (!dateStr) return null;
+  const diff = Date.now() - new Date(dateStr).getTime();
+  return Math.floor(diff / 86_400_000);
 }
-
-// ============================================================
-// EMPTY STATE: Dashboard khi chưa có story nào
-// ============================================================
-
-function EmptyDashboard({ onCreateClick }: { onCreateClick: () => void }) {
-  return (
-    <div className="flex flex-col items-center justify-center py-20 px-4 text-center">
-      {/* Icon lớn */}
-      <div className="w-28 h-28 rounded-full bg-primary-container/10 flex items-center justify-center mb-8 animate-pulse">
-        <span className="material-symbols-outlined text-primary-container text-[56px]" style={{fontVariationSettings: '"FILL" 1'}}>favorite</span>
-      </div>
-
-      <h2 className="font-headline-lg text-on-surface mb-3">Bắt đầu viết câu chuyện tình yêu</h2>
-      <p className="font-body-lg text-on-surface-variant max-w-md mb-8">
-        Chưa có Story nào cả! Hãy tạo một trang web để lưu giữ kỷ niệm, tỏ tình, hoặc đếm ngược ngày cưới — chỉ mất 30 giây.
-      </p>
-
-      <button
-        onClick={onCreateClick}
-        className="inline-flex items-center gap-3 px-8 py-4 rounded-full bg-primary-container text-on-primary font-title-lg shadow-lg shadow-primary-container/30 hover:opacity-95 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all"
-      >
-        <span className="material-symbols-outlined text-[24px]">add_circle</span>
-        <span>Tạo Story đầu tiên</span>
-      </button>
-
-      {/* Gợi ý các kịch bản */}
-      <div className="mt-12 w-full max-w-lg">
-        <p className="font-label-md text-on-surface-variant uppercase tracking-widest mb-4">Bạn có thể tạo</p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-          {[
-            { icon: '💌', label: 'Tỏ tình' },
-            { icon: '🎉', label: 'Kỷ niệm' },
-            { icon: '🥺', label: 'Xin lỗi' },
-            { icon: '💍', label: 'Đám cưới' },
-            { icon: '📖', label: 'Nhật ký' },
-            { icon: '🎁', label: 'Bất ngờ' },
-          ].map(item => (
-            <div key={item.label} className="flex items-center gap-2 p-3 rounded-xl bg-surface-container-lowest border border-outline-variant/20 text-on-surface-variant font-body-md">
-              <span className="text-lg">{item.icon}</span>
-              <span>{item.label}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ============================================================
-// DASHBOARD CHÍNH
-// ============================================================
 
 export default function Dashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const { plans } = usePlans();
+  const { templates } = useTemplates();
   const maxStories = plans.find(p => p.code === (user?.plan ?? 'FREE'))?.maxStories ?? 1;
 
   const [stories, setStories] = useState<StoryResponse[]>([]);
   const [loading, setLoading] = useState(true);
-  const location = useLocation();
-  const [showWizard, setShowWizard] = useState(location.search.includes('new=1'));
-  // Read directly from the URL rather than storing in state: it must stay in sync
-  // with location.search, and this avoids a second source of truth to drift from it.
-  const applyTemplate = new URLSearchParams(location.search).get('applyTemplate') || undefined;
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
   const [renewTarget, setRenewTarget] = useState<string | null>(null);
 
+  const [applyModal, setApplyModal] = useState<string | null>(null);
+  const [name1, setName1] = useState('');
+  const [name2, setName2] = useState('');
+  const [creating, setCreating] = useState(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const tpl = params.get('applyTemplate');
+    if (tpl) {
+      setApplyModal(tpl);
+      navigate('/dashboard', { replace: true });
+    }
+  }, [location.search, navigate]);
+
+  const handleCreateWithTemplate = async () => {
+    if (!name1.trim() || !name2.trim()) {
+      toast('Vui lòng nhập tên cả hai bạn', 'error');
+      return;
+    }
+    setCreating(true);
+    try {
+      const result: any = await apiClient.post('/stories', {
+        coupleName1: name1.trim(),
+        coupleName2: name2.trim(),
+        templateCode: applyModal,
+        title: `${name1.trim()} & ${name2.trim()}`,
+      });
+      toast('Đã tạo Story thành công!', 'success');
+      navigate(`/editor/${result.id}`);
+    } catch {
+      toast('Không thể tạo Story. Vui lòng thử lại.', 'error');
+    } finally {
+      setCreating(false);
+    }
+  };
+
   useEffect(() => {
     apiClient.get('/stories')
-      .then(async (data) => {
-        setStories(Array.isArray(data) ? data : []);
-      })
-      .catch(err => {
-        console.error(err);
-        toast('Không thể tải danh sách Story', 'error');
-      })
+      .then((data) => setStories(Array.isArray(data) ? data : []))
+      .catch(() => toast('Không thể tải danh sách Story', 'error'))
       .finally(() => setLoading(false));
-  }, [location.search]);
+  }, []);
 
-  useEffect(() => {
-    if (!applyTemplate || loading || plans.length === 0) return;
+  const openCreate = () => {
     if (stories.length >= maxStories) {
-      toast(`Bạn đã đạt giới hạn ${maxStories} Story. Vui lòng xóa Story cũ hoặc nâng cấp gói.`, 'error');
-    } else {
-      setShowWizard(true);
-    }
-  }, [applyTemplate, loading, plans.length]);
-
-  const displayStories = stories;
-
-  const openWizard = () => {
-    if (displayStories.length >= maxStories) {
-      toast(`Bạn đã đạt giới hạn ${maxStories} Story. Vui lòng xóa Story cũ hoặc nâng cấp gói.`, 'error');
+      toast(`Đã đạt giới hạn ${maxStories} Story. Nâng cấp gói để tạo thêm.`, 'error');
       return;
     }
     navigate('/create');
-  };
-
-  const handleCreated = (newStory: StoryResponse) => {
-    setStories(prev => [...prev, newStory]);
-    setShowWizard(false);
-    navigate(`/editor/${newStory.id}`);
   };
 
   const confirmDelete = async () => {
@@ -318,259 +97,294 @@ export default function Dashboard() {
       await apiClient.delete(`/stories/${deleteTarget}`);
       setStories(prev => prev.filter(s => s.id !== deleteTarget));
       toast('Đã xóa story', 'success');
-    } catch (e) {
-      console.error(e);
-      toast('Có lỗi xảy ra khi xóa story', 'error');
-    } finally {
-      setDeleteTarget(null);
-    }
+    } catch { toast('Có lỗi xảy ra khi xóa', 'error'); }
+    finally { setDeleteTarget(null); }
   };
 
-  const getStoryLink = (story: StoryResponse): string => {
-    return `/demo/${story.id}`;
-  };
+  const firstName = user?.name?.split(' ').pop() || 'bạn';
+  const planCode = user?.plan ?? 'FREE';
+  const published = stories.filter(s => s.status === 'published').length;
+  const drafts = stories.filter(s => s.status !== 'published').length;
+  const firstStory = stories[0];
+  const daysCount = daysSince(firstStory?.startDate);
 
-  const getStoryMeta = (story: StoryResponse) => {
-    const purposeOption = PURPOSE_OPTIONS.find(p => p.id === story.templateCode);
-    return { 
-      icon: purposeOption?.icon || '💕', 
-      label: purposeOption?.label || story.templateCode || 'Story', 
-      badge: story.status === 'published' ? 'PUBLISHED' : 'DRAFT', 
-      image: '' 
-    };
-  };
-
-  // Tách tên cặp đôi từ user.name (VD: "Bảo Long & An Nhiên" → ["Bảo Long", "An Nhiên"])
-  const names = user?.name?.split('&').map(n => n.trim()) || ['Bạn'];
-  const displayName = names.length >= 2
-    ? <><span className="text-primary italic">{names[0]}</span> &amp; <span className="text-primary italic">{names[1]}</span></>
-    : <span className="text-primary italic">{names[0]}</span>;
-
-  const planLabel = user?.plan === 'PREMIUM' ? 'GÓI PREMIUM' : user?.plan === 'COUPLE' ? 'GÓI COUPLE' : user?.plan === 'PLUS' ? 'GÓI PLUS' : 'GÓI FREE';
+  const showTemplates = templates.filter(t => t.isActive).slice(0, 4);
 
   return (
     <>
       {renewTarget && <RenewModal storyId={renewTarget} onClose={() => setRenewTarget(null)} />}
-      {showWizard && (
-        <CreateStoryWizard
-          onClose={() => setShowWizard(false)}
-          onCreated={handleCreated}
-          presetTemplateCode={applyTemplate}
-          prefill={applyTemplate && stories.length > 0 ? stories[0] : undefined}
-        />
-      )}
 
-      <main className="w-full pt-16 bg-surface min-h-screen px-space-lg py-space-md">
-        <div className="flex flex-col w-full gap-space-xl">
-
-          {/* HEADER */}
-          <section className="flex flex-col lg:flex-row lg:items-end justify-between gap-space-lg">
-            <div className="flex flex-col gap-space-xs max-w-2xl">
-              <div className="inline-flex items-center gap-space-xs text-primary font-label-md">
-                <span className="material-symbols-outlined text-[18px]">favorite</span>
-                <span className="tracking-wide">HÀNH TRÌNH TÌNH YÊU</span>
-              </div>
-              <h1 className="font-headline-lg text-on-surface tracking-tight">
-                Chào buổi sáng, {displayName} ✨
-              </h1>
-              <p className="font-body-lg text-on-surface-variant">
-                {displayStories.length > 0
-                  ? <>Bạn đang có <span className="font-title-md text-primary font-bold">{displayStories.length}</span> câu chuyện tình yêu được lưu giữ trên nền tảng.</>
-                  : 'Chào mừng bạn đến với CoupleStory! Hãy bắt đầu tạo câu chuyện tình yêu đầu tiên.'
-                }
-              </p>
+      <div className="px-4 md:px-6 py-6 max-w-[1600px] mx-auto">
+        {/* Hero welcome */}
+        <section className="rounded-2xl bg-gradient-to-br from-[#fff5f8] via-white to-[#fef0f4] border border-[#ffe0eb]/60 p-6 md:p-8 mb-6">
+          {daysCount !== null && daysCount > 0 && (
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#fff0f4] border border-[#ffe0eb] text-xs font-semibold text-[#ff4d8d] mb-3">
+              <span className="material-symbols-outlined text-[14px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+              NGÀY {daysCount} BÊN NHAU
             </div>
-            <div className="flex flex-wrap items-center gap-space-sm">
-              <button
-                onClick={openWizard}
-                className="inline-flex items-center gap-space-xs px-space-lg py-space-sm rounded-full bg-primary-container text-on-primary font-title-md shadow-md shadow-primary-container/25 hover:opacity-95 hover:shadow-lg hover:shadow-primary-container/30 transition-all active:scale-98"
-              >
+          )}
+          <h1 className="text-2xl md:text-3xl font-bold text-[#2e1220] mb-1">
+            Chào mừng trở lại, <span className="text-[#ff4d8d]">{firstName}</span>! ✨
+          </h1>
+          <p className="text-sm text-[#594046] mb-5">
+            {published > 0
+              ? <>Bạn có <strong>{published}</strong> câu chuyện đã xuất bản{drafts > 0 && <> và <strong>{drafts}</strong> bản nháp</>}.</>
+              : 'Bắt đầu tạo câu chuyện tình yêu đầu tiên của bạn.'}
+          </p>
+
+          <div className="flex flex-wrap gap-3">
+            <button onClick={openCreate} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#ff4d8d] to-[#e63e7b] text-white font-semibold text-sm shadow-[0_4px_16px_rgba(255,77,141,0.3)] hover:shadow-[0_6px_20px_rgba(255,77,141,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all">
+              <span className="material-symbols-outlined text-[18px]">add</span>
+              Tạo Story mới
+            </button>
+          </div>
+
+          {/* Stats row */}
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-6">
+            {[
+              { icon: 'photo_library', value: '—', label: 'Ảnh đã lưu', color: 'text-[#e63e7b]' },
+              { icon: 'music_note', value: '—', label: 'Bài nhạc', color: 'text-[#7c3aed]' },
+              { icon: 'visibility', value: '—', label: 'Lượt xem', color: 'text-[#0ea5e9]' },
+              { icon: 'auto_stories', value: String(stories.length), label: 'Câu chuyện', color: 'text-[#f59e0b]' },
+            ].map(s => (
+              <div key={s.label} className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white border border-[#f0e4e8]/80 shadow-sm">
+                <span className={`material-symbols-outlined text-[22px] ${s.color}`} style={{ fontVariationSettings: "'FILL' 1" }}>{s.icon}</span>
+                <div>
+                  <p className="text-lg font-bold text-[#2e1220] leading-tight">{s.value}</p>
+                  <p className="text-[11px] text-[#8d7076]">{s.label}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Stories section */}
+        <section className="mb-8">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-bold text-[#2e1220] flex items-center gap-2">
+              <span className="text-[#ff4d8d]">●</span> Câu chuyện của bạn
+            </h2>
+            <div className="flex items-center gap-1 text-sm">
+              <button className="px-3 py-1 rounded-full bg-[#ff4d8d] text-white font-medium text-xs">Tất cả ({stories.length})</button>
+              <button className="px-3 py-1 rounded-full text-[#594046] hover:bg-[#fff5f9] font-medium text-xs">Stories ({published})</button>
+            </div>
+          </div>
+
+          {loading ? (
+            <div className="flex items-center justify-center py-16 text-[#8d7076]">
+              <span className="material-symbols-outlined text-[28px] animate-spin mr-2">progress_activity</span>
+              Đang tải...
+            </div>
+          ) : stories.length === 0 ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <div className="w-20 h-20 rounded-full bg-[#fff0f4] flex items-center justify-center mb-4">
+                <span className="material-symbols-outlined text-[#ff4d8d] text-[40px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+              </div>
+              <h3 className="text-lg font-bold text-[#2e1220] mb-1">Bắt đầu viết câu chuyện tình yêu</h3>
+              <p className="text-sm text-[#594046] max-w-md mb-5">Tạo một trang web tình yêu để lưu giữ kỷ niệm, tỏ tình, hoặc đếm ngược ngày cưới.</p>
+              <button onClick={openCreate} className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#ff4d8d] to-[#e63e7b] text-white font-semibold shadow-lg">
                 <span className="material-symbols-outlined text-[20px]">add</span>
-                <span>Tạo Story mới</span>
+                Tạo Story đầu tiên
               </button>
             </div>
-          </section>
-
-          {/* LOADING or EMPTY STATE or CONTENT */}
-          {loading ? (
-            <div className="flex flex-col items-center justify-center gap-space-sm py-space-xl text-on-surface-variant">
-              <span className="material-symbols-outlined text-[32px] animate-spin">progress_activity</span>
-              <span className="font-label-md">Đang tải story của bạn...</span>
-            </div>
-          ) : displayStories.length === 0 ? (
-            <EmptyDashboard onCreateClick={openWizard} />
           ) : (
-            <>
-              {/* STATS */}
-              <section className="grid grid-cols-1 md:grid-cols-3 gap-space-md">
-                <div className="flex flex-col justify-between p-space-lg rounded-DEFAULT bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
-                  <div className="flex items-center justify-between gap-space-sm">
-                    <span className="font-label-md text-on-surface-variant">Story đang hoạt động</span>
-                    <span className="px-space-xs py-0.5 rounded-full bg-surface-container-highest text-primary font-label-sm tracking-wider">{planLabel}</span>
-                  </div>
-                  <div className="my-space-md">
-                    <div className="flex items-baseline gap-space-xs">
-                      <span className="font-headline-md text-on-surface">{displayStories.length}</span>
-                      <span className="font-title-md text-outline">/ {maxStories} Story</span>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {stories.map(story => {
+                const isPublished = story.status === 'published';
+                const days = daysSince(story.startDate);
+                return (
+                  <article key={story.id} className="bg-white rounded-2xl border border-[#f0e4e8] shadow-sm hover:shadow-md transition-all overflow-hidden group">
+                    {/* Thumbnail */}
+                    <div className="relative aspect-[16/10] bg-gradient-to-br from-[#ffe8ef] to-[#ffd6e6] overflow-hidden">
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="material-symbols-outlined text-[48px] text-[#ff4d8d]/30">image</span>
+                      </div>
+                      {/* Status badges */}
+                      <div className="absolute top-3 left-3 right-3 flex items-start justify-between">
+                        <span className="px-2.5 py-1 rounded-lg bg-[#ff4d8d] text-white text-[10px] font-bold uppercase tracking-wider shadow-sm">
+                          {story.templateCode || 'Love Story'}
+                        </span>
+                        <span className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold shadow-sm ${
+                          isPublished ? 'bg-white/90 text-emerald-600' : 'bg-amber-50/90 text-amber-700'
+                        }`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${isPublished ? 'bg-emerald-500' : 'bg-amber-500'}`} />
+                          {isPublished ? 'Đã xuất bản' : 'Bản nháp'}
+                          {days !== null && days > 0 && <> · {days} ngày</>}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="w-full h-2 rounded-full bg-surface-container overflow-hidden">
-                    <div className="h-full bg-primary-container rounded-full transition-all duration-700" style={{ width: `${displayStories.length / maxStories * 100}%` }} />
-                  </div>
-                </div>
-                <div className="flex flex-col justify-between p-space-lg rounded-DEFAULT bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
-                  <span className="font-label-md text-on-surface-variant">Lượt xem &amp; Chúc mừng</span>
-                  <div className="my-space-md flex items-center gap-space-lg">
-                    <div className="flex items-baseline gap-1">
-                      <span className="font-headline-md text-on-surface">2,486</span>
-                      <span className="font-label-sm text-emerald-500">+12%</span>
-                    </div>
-                    <div className="h-8 w-px bg-outline-variant/30" />
-                    <div className="flex items-baseline gap-1">
-                      <span className="font-headline-md text-on-surface">38</span>
-                      <span className="font-body-sm text-on-surface-variant">lời chúc</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-col justify-between p-space-lg rounded-DEFAULT bg-gradient-to-br from-primary-container/10 to-primary/5 shadow-sm hover:shadow-md transition-shadow border border-primary-container/20">
-                  <div className="flex items-center gap-space-xs">
-                    <span className="material-symbols-outlined text-primary text-[20px]" style={{fontVariationSettings: '"FILL" 1'}}>auto_awesome</span>
-                    <span className="font-label-md text-primary">Nâng cấp Premium</span>
-                  </div>
-                  <p className="font-body-md text-on-surface-variant my-space-md">Mở khóa <strong className="text-on-surface">Template VIP</strong>, tên miền riêng, xóa watermark.</p>
-                  <Link to="/dashboard/upgrade" className="inline-flex items-center gap-1 text-primary font-label-md hover:underline">
-                    <span>Xem gói nâng cấp</span>
-                    <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
-                  </Link>
-                </div>
-              </section>
 
-              {/* STORY CARDS */}
-              <section className="flex flex-col gap-space-md">
-                <h2 className="font-headline-md text-on-surface flex items-center gap-space-xs">
-                  <span className="material-symbols-outlined text-primary text-[22px]">auto_stories</span>
-                  Tất cả Story của bạn
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-md">
-                  {displayStories.map((story) => {
-                    const meta = getStoryMeta(story);
-                    const link = getStoryLink(story);
-                    return (
-                      <article key={story.id} className="flex flex-col rounded-DEFAULT bg-surface-container-lowest shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden group">
-                        <div className="relative w-full aspect-video overflow-hidden bg-surface-container">
-                          {meta.image ? (
-                            <img className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out" src={meta.image} alt={`${story.coupleName1} & ${story.coupleName2}`} />
-                          ) : (
-                            <div className="w-full h-full flex items-center justify-center bg-surface-container-low">
-                              <span className="material-symbols-outlined text-[48px] text-outline">image</span>
-                            </div>
-                          )}
-                          <div className="absolute top-space-sm left-space-sm right-space-sm flex items-center justify-between pointer-events-none">
-                            <span className="px-space-sm py-1 rounded-full bg-surface-container-lowest/90 backdrop-blur-md text-primary font-label-sm shadow-sm flex items-center gap-1">
-                              <span>{meta.icon}</span> {meta.badge}
-                            </span>
-                            <span className={`px-space-sm py-1 rounded-full backdrop-blur-md font-label-sm shadow-sm flex items-center gap-1.5 ${
-                              story.status === 'published'
-                                ? 'bg-surface-container-lowest/90 text-on-surface'
-                                : 'bg-amber-100/90 text-amber-800'
-                            }`}>
-                              <span className={`w-2 h-2 rounded-full ${story.status === 'published' ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-                              {story.status === 'published' ? 'ĐANG HOẠT ĐỘNG' : 'BẢN NHÁP'}
-                            </span>
-                          </div>
-                        </div>
-
-                        <div className="flex flex-col flex-1 p-space-lg gap-space-md">
-                          <div className="flex flex-col gap-1">
-                            <h3 className="font-headline-md text-on-surface tracking-tight leading-snug">{story.coupleName1} &amp; {story.coupleName2}</h3>
-                            <Link className="inline-flex items-center gap-1 text-primary hover:underline font-body-sm group/link w-fit" to={link}>
-                              <span className="material-symbols-outlined text-[15px]">public</span>
-                              <span className="truncate">{story.subdomain || story.id}.couplestory.site</span>
-                              <span className="material-symbols-outlined text-[14px] opacity-70 group-hover/link:translate-x-0.5 transition-transform">arrow_outward</span>
-                            </Link>
-                          </div>
-
-                          <div className="flex flex-col gap-space-xs p-space-sm rounded-DEFAULT bg-surface-container-low font-body-sm text-on-surface-variant">
-                            <div className="flex items-center justify-between">
-                              <span className="text-outline">Kịch bản:</span>
-                              <span className="font-title-md text-on-surface text-[13px] flex items-center gap-1">
-                                <span>{meta.icon}</span> {meta.label}
-                              </span>
-                            </div>
-                            <div className="flex items-center justify-between">
-                              <span className="text-outline">Cặp đôi:</span>
-                              <span className="text-on-surface font-medium">{story.coupleName1} &amp; {story.coupleName2}</span>
-                            </div>
-                          </div>
-
-                          <div className="flex flex-wrap gap-1.5">
-                            {story.startDate && (
-                              <span className="px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-[11px] flex items-center gap-1">
-                                <span className="material-symbols-outlined text-[12px]">event</span> {new Date(story.startDate).toLocaleDateString('vi-VN')}
-                              </span>
-                            )}
-                          </div>
-
-                          <div className="flex items-center gap-space-xs pt-space-xs mt-auto">
-                            <Link className="flex-1 py-space-sm px-space-md rounded-full bg-primary-container text-on-primary font-title-md text-center shadow-sm hover:opacity-95 transition-opacity flex items-center justify-center gap-1" to={`/editor/${story.id}`}>
-                              <span className="material-symbols-outlined text-[17px]">edit</span>
-                              <span>Chỉnh sửa</span>
-                            </Link>
-                            <Link className="py-space-sm px-space-md rounded-full bg-surface-container-high text-on-surface font-title-md hover:bg-surface-container transition-colors flex items-center justify-center gap-1" to={link} title="Xem trang web">
-                              <span className="material-symbols-outlined text-[18px]">visibility</span>
-                              <span className="hidden sm:inline">Xem</span>
-                            </Link>
-                            {story.expiresAt && user?.plan !== 'PREMIUM' && (
-                              <button onClick={() => setRenewTarget(story.id)} className="py-space-sm px-space-md rounded-full bg-surface-container-high text-on-surface font-title-md hover:bg-surface-container transition-colors flex items-center justify-center gap-1" title={`Hết hạn ${new Date(story.expiresAt).toLocaleDateString('vi-VN')}`}>
-                                <span className="material-symbols-outlined text-[18px]">update</span>
-                                <span className="hidden sm:inline">Gia hạn</span>
-                              </button>
-                            )}
-                            <button onClick={() => setDeleteTarget(story.id)} className="w-10 h-10 rounded-full bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors flex items-center justify-center" title="Xóa story">
-                              <span className="material-symbols-outlined text-[18px]">delete</span>
-                            </button>
-                          </div>
-                        </div>
-                      </article>
-                    );
-                  })}
-
-                  {/* Create New Card */}
-                  <div
-                    onClick={openWizard}
-                    className="flex flex-col items-center justify-center p-space-xl rounded-DEFAULT bg-surface-container-lowest/60 text-center gap-space-md shadow-sm min-h-[380px] hover:bg-surface-container-lowest transition-colors cursor-pointer hover:shadow-md"
-                  >
-                    <div className="w-16 h-16 rounded-full bg-surface-container flex items-center justify-center text-primary-container shadow-sm">
-                      <span className="material-symbols-outlined text-[32px]">favorite</span>
-                    </div>
-                    <div className="flex flex-col gap-space-xs max-w-xs">
-                      <h3 className="font-headline-md text-on-surface">Tạo thêm một câu chuyện</h3>
-                      <p className="font-body-md text-on-surface-variant">
-                        Bạn còn <span className="text-primary font-bold">{maxStories - displayStories.length} lượt tạo Story</span> trong tài khoản.
+                    {/* Content */}
+                    <div className="p-4">
+                      <h3 className="font-bold text-[#2e1220] text-base mb-0.5 truncate">
+                        {story.coupleName1} &amp; {story.coupleName2}
+                      </h3>
+                      <p className="text-xs text-[#8d7076] mb-3 truncate">
+                        {story.subdomain ? `${story.subdomain}.couplestory.site` : 'Chưa có đường dẫn'}
                       </p>
+
+                      {/* Expiry info */}
+                      {story.expiresAt && (
+                        <p className="text-[11px] text-[#8d7076] mb-3 flex items-center gap-1">
+                          <span className="material-symbols-outlined text-[14px]">schedule</span>
+                          Hết hạn: {new Date(story.expiresAt).toLocaleDateString('vi-VN')}
+                        </p>
+                      )}
+
+                      {/* Actions */}
+                      <div className="flex items-center gap-2">
+                        <Link
+                          to={`/editor/${story.id}`}
+                          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-gradient-to-r from-[#ff4d8d] to-[#e63e7b] text-white text-xs font-semibold hover:opacity-95 transition-opacity"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">edit</span>
+                          Chỉnh sửa
+                        </Link>
+                        <Link
+                          to={`/demo/${story.id}`}
+                          className="flex items-center justify-center gap-1 py-2 px-3 rounded-xl bg-[#f5eef1] text-[#594046] text-xs font-medium hover:bg-[#ffe8ef] transition-colors"
+                          title="Xem"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">visibility</span>
+                        </Link>
+                        {story.expiresAt && planCode !== 'PREMIUM' && (
+                          <button
+                            onClick={() => setRenewTarget(story.id)}
+                            className="flex items-center justify-center py-2 px-3 rounded-xl bg-[#f5eef1] text-[#594046] text-xs font-medium hover:bg-[#ffe8ef] transition-colors"
+                            title="Gia hạn"
+                          >
+                            <span className="material-symbols-outlined text-[16px]">update</span>
+                          </button>
+                        )}
+                        <button
+                          onClick={() => setDeleteTarget(story.id)}
+                          className="flex items-center justify-center py-2 px-3 rounded-xl bg-[#fef1f1] text-[#ba1a1a] text-xs font-medium hover:bg-[#ffdad6] transition-colors"
+                          title="Xóa"
+                        >
+                          <span className="material-symbols-outlined text-[16px]">delete</span>
+                        </button>
+                      </div>
                     </div>
-                    <span className="mt-space-xs inline-flex items-center gap-space-xs px-space-lg py-space-sm rounded-full bg-primary-container text-on-primary font-title-md shadow-sm">
-                      <span className="material-symbols-outlined text-[20px]">add_circle</span>
-                      <span>+ Tạo Story mới</span>
-                    </span>
+                  </article>
+                );
+              })}
+
+              {/* Create new card */}
+              {stories.length < maxStories && (
+                <div
+                  onClick={openCreate}
+                  className="flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#ffe0eb] bg-[#fffbfc] hover:bg-[#fff5f9] hover:border-[#ff4d8d]/40 transition-all cursor-pointer min-h-[280px] group"
+                >
+                  <div className="w-14 h-14 rounded-full bg-[#fff0f4] flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                    <span className="material-symbols-outlined text-[#ff4d8d] text-[28px]">add</span>
                   </div>
+                  <p className="font-semibold text-[#2e1220] text-sm">Tạo thêm câu chuyện</p>
+                  <p className="text-xs text-[#8d7076] mt-0.5">Còn {maxStories - stories.length} lượt</p>
                 </div>
-              </section>
-            </>
+              )}
+            </div>
           )}
-        </div>
-      </main>
+        </section>
+
+        {/* CTA Banner */}
+        {stories.length > 0 && (
+          <section className="rounded-2xl bg-gradient-to-r from-[#fff0f4] to-[#ffe8ef] border border-[#ffe0eb] p-5 flex flex-col sm:flex-row items-center gap-4 mb-8">
+            <div className="w-12 h-12 rounded-xl bg-[#ff4d8d]/10 flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[#ff4d8d] text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>auto_awesome</span>
+            </div>
+            <div className="flex-1 text-center sm:text-left">
+              <p className="font-semibold text-[#2e1220] text-sm">Có một dịp đặc biệt sắp tới?</p>
+              <p className="text-xs text-[#594046]">Tạo website kỷ niệm, thiệp mời hoặc nhật ký tình yêu chỉ trong vài phút.</p>
+            </div>
+            <button onClick={openCreate} className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#ff4d8d] to-[#e63e7b] text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all whitespace-nowrap">
+              Tạo ngay
+            </button>
+          </section>
+        )}
+
+        {/* Template inspiration */}
+        {showTemplates.length > 0 && (
+          <section>
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <p className="text-[10px] font-bold text-[#ff4d8d] tracking-widest uppercase mb-0.5">● Giao diện đề xuất</p>
+                <h2 className="text-lg font-bold text-[#2e1220]">Khám phá giao diện</h2>
+                <p className="text-xs text-[#594046]">Những mẫu giao diện xinh xắn dành riêng cho các cặp đôi</p>
+              </div>
+              <Link to="/templates" className="text-[#ff4d8d] text-sm font-semibold hover:underline whitespace-nowrap">
+                Xem tất cả →
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              {showTemplates.map(t => (
+                <Link key={t.code} to={`/preview/${t.code}`} className="group">
+                  <div className="aspect-[3/4] rounded-2xl bg-gradient-to-br from-[#ffe8ef] to-[#ffd6e6] overflow-hidden mb-2 border border-[#f0e4e8] group-hover:shadow-md transition-shadow">
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="material-symbols-outlined text-[40px] text-[#ff4d8d]/30">palette</span>
+                    </div>
+                  </div>
+                  <p className="font-semibold text-sm text-[#2e1220] truncate">{t.name}</p>
+                  <p className="text-[11px] text-[#8d7076]">{t.package === 'FREE' ? 'Miễn phí' : `Gói ${t.package}`}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+      </div>
 
       <ConfirmModal
         open={!!deleteTarget}
         title="Xóa story này?"
-        message="Toàn bộ nội dung, ảnh và sự kiện trong story sẽ bị xóa vĩnh viễn. Hành động này không thể hoàn tác."
+        message="Toàn bộ nội dung, ảnh và sự kiện sẽ bị xóa vĩnh viễn. Không thể hoàn tác."
         confirmLabel="Xóa story"
         cancelLabel="Giữ lại"
         variant="danger"
         onConfirm={confirmDelete}
         onCancel={() => setDeleteTarget(null)}
       />
+
+      {applyModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={() => setApplyModal(null)}>
+          <div className="bg-white rounded-2xl shadow-2xl w-[90%] max-w-md p-6" onClick={e => e.stopPropagation()}>
+            <h3 className="text-lg font-bold text-[#2e1220] mb-1">Tạo Story mới</h3>
+            <p className="text-sm text-[#594046] mb-4">
+              Mẫu: <span className="font-semibold text-[#ff4d8d]">{templates.find(t => t.code === applyModal)?.name || applyModal}</span>
+            </p>
+            <div className="flex flex-col gap-3 mb-5">
+              <input
+                type="text"
+                placeholder="Tên bạn"
+                value={name1}
+                onChange={e => setName1(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-[#e1bec5] focus:border-[#ff4d8d] focus:ring-2 focus:ring-[#ff4d8d]/20 outline-none text-sm"
+                autoFocus
+              />
+              <input
+                type="text"
+                placeholder="Tên người ấy"
+                value={name2}
+                onChange={e => setName2(e.target.value)}
+                className="w-full px-4 py-2.5 rounded-xl border border-[#e1bec5] focus:border-[#ff4d8d] focus:ring-2 focus:ring-[#ff4d8d]/20 outline-none text-sm"
+              />
+            </div>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setApplyModal(null)}
+                className="flex-1 py-2.5 rounded-xl border border-[#e1bec5] text-[#594046] text-sm font-medium hover:bg-[#fff5f9] transition-colors"
+              >
+                Hủy
+              </button>
+              <button
+                onClick={handleCreateWithTemplate}
+                disabled={creating}
+                className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#ff4d8d] to-[#e63e7b] text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-60"
+              >
+                {creating ? 'Đang tạo...' : 'Tạo Story'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

@@ -9,7 +9,7 @@ export default function DashboardUpgrade() {
 
   return (
     <>
-<main className="w-full pt-16 bg-surface min-h-screen px-space-lg py-space-md"><div className="flex flex-col w-full">
+<main className="w-full bg-surface min-h-screen px-4 md:px-6 py-6"><div className="flex flex-col w-full">
     <div className="max-w-[1280px] w-full mx-auto space-y-space-lg pb-space-xl">
       <section className="relative overflow-hidden rounded-lg bg-gradient-to-r from-primary via-primary-container to-tertiary text-on-primary shadow-xl p-space-md lg:p-space-lg">
         <div className="absolute -right-12 -bottom-16 w-64 h-64 rounded-full bg-surface-container-highest/20 blur-3xl pointer-events-none" />
@@ -56,7 +56,7 @@ export default function DashboardUpgrade() {
           </div>
         </div>
       </section>
-      <section className="grid grid-cols-1 md:grid-cols-3 gap-space-md">
+      <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-space-md">
         <div className="bg-surface-container-lowest p-space-lg rounded-lg shadow-sm hover:shadow-md transition-shadow relative overflow-hidden flex flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="font-label-md text-label-md text-on-surface-variant font-medium">Story Hoạt Động</span>
@@ -133,7 +133,7 @@ export default function DashboardUpgrade() {
             <h3 className="font-headline-md text-headline-md text-on-surface font-semibold">Story của bạn</h3>
             <p className="font-body-sm text-body-sm text-on-surface-variant">Quản lý không gian kỷ niệm và trạng thái tên miền</p>
           </div>
-          <div className="flex items-center gap-space-xs text-label-md font-label-md text-on-surface-variant">
+          <div className="hidden sm:flex items-center gap-space-xs text-label-md font-label-md text-on-surface-variant">
             <span className="w-2.5 h-2.5 rounded-full bg-primary-container" /> Hoạt động
             <span className="w-2.5 h-2.5 rounded-full bg-error ml-2" /> Sắp hết hạn
           </div>
@@ -223,7 +223,7 @@ export default function DashboardUpgrade() {
           <h3 className="font-headline-lg text-headline-lg text-on-surface font-bold">Giữ mãi từng khoảnh khắc chung đôi</h3>
           <p className="font-body-md text-body-md text-on-surface-variant">Chọn gói giải pháp phù hợp nhất để giữ cho trang Story của bạn luôn toả sáng, mượt mà và an toàn trọn đời.</p>
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-space-md lg:gap-space-lg items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-space-md lg:gap-space-lg items-stretch">
           <div className="bg-surface-container-low rounded-lg p-space-lg flex flex-col justify-between space-y-space-md opacity-85">
             <div className="space-y-space-sm">
               <span className="font-title-md text-title-md text-on-surface-variant font-semibold">Gói Miễn Phí (Free)</span>
