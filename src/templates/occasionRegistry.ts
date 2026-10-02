@@ -17,6 +17,9 @@ export interface OccasionTemplateMeta {
   component: LazyExoticComponent<ComponentType<{ storyData: StoryData }>>;
 }
 
+// Ẩn khỏi gallery đến khi có tính năng chọn Type (WEDDING / BIRTHDAY...). Route /preview/<code> vẫn hoạt động.
+export const SHOW_OCCASION_TEMPLATES = false;
+
 export const OCCASION_TEMPLATES: OccasionTemplateMeta[] = [
   {
     code: 'wedding-cinematic',

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { OCCASION_TEMPLATES } from '@/templates/occasionRegistry';
+import { OCCASION_TEMPLATES, SHOW_OCCASION_TEMPLATES } from '@/templates/occasionRegistry';
 export default function TemplatesGallery() {
   const { isAuthenticated } = useAuth();
   return (
@@ -243,7 +243,7 @@ export default function TemplatesGallery() {
             </div>
           </article>
 
-          {OCCASION_TEMPLATES.map(t => (
+          {SHOW_OCCASION_TEMPLATES && OCCASION_TEMPLATES.map(t => (
             <article key={t.code} className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
               <div>
                 <div className="relative w-full aspect-[4/3] overflow-hidden" style={{ background: t.gradient }}>
