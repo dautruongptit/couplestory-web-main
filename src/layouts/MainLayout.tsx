@@ -37,7 +37,7 @@ export const MainLayout = () => {
                 links: [
                   { label: 'Đăng nhập', to: '/login' },
                   { label: 'Đăng ký', to: '/register' },
-                  { label: 'Dashboard', to: '/dashboard' },
+                  { label: 'Home', to: '/dashboard' },
                 ],
               },
               {

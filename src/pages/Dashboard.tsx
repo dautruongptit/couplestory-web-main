@@ -61,10 +61,12 @@ export default function Dashboard() {
     }
     setCreating(true);
     try {
+      const tpl = templates.find(t => t.code === applyModal);
       const result: any = await apiClient.post('/stories', {
         coupleName1: name1.trim(),
         coupleName2: name2.trim(),
         templateCode: applyModal,
+        type: tpl?.type || 'LOVE_STORY',
         title: `${name1.trim()} & ${name2.trim()}`,
       });
       toast('Đã tạo Story thành công!', 'success');

@@ -24,7 +24,15 @@ function UseTemplateLink({ code, className }: { code: string; className: string 
 
 export default function TemplatesGallery() {
   const [searchParams] = useSearchParams();
-  const isLoveStory = searchParams.get('type') === 'LOVE_STORY';
+  const typeFilter = searchParams.get('type');
+  const { templates: apiTemplates } = useTemplates();
+  const matchingCodes = typeFilter
+    ? new Set(apiTemplates.filter(t => t.type === typeFilter).map(t => t.code))
+    : null;
+  const show = (code: string) => !matchingCodes || matchingCodes.has(code);
+
+  const typeLabel = typeFilter === 'LOVE_CARD' ? 'Love Card' : typeFilter === 'LOVE_STORY' ? 'Love Story' : null;
+
   return (
     <div className="min-h-screen">
 <div>
@@ -39,9 +47,11 @@ export default function TemplatesGallery() {
                 <span className="w-2 h-2 rounded-full bg-primary-container animate-pulse" />
                 Được cập nhật hàng tháng
               </div>
-              {isLoveStory && (
+              {typeLabel && (
                 <div className="mb-space-md flex items-center gap-space-sm">
-                  <span className="px-3 py-1 rounded-full bg-primary-container text-on-primary font-label-md text-label-md font-semibold">❤️ Love Story</span>
+                  <span className="px-3 py-1 rounded-full bg-primary-container text-on-primary font-label-md text-label-md font-semibold">
+                    {typeFilter === 'LOVE_CARD' ? '💌' : '❤️'} {typeLabel}
+                  </span>
                   <Link to="/create" className="font-label-md text-label-md text-primary hover:underline">Đổi loại</Link>
                 </div>
               )}
@@ -109,7 +119,7 @@ export default function TemplatesGallery() {
       </div>
       <section className="max-w-7xl mx-auto px-margin-mobile md:px-margin py-space-lg w-full">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-space-lg">
-          <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+          {show('romantic-anniversary') && <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
             <div>
               <div className="relative w-full aspect-[4/3] overflow-hidden" style={{background: 'linear-gradient(180deg, #e8c8d8 0%, #f5dce8 40%, #fce4ec 100%)'}}>
                 <img className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 opacity-60" data-alt="Dreamy romantic anniversary with starry mountain backdrop, floating hearts, soft pink and purple gradient sky, script typography '2 Years of Love', intimate couple silhouette against twilight glow." src="https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80" />
@@ -159,8 +169,8 @@ export default function TemplatesGallery() {
               </Link>
               <UseTemplateLink code="romantic-anniversary" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
-          </article>
-          <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+          </article>}
+          {show('memory-wall') && <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
             <div>
               <div className="relative w-full aspect-[4/3] overflow-hidden" style={{background: 'linear-gradient(180deg, #FDF6EE 0%, #F5ECE0 50%, #FADDD1 100%)'}}>
                 <img className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 opacity-50" data-alt="Warm cream wall with pinned polaroid photos, push pins, washi tape, handwritten notes, string lights at top, cozy romantic memory board aesthetic." src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=800&q=80" />
@@ -210,10 +220,10 @@ export default function TemplatesGallery() {
               </Link>
               <UseTemplateLink code="memory-wall" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
-          </article>
+          </article>}
 
           {/* Anniversary Journey */}
-          <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+          {show('anniversary-journey') && <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
             <div>
               <div className="relative w-full aspect-[4/3] overflow-hidden" style={{background: 'linear-gradient(180deg, #fff9f3 0%, #f5e4de 50%, #eccbc7 100%)'}}>
                 <img className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500 opacity-50" src="https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80" alt="Anniversary Journey template" />
@@ -263,9 +273,9 @@ export default function TemplatesGallery() {
               </Link>
               <UseTemplateLink code="anniversary-journey" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
-          </article>
+          </article>}
 
-          {SHOW_OCCASION_TEMPLATES && OCCASION_TEMPLATES.map(t => (
+          {SHOW_OCCASION_TEMPLATES && OCCASION_TEMPLATES.filter(t => show(t.code)).map(t => (
             <article key={t.code} className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
               <div>
                 <div className="relative w-full aspect-[4/3] overflow-hidden" style={{ background: t.gradient }}>
@@ -310,7 +320,7 @@ export default function TemplatesGallery() {
             </article>
           ))}
 
-          <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+          {show('minimal-couple') && <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
             <div>
               <div className="relative w-full aspect-[4/3] bg-surface-container overflow-hidden">
                 <img className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" data-alt="Editorial couple magazine aesthetic with an Asian couple in stylish warm cream linen outfits standing in natural afternoon window light, laughing gently, modern minimalist typography overlay 'Chapter 04: Two Souls', quiet luxury and intimate fine-art romance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyfffKx5Igx2OlKzPympaxCrfoqfS-HZzKTrC--uOZWQncltCWRw8rXk5pr0CsOKmXj1Qves505wW0iqqc8HGiq1jI3zNQ19p3JvkG3_nzYGDlLgfl7rG5_qhLQc6IrW04TEmibYIPwvxHRzfL3IkIsA7majLvQ696XJdgv181VPqlIS4kLMC0lgxM7fPwNndgiCAhAWAJYEyoQKXAWHtzl_CEC1hxpl2LGXLENcNT9YTAqkwd1HuX" />
@@ -354,8 +364,8 @@ export default function TemplatesGallery() {
               </Link>
               <UseTemplateLink code="minimal-couple" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
-          </article>
-          <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+          </article>}
+          {show('eternal-love') && <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
             <div>
               <div className="relative w-full aspect-[4/3] bg-inverse-surface overflow-hidden">
                 <img className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" data-alt="Cinematic luxury dark romance portrait of an elegant young couple in a candlelit baroque ballroom, deep plum burgundy shadows, rich gold bokeh highlights, black evening dress and sharp tuxedo, editorial cinematic grain." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA77T18JUaOZbMW1KNkSVPfZ8e8Z4X_q8vnHenBFNos975r0EStE7OIoU9E9l-StOSgE8QPrzJSjcyJ1YmaPYQBRI-BpE10_TXbOUtuzlKY_3f-ZJnEC_CUhiz6kXlsx_2kj8geGmQry2ClLYxhYTmrZDb8ywxND88jWCBQtc6H5YpxI19_Gl8pl_LnjXnP5pfiELr2yQXkX4stoOOtWAy497hsRsDcAAy90n_Jrny0ZgFvSopmPPu3" />
@@ -400,8 +410,8 @@ export default function TemplatesGallery() {
               </Link>
               <UseTemplateLink code="eternal-love" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
-          </article>
-          <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+          </article>}
+          {show('autumn-paris') && <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
             <div>
               <div className="relative w-full aspect-[4/3] bg-surface-container overflow-hidden">
                 <img className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" data-alt="Vintage 35mm film photography of a young couple walking along the Seine in Paris in autumn, warm terracotta leaves, trench coats, soft lavender flowers in bicycle basket, nostalgic pastel hues and soft film grain." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3qjDK-27xfju7-_8h0C97DIYvKJFE6ZCGR5dYxaGo6DeZbQaXzpyp-72h0kALTBeGnzHNbnpfKHbWhfktmCnt9nuJ13rYNUVf8OR8vgez0wZCsNa30ByiLfdbDP_Qmjde-K3hWA_5YYM4CsUS0SAzmU1v1C6_SoDAXvh3MIlaiOSJBJvIrI9gpxYN8_s6BWH7GRevvNcOkBG0pJSc-SYko7y9lmnDXwIaeUvKSvOQpJzvMnD8U48R" />
@@ -442,8 +452,8 @@ export default function TemplatesGallery() {
               </Link>
               <UseTemplateLink code="autumn-paris" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
-          </article>
-          <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+          </article>}
+          {show('sunset-horizon') && <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
             <div>
               <div className="relative w-full aspect-[4/3] bg-surface-container overflow-hidden">
                 <img className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" data-alt="Modern Scandinavian coastal romance showing lovers sitting peacefully on dunes overlooking a golden hour ocean, warm amber twilight glow, minimal clean lines, cozy blankets, soft pastel sunset palette with apricot and rose." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAWY7tfCqnzKUI0Y94TKtMDAg1zS_uvSpcpx8ZgRgN4xHd-cGGT7lORTUeYRqwJTiYnAA1dLqZ6DszqtVbHT00CchxE5c_mI3dDzbdTORHcqfVr8sqK6KZ4lnghgz3PHuM-1PfO3KO3cTiz1FYThwXqhSi-Xymt2vVTTg6TiWg_jXU4-q34DBcwAUPHawtktHsbaqxYs5irgf2KUtXzqsjZeNt7faNLVO0bJFadVoGgZvJuSYEMv1nP" />
@@ -484,8 +494,8 @@ export default function TemplatesGallery() {
               </Link>
               <UseTemplateLink code="sunset-horizon" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
-          </article>
-          <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+          </article>}
+          {show('sweet-polaroid') && <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
             <div>
               <div className="relative w-full aspect-[4/3] bg-surface-container overflow-hidden">
                 <img className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" data-alt="Playful scrapbook style couple memories, instant Polaroid photos pinned with cute stickers and washi tape on soft blush textured cork board, hand-drawn playful hearts and handwritten notes, bright cheerful romantic ambiance." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCriEtK1gEP9yWnX35mz9tymj4ZJao7gd-faVskuvecelvfd7YTOroMS5cZpB9zcAC0lmo8oWSQafcpnyTz7PnNELFbuZ_sqoFAglOTWJbMK3M3JGc2Km04yio8yHYIG8rq2rfpI2rkdJOXpxt3dqMgZFOuvy1My5_57z505nqnfE80Pw6M_m-O49ZVUQu5sgyUMp1RY3lDJAnZIGUcgKHWpPa_87nZOEbvENnGZrR3h5JSrxR-LT_x" />
@@ -526,8 +536,8 @@ export default function TemplatesGallery() {
               </Link>
               <UseTemplateLink code="sweet-polaroid" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
-          </article>
-          <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
+          </article>}
+          {show('royal-wedding') && <article className="group bg-surface-container-lowest rounded-lg overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between">
             <div>
               <div className="relative w-full aspect-[4/3] bg-surface-container overflow-hidden">
                 <img className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500" data-alt="Opulent royal wedding celebration theme with luxury white floral arches, delicate silk ribbons, bride in bespoke lace veil holding champagne glass, warm golden architectural lighting, stately and refined aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBiH-OcuHntbbQ8UvFH0-L6HS9n2rVLZPHKjzGTBTpbn1SycA2pJX2KbHqBoqu3gIKtJ3yBO8q2yYeXEmbw845-gFhwqE7Y_4XtPFvoNnWIUJot7VNzECMI-9WF3BpGjAliIsfuA3fonx1PF7525heaaD6hjtBivKzm3ODAPBYRcqVuzEkXAwGTei_1mKSifGJ6MVGz28gdfWY78z2YXK38m4CmD53busZrpmG91sEHX3XUaWCEpUKW" />
@@ -568,7 +578,7 @@ export default function TemplatesGallery() {
               </Link>
               <UseTemplateLink code="royal-wedding" className="w-1/2 py-2.5 rounded-full font-label-md text-label-md text-center bg-primary-container hover:bg-primary text-on-primary transition-all shadow-sm hover:scale-[1.02] flex items-center justify-center gap-1 font-semibold" />
             </div>
-          </article>
+          </article>}
         </div>
       </section>
       <section className="max-w-7xl mx-auto px-margin-mobile md:px-margin py-space-xl w-full">

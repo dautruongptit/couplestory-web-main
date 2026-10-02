@@ -90,7 +90,7 @@ function UserMenu({ onClose }: { onClose: () => void }) {
   };
 
   const menuItems = [
-    { icon: 'dashboard', label: 'Dashboard', to: '/dashboard' },
+    { icon: 'home', label: 'Home', to: '/dashboard' },
     { icon: 'person', label: 'Tài khoản', to: '/account' },
     { icon: 'photo_album', label: 'Story của tôi', to: '/dashboard' },
     { icon: 'workspace_premium', label: 'Nâng cấp gói', to: '/dashboard/upgrade' },
@@ -174,7 +174,7 @@ function MobileMenu({
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 h-16 border-b border-[#ffe0eb]">
-          <Link to="/" onClick={onClose} className="flex items-center gap-2 text-[#ff4d8d] font-headline-md text-headline-md">
+          <Link to={isAuthenticated ? '/dashboard' : '/'} onClick={onClose} className="flex items-center gap-2 text-[#ff4d8d] font-headline-md text-headline-md">
             <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
             CoupleStory
           </Link>
@@ -201,7 +201,7 @@ function MobileMenu({
             <>
               <div className="my-2 mx-5 border-t border-[#ffe0eb]" />
               {[
-                { to: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
+                { to: '/dashboard', label: 'Home', icon: 'home' },
                 { to: '/account', label: 'Tài khoản', icon: 'person' },
                 { to: '/dashboard/upgrade', label: 'Nâng cấp gói', icon: 'workspace_premium' },
               ].map(item => (
@@ -280,7 +280,7 @@ export default function Navbar() {
         <div className="h-16 max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between gap-4">
 
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 font-headline-md text-headline-md text-[#ff4d8d] tracking-tight shrink-0">
+          <Link to={isAuthenticated ? '/dashboard' : '/'} className="flex items-center gap-2 font-headline-md text-headline-md text-[#ff4d8d] tracking-tight shrink-0">
             <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
             <span>CoupleStory</span>
           </Link>

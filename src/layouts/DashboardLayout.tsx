@@ -72,12 +72,12 @@ export function DashboardLayout() {
     { to: '/admin/revenue', icon: 'payments', label: 'Doanh thu' },
     { to: '/admin/orders', icon: 'receipt_long', label: 'Đơn hàng' },
     { to: '/admin/music', icon: 'library_music', label: 'Thư viện nhạc' },
-    { to: '/dashboard', icon: 'home', label: 'Dashboard' },
+    { to: '/dashboard', icon: 'home', label: 'Home' },
   ] : [
     { to: '/dashboard', icon: 'home', label: 'Home' },
     { to: '/dashboard/stories', icon: 'auto_stories', label: 'My Stories', badge: 'count' as const },
     { to: '/dashboard/love-cards', icon: 'favorite', label: 'Love Cards', badge: 'new' as const },
-    { to: '/templates', icon: 'dashboard', label: 'Templates' },
+    { to: '/templates', icon: 'palette', label: 'Templates' },
     { to: '/dashboard/gallery', icon: 'photo_library', label: 'Photo Gallery' },
     { to: '/account', icon: 'person', label: 'Profile' },
   ];
@@ -94,7 +94,7 @@ export function DashboardLayout() {
     <>
       {/* Logo */}
       <div className="px-5 pt-5 pb-2">
-        <Link to="/" className="flex items-center gap-2">
+        <Link to="/dashboard" className="flex items-center gap-2">
           <span className="material-symbols-outlined text-[#ff4d8d] text-[24px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
           <span className="text-[#ff4d8d] font-bold text-lg tracking-tight">CoupleStory</span>
         </Link>

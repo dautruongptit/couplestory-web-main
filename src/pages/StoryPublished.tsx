@@ -172,7 +172,7 @@ export default function StoryPublished() {
         <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
           <Link to="/dashboard" className="px-5 py-2.5 rounded-xl bg-white border border-[#f0e4e8] text-sm font-medium text-[#594046] hover:bg-[#fff5f9] transition-colors flex items-center gap-1.5">
             <span className="material-symbols-outlined text-[16px]">arrow_back</span>
-            Quay về Dashboard
+            Quay về Home
           </Link>
           <a href={url} target="_blank" rel="noreferrer" className="px-5 py-2.5 rounded-xl bg-white border border-[#f0e4e8] text-sm font-medium text-[#ff4d8d] hover:bg-[#fff5f9] transition-colors flex items-center gap-1.5">
             Xem trực tiếp

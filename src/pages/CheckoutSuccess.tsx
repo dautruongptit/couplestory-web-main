@@ -282,8 +282,8 @@ export default function CheckoutSuccess() {
                   <span className="text-[18px]">✍️</span>
                 </a>
                 <a className="w-full py-3 px-space-lg rounded-full bg-surface-container-lowest hover:bg-surface-container text-on-surface font-title-md text-title-md font-medium text-center shadow-sm transition-colors duration-200 flex items-center justify-center gap-space-xs" href="#">
-                  <span className="material-symbols-outlined text-[18px] text-on-surface-variant">dashboard</span>
-                  <span>Về Trang Dashboard Quản Lý</span>
+                  <span className="material-symbols-outlined text-[18px] text-on-surface-variant">home</span>
+                  <span>Về Trang Home</span>
                 </a>
               </div>
             </div>
