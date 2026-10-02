@@ -1,3 +1,4 @@
+import StartOrderButton from '../components/StartOrderButton';
 import { usePlans } from '../hooks/usePlans';
 import { formatPrice } from '../utils/formatPrice';
 
@@ -135,9 +136,9 @@ export default function Pricing() {
                   </li>
                 </ul>
               </div>
-              <a className="w-full inline-flex items-center justify-center px-4 py-3 rounded-full font-label-md text-label-md text-primary-container bg-surface-container-low hover:bg-surface-container transition-colors duration-150" href="#">
+              <StartOrderButton planCode="PLUS" className="w-full inline-flex items-center justify-center px-4 py-3 rounded-full font-label-md text-label-md text-primary-container bg-surface-container-low hover:bg-surface-container transition-colors duration-150">
                 Chọn gói {pro?.name ?? 'PLUS'}
-              </a>
+              </StartOrderButton>
             </div>
             <div className="relative flex flex-col justify-between rounded-lg bg-surface-container-lowest p-space-lg shadow-[0_16px_40px_rgba(255,77,141,0.22)] lg:-translate-y-2 lg:scale-[1.03] z-20 overflow-hidden">
               <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-primary-container via-purple-500 to-primary-container" />
@@ -183,9 +184,9 @@ export default function Pricing() {
                   </li>
                 </ul>
               </div>
-              <a className="w-full inline-flex items-center justify-center px-4 py-3 rounded-full font-label-md text-label-md font-bold text-on-tertiary bg-primary-container shadow-[0_4px_20px_rgba(255,77,141,0.4)] hover:bg-[#e63e7b] hover:scale-[1.02] active:scale-[0.98] transition-all duration-150" href="#">
+              <StartOrderButton planCode="COUPLE" className="w-full inline-flex items-center justify-center px-4 py-3 rounded-full font-label-md text-label-md font-bold text-on-tertiary bg-primary-container shadow-[0_4px_20px_rgba(255,77,141,0.4)] hover:bg-[#e63e7b] hover:scale-[1.02] active:scale-[0.98] transition-all duration-150">
                 Chọn gói COUPLE 💑
-              </a>
+              </StartOrderButton>
             </div>
             <div className="flex flex-col justify-between rounded-lg bg-surface-container-lowest p-space-lg shadow-sm hover:shadow-md transition-all duration-300">
               <div>
@@ -227,9 +228,9 @@ export default function Pricing() {
                   </li>
                 </ul>
               </div>
-              <a className="w-full inline-flex items-center justify-center px-4 py-3 rounded-full font-label-md text-label-md text-amber-800 bg-amber-50 hover:bg-amber-100 transition-colors duration-150" href="#">
+              <StartOrderButton planCode="PREMIUM" className="w-full inline-flex items-center justify-center px-4 py-3 rounded-full font-label-md text-label-md text-amber-800 bg-amber-50 hover:bg-amber-100 transition-colors duration-150">
                 Chọn gói PREMIUM ⭐
-              </a>
+              </StartOrderButton>
             </div>
           </div>
         </div>

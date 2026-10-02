@@ -1,3 +1,4 @@
+import StartOrderButton from '../components/StartOrderButton';
 import { usePlans } from '../hooks/usePlans';
 import { formatPrice } from '../utils/formatPrice';
 
@@ -130,9 +131,9 @@ export default function PricingMobile() {
               <span>Không có chế độ đồng chỉnh sửa cặp đôi</span>
             </div>
           </div>
-          <button className="w-full py-3 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-variant transition-transform active:scale-95 shadow-sm">
+          <StartOrderButton planCode="PLUS" className="w-full py-3 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-variant transition-transform active:scale-95 shadow-sm">
             Chọn gói PLUS
-          </button>
+          </StartOrderButton>
         </div>
         {/* PLAN 3: COUPLE (FEATURED) */}
         <div className="relative p-space-md rounded-lg bg-surface-container-lowest shadow-xl flex flex-col justify-between overflow-hidden">
@@ -184,10 +185,10 @@ export default function PricingMobile() {
                 <span><strong>Bảo mật riêng tư 2 lớp:</strong> Khoá vân tay &amp; mật khẩu phòng riêng chỉ 2 người biết.</span>
               </div>
             </div>
-            <button className="w-full py-3.5 rounded-full bg-primary-container text-on-primary font-title-md text-title-md hover:bg-primary transition-all active:scale-95 shadow-lg flex items-center justify-center gap-2">
+            <StartOrderButton planCode="COUPLE" className="w-full py-3.5 rounded-full bg-primary-container text-on-primary font-title-md text-title-md hover:bg-primary transition-all active:scale-95 shadow-lg flex items-center justify-center gap-2">
               <span>Chọn gói COUPLE</span>
               <span className="material-symbols-outlined text-[18px]">favorite</span>
-            </button>
+            </StartOrderButton>
           </div>
         </div>
         {/* PLAN 4: PREMIUM */}
@@ -225,9 +226,9 @@ export default function PricingMobile() {
               <span>Hỗ trợ xuất bản cuốn Photobook PDF cao cấp</span>
             </div>
           </div>
-          <button className="w-full py-3 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-variant transition-transform active:scale-95 shadow-sm">
+          <StartOrderButton planCode="PREMIUM" className="w-full py-3 rounded-full bg-surface-container-high text-on-surface font-label-md text-label-md hover:bg-surface-variant transition-transform active:scale-95 shadow-sm">
             Chọn gói PREMIUM
-          </button>
+          </StartOrderButton>
         </div>
       </section>
       {/* 3. MOBILE FEATURE COMPARISON (Tabbed Segmented View) */}

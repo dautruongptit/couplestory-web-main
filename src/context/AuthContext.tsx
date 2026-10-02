@@ -19,6 +19,7 @@ interface AuthContextValue {
   login: (email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
   googleLogin: (credential: string) => Promise<{ ok: boolean; error?: string }>;
   logout: () => Promise<void>;
+  refreshUser: () => Promise<void>;
   register: (name: string, email: string, password: string) => Promise<{ ok: boolean; error?: string }>;
 }
 
@@ -71,6 +72,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => { cancelled = true; };
   }, [syncUser]);
 
+  const refreshUser = useCallback(async () => {
+    try {
+      const res = await fetch('/api/auth/me', { credentials: 'include', headers: { 'Accept': 'application/json' } });
+      if (res.ok) syncUser(parseUser(await res.json()));
+    } catch {
+      // keep the current user if the refresh fails
+    }
+  }, [syncUser]);
+
   const login = async (email: string, password: string) => {
     try {
       const res = await apiClient.post('/auth/login', { email, password });
@@ -113,7 +123,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const isAdmin = !!user?.roles?.includes('ADMIN');
 
   return (
-    <AuthContext.Provider value={{ user, loading, isAuthenticated: !!user, isAdmin, login, googleLogin, logout, register }}>
+    <AuthContext.Provider value={{ user, loading, isAuthenticated: !!user, isAdmin, login, googleLogin, logout, refreshUser, register }}>
       {children}
     </AuthContext.Provider>
   );

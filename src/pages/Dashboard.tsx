@@ -4,6 +4,7 @@ import { useAuth } from '@/context/AuthContext';
 import { apiClient } from '@/services/api';
 import { toast } from '@/utils/toast';
 import ConfirmModal from '@/components/ConfirmModal';
+import RenewModal from '@/components/RenewModal';
 import { usePlans } from '@/hooks/usePlans';
 
 export interface StoryResponse {
@@ -15,6 +16,7 @@ export interface StoryResponse {
   templateCode?: string;
   createdAt: string;
   status?: string;
+  expiresAt?: string | null;
 }
 
 // ============================================================
@@ -271,6 +273,7 @@ export default function Dashboard() {
   // with location.search, and this avoids a second source of truth to drift from it.
   const applyTemplate = new URLSearchParams(location.search).get('applyTemplate') || undefined;
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [renewTarget, setRenewTarget] = useState<string | null>(null);
 
   useEffect(() => {
     apiClient.get('/stories')
@@ -347,6 +350,7 @@ export default function Dashboard() {
 
   return (
     <>
+      {renewTarget && <RenewModal storyId={renewTarget} onClose={() => setRenewTarget(null)} />}
       {showWizard && (
         <CreateStoryWizard
           onClose={() => setShowWizard(false)}
@@ -516,6 +520,12 @@ export default function Dashboard() {
                               <span className="material-symbols-outlined text-[18px]">visibility</span>
                               <span className="hidden sm:inline">Xem</span>
                             </Link>
+                            {story.expiresAt && user?.plan !== 'PREMIUM' && (
+                              <button onClick={() => setRenewTarget(story.id)} className="py-space-sm px-space-md rounded-full bg-surface-container-high text-on-surface font-title-md hover:bg-surface-container transition-colors flex items-center justify-center gap-1" title={`Hết hạn ${new Date(story.expiresAt).toLocaleDateString('vi-VN')}`}>
+                                <span className="material-symbols-outlined text-[18px]">update</span>
+                                <span className="hidden sm:inline">Gia hạn</span>
+                              </button>
+                            )}
                             <button onClick={() => setDeleteTarget(story.id)} className="w-10 h-10 rounded-full bg-error-container text-on-error-container hover:bg-error hover:text-on-error transition-colors flex items-center justify-center" title="Xóa story">
                               <span className="material-symbols-outlined text-[18px]">delete</span>
                             </button>

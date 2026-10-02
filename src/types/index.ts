@@ -46,4 +46,27 @@ export interface Plan {
   maxStories: number;
   allowCollaborator: boolean;
   allowCustomDomain: boolean;
+  websiteDurationDays: number | null;
+  maxTotalStories: number | null;
+  maxMusicTracks: number;
+  maxPhotosPerEvent: number;
+  allowPassword: boolean;
+  showWatermark: boolean;
+}
+
+export interface Order {
+  id: string;
+  type: 'UPGRADE' | 'RENEW';
+  planCode: string | null;
+  storyId: string | null;
+  renewTerm: '3M' | '1Y' | null;
+  amount: number;
+  transferCode: string;
+  status: 'PENDING' | 'PAID' | 'CANCELLED';
+  createdAt: string;
+  paidAt: string | null;
+  userEmail?: string | null;
+  bankName?: string;
+  accountNumber?: string;
+  accountName?: string;
 }

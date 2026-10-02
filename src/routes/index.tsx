@@ -26,6 +26,8 @@ import StoryEditor from '@/pages/StoryEditor';
 import StoryPreview from '@/pages/StoryPreview';
 import StoryPublished from '@/pages/StoryPublished';
 import PublicStory from '@/pages/PublicStory';
+import OrderPayment from '@/pages/OrderPayment';
+import AdminOrders from '@/pages/AdminOrders';
 
 export const router = createBrowserRouter([
   // ── Public – with Navbar/Footer ──────────────────────────
@@ -56,6 +58,7 @@ export const router = createBrowserRouter([
       { path: 'admin',             element: <Navigate to="/admin/users" replace /> },
       { path: 'admin/users',       element: <AdminRoute><AdminUsers /></AdminRoute> },
       { path: 'admin/revenue',     element: <AdminRoute><AdminRevenue /></AdminRoute> },
+      { path: 'admin/orders',      element: <AdminRoute><AdminOrders /></AdminRoute> },
     ],
   },
 
@@ -73,6 +76,7 @@ export const router = createBrowserRouter([
   { path: '/editor/:scenarioId/preview', element: <ProtectedRoute><StoryPreview /></ProtectedRoute> },
   { path: '/editor/:scenarioId/published', element: <ProtectedRoute><StoryPublished /></ProtectedRoute> },
   { path: '/s/:slug', element: <PublicStory /> },
+  { path: '/orders/:orderId', element: <ProtectedRoute><OrderPayment /></ProtectedRoute> },
 
   // ── Error pages ───────────────────────────────────────────
   { path: '/403', element: <Forbidden403 /> },

@@ -4,7 +4,7 @@ import type { StoryData } from '@/data/mockScenarios';
 import DynamicStoryTemplate from '@/templates/DynamicStoryTemplate';
 import { mapPublicStoryToStoryData } from '@/utils/publicStory';
 
-type State = { status: 'loading' } | { status: 'missing' } | { status: 'ready'; data: StoryData };
+type State = { status: 'loading' } | { status: 'missing' } | { status: 'ready'; data: StoryData; watermark: boolean };
 
 export default function PublicStory({ slug: slugProp }: { slug?: string }) {
   const params = useParams();
@@ -25,7 +25,11 @@ export default function PublicStory({ slug: slugProp }: { slug?: string }) {
           return;
         }
         const body = await res.json();
-        setState({ status: 'ready', data: mapPublicStoryToStoryData(body, body.templateCode || 'minimal-couple') });
+        setState({
+          status: 'ready',
+          data: mapPublicStoryToStoryData(body, body.templateCode || 'minimal-couple'),
+          watermark: body.showWatermark !== false,
+        });
       })
       .catch(() => { if (!cancelled) setState({ status: 'missing' }); });
     return () => { cancelled = true; };
@@ -43,5 +47,19 @@ export default function PublicStory({ slug: slugProp }: { slug?: string }) {
       </div>
     );
   }
-  return <DynamicStoryTemplate storyData={state.data} />;
+  return (
+    <>
+      <DynamicStoryTemplate storyData={state.data} />
+      {state.watermark && (
+        <a
+          href="https://couplestory.site"
+          target="_blank"
+          rel="noreferrer"
+          className="fixed bottom-3 right-3 z-[9999] px-3 py-1.5 rounded-full bg-black/60 text-white text-xs backdrop-blur-md hover:bg-black/80"
+        >
+          Made with CoupleStory
+        </a>
+      )}
+    </>
+  );
 }

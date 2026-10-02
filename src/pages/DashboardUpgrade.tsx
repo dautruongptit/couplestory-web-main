@@ -1,3 +1,4 @@
+import StartOrderButton from '../components/StartOrderButton';
 import { usePlans } from '../hooks/usePlans';
 import { formatPrice } from '../utils/formatPrice';
 
@@ -290,10 +291,10 @@ export default function DashboardUpgrade() {
                 </li>
               </ul>
             </div>
-            <button className="w-full py-space-sm rounded-full bg-primary text-on-primary font-title-md hover:bg-surface-tint transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2">
+            <StartOrderButton planCode="COUPLE" className="w-full py-space-sm rounded-full bg-primary text-on-primary font-title-md hover:bg-surface-tint transition-all duration-200 shadow-md hover:shadow-lg flex items-center justify-center gap-2">
               <span>Nâng cấp Couple</span>
               <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-            </button>
+            </StartOrderButton>
           </div>
           <div className="bg-surface-container-low rounded-lg p-space-lg flex flex-col justify-between space-y-space-md hover:shadow-md transition-shadow">
             <div className="space-y-space-sm">
@@ -328,9 +329,9 @@ export default function DashboardUpgrade() {
                 </li>
               </ul>
             </div>
-            <button className="w-full py-space-sm rounded-full bg-surface-container-highest text-on-surface font-title-md hover:bg-primary hover:text-on-primary transition-all duration-200">
+            <StartOrderButton planCode="PREMIUM" className="w-full py-space-sm rounded-full bg-surface-container-highest text-on-surface font-title-md hover:bg-primary hover:text-on-primary transition-all duration-200">
               Nâng cấp PREMIUM
-            </button>
+            </StartOrderButton>
           </div>
         </div>
       </section>
