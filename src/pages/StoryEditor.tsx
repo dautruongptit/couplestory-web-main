@@ -8,6 +8,15 @@ import { apiClient } from '@/services/api';
 import { toast } from '@/utils/toast';
 import { useTemplates } from '@/hooks/useTemplates';
 import ChangeTemplateModal from '@/components/ChangeTemplateModal';
+import { useAuth } from '@/context/AuthContext';
+import { usePlans } from '@/hooks/usePlans';
+
+interface MusicTrack {
+  id: string;
+  title: string;
+  artist?: string | null;
+  url: string;
+}
 
 interface ServerPhoto {
   id: string;
@@ -21,7 +30,12 @@ export default function StoryEditor() {
   const { scenarioId } = useParams();
   const navigate = useNavigate();
   const [story, setStory] = useState<StoryData | null>(null);
-  const [activeTab, setActiveTab] = useState<'hero' | 'counter' | 'letter' | 'timeline' | 'gallery'>('hero');
+  const [activeTab, setActiveTab] = useState<'hero' | 'counter' | 'letter' | 'timeline' | 'gallery' | 'music'>('hero');
+  const [library, setLibrary] = useState<MusicTrack[]>([]);
+  const [musicIds, setMusicIds] = useState<string[]>([]);
+  const { user } = useAuth();
+  const { plans } = usePlans();
+  const maxTracks = plans.find(p => p.code === (user?.plan ?? 'FREE'))?.maxMusicTracks ?? 1;
   const [isSaving, setIsSaving] = useState(false);
   const [photos, setPhotos] = useState<ServerPhoto[]>([]);
   const [isUploading, setIsUploading] = useState(false);
@@ -39,12 +53,16 @@ export default function StoryEditor() {
     
     const fetchData = async () => {
       try {
-        const [storyRes, eventsRes, messagesRes, photosRes] = await Promise.all([
+        const [storyRes, eventsRes, messagesRes, photosRes, libraryRes, playlistRes] = await Promise.all([
           apiClient.get(`/stories/${scenarioId}`),
           apiClient.get(`/stories/${scenarioId}/events`),
           apiClient.get(`/stories/${scenarioId}/messages`),
-          apiClient.get(`/stories/${scenarioId}/photos`)
+          apiClient.get(`/stories/${scenarioId}/photos`),
+          apiClient.get('/music').catch(() => []),
+          apiClient.get(`/stories/${scenarioId}/music`).catch(() => [])
         ]);
+        setLibrary(libraryRes as MusicTrack[]);
+        setMusicIds((playlistRes as MusicTrack[]).map(t => t.id));
 
         const loveLetter = messagesRes.find((m: any) => m.type === 'love_letter' || m.type === 'final_message');
 
@@ -178,6 +196,8 @@ export default function StoryEditor() {
         await apiClient.put(`/stories/${scenarioId}/events/visibility`, visibleIds);
       }
 
+      await apiClient.put(`/stories/${scenarioId}/music`, musicIds);
+
       toast('Đã lưu thành công', 'success');
       return true;
     } catch (error) {
@@ -268,7 +288,7 @@ export default function StoryEditor() {
 
         {/* Editor Tabs */}
         <div className="flex px-1 pt-2 border-b border-outline-variant/20 overflow-x-auto no-scrollbar">
-          {([['hero', 'view_day', 'Hero'], ['counter', 'timer', 'Đếm'], ['letter', 'mail', 'Thư'], ['timeline', 'timeline', 'Sự kiện'], ['gallery', 'photo_library', 'Ảnh']] as const).map(([key, icon, label]) => (
+          {([['hero', 'view_day', 'Hero'], ['counter', 'timer', 'Đếm'], ['letter', 'mail', 'Thư'], ['timeline', 'timeline', 'Sự kiện'], ['gallery', 'photo_library', 'Ảnh'], ['music', 'music_note', 'Nhạc']] as const).map(([key, icon, label]) => (
             <button key={key} onClick={() => setActiveTab(key as any)} className={`flex items-center gap-1 px-2.5 py-2 font-label-sm border-b-2 transition-colors whitespace-nowrap ${activeTab === key ? 'border-primary text-primary' : 'border-transparent text-on-surface-variant hover:text-on-surface hover:bg-surface-container-low rounded-t-lg'}`}>
               <span className="material-symbols-outlined text-[15px]">{icon}</span>
               {label}
@@ -463,6 +483,64 @@ export default function StoryEditor() {
                   </label>
                 </div>
               ))}
+            </div>
+          )}
+
+          {activeTab === 'music' && (
+            <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-left-4 duration-300">
+              <h3 className="font-title-md text-on-surface font-semibold flex items-center gap-2">
+                <span className="material-symbols-outlined text-primary text-[20px]">music_note</span>
+                Nhạc nền
+              </h3>
+              <p className="font-body-sm text-on-surface-variant -mt-2">
+                Đã chọn {musicIds.length}/{maxTracks} bài. Nhạc phát lần lượt và lặp lại; người xem bấm nút nhạc trên trang để nghe.
+              </p>
+
+              {musicIds.length > 0 && (
+                <ul className="flex flex-col gap-2">
+                  {musicIds.map((id, i) => {
+                    const t = library.find(x => x.id === id);
+                    return (
+                      <li key={id} className="flex items-center gap-2 p-3 rounded-xl bg-primary/5 border border-primary/30">
+                        <span className="flex-1 min-w-0 text-sm text-on-surface truncate">{i + 1}. {t ? t.title : 'Bài đã bị gỡ'}</span>
+                        <button type="button" disabled={i === 0} onClick={() => setMusicIds(ids => { const n = [...ids]; [n[i - 1], n[i]] = [n[i], n[i - 1]]; return n; })} className="w-7 h-7 rounded-full hover:bg-surface-container disabled:opacity-30 flex items-center justify-center">
+                          <span className="material-symbols-outlined text-[18px]">arrow_upward</span>
+                        </button>
+                        <button type="button" disabled={i === musicIds.length - 1} onClick={() => setMusicIds(ids => { const n = [...ids]; [n[i + 1], n[i]] = [n[i], n[i + 1]]; return n; })} className="w-7 h-7 rounded-full hover:bg-surface-container disabled:opacity-30 flex items-center justify-center">
+                          <span className="material-symbols-outlined text-[18px]">arrow_downward</span>
+                        </button>
+                        <button type="button" onClick={() => setMusicIds(ids => ids.filter(x => x !== id))} className="w-7 h-7 rounded-full hover:bg-error/10 text-on-surface-variant hover:text-error flex items-center justify-center">
+                          <span className="material-symbols-outlined text-[18px]">close</span>
+                        </button>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+
+              <h4 className="font-label-sm text-on-surface-variant uppercase tracking-wider">Thư viện</h4>
+              {library.length === 0 && <p className="text-sm text-on-surface-variant">Thư viện nhạc đang trống.</p>}
+              <ul className="flex flex-col gap-2">
+                {library.filter(t => !musicIds.includes(t.id)).map(t => (
+                  <li key={t.id} className="flex flex-col gap-2 p-3 rounded-xl bg-surface-container-low border border-outline-variant/30">
+                    <div className="flex items-center gap-2">
+                      <span className="flex-1 min-w-0 text-sm text-on-surface truncate">{t.title}{t.artist ? ` · ${t.artist}` : ''}</span>
+                      <button
+                        type="button"
+                        disabled={musicIds.length >= maxTracks}
+                        onClick={() => setMusicIds(ids => [...ids, t.id])}
+                        className="px-3 py-1 rounded-full bg-primary text-on-primary font-label-sm disabled:opacity-40"
+                      >
+                        Thêm
+                      </button>
+                    </div>
+                    <audio controls preload="none" src={t.url} className="w-full h-8" />
+                  </li>
+                ))}
+              </ul>
+              {musicIds.length >= maxTracks && (
+                <p className="text-sm text-on-surface-variant">Đã đủ số bài của gói. Nâng cấp gói để thêm nhiều bài hơn.</p>
+              )}
             </div>
           )}
 

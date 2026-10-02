@@ -122,6 +122,7 @@ export function DashboardLayout() {
     { to: '/admin/users', icon: 'group', label: 'Quản lý người dùng' },
     { to: '/admin/revenue', icon: 'payments', label: 'Doanh thu & Gói' },
     { to: '/admin/orders', icon: 'receipt_long', label: 'Đơn hàng chờ xác nhận' },
+    { to: '/admin/music', icon: 'library_music', label: 'Thư viện nhạc' },
     { to: '/dashboard', icon: 'home', label: 'Quay lại Dashboard' },
   ] : [
     { to: '/dashboard', icon: 'home', label: 'Dashboard' },

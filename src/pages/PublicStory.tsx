@@ -3,8 +3,9 @@ import { useParams } from 'react-router-dom';
 import type { StoryData } from '@/data/mockScenarios';
 import DynamicStoryTemplate from '@/templates/DynamicStoryTemplate';
 import { mapPublicStoryToStoryData } from '@/utils/publicStory';
+import MusicPlayer, { type MusicTrackInfo } from '@/components/MusicPlayer';
 
-type State = { status: 'loading' } | { status: 'missing' } | { status: 'ready'; data: StoryData; watermark: boolean };
+type State = { status: 'loading' } | { status: 'missing' } | { status: 'ready'; data: StoryData; watermark: boolean; music: MusicTrackInfo[] };
 
 export default function PublicStory({ slug: slugProp }: { slug?: string }) {
   const params = useParams();
@@ -29,6 +30,7 @@ export default function PublicStory({ slug: slugProp }: { slug?: string }) {
           status: 'ready',
           data: mapPublicStoryToStoryData(body, body.templateCode || 'minimal-couple'),
           watermark: body.showWatermark !== false,
+          music: body.music || [],
         });
       })
       .catch(() => { if (!cancelled) setState({ status: 'missing' }); });
@@ -50,6 +52,7 @@ export default function PublicStory({ slug: slugProp }: { slug?: string }) {
   return (
     <>
       <DynamicStoryTemplate storyData={state.data} />
+      <MusicPlayer tracks={state.music} />
       {state.watermark && (
         <a
           href="https://couplestory.site"

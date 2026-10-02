@@ -20,7 +20,6 @@ import Account from '@/pages/Account';
 import NotFound404 from '@/pages/NotFound404';
 import Forbidden403 from '@/pages/Forbidden403';
 import { EternalLovePage, MinimalCouplePage } from '@/templates/TemplateEternalLoveResponsive';
-import DynamicStoryTemplate from '@/templates/DynamicStoryTemplate';
 import TemplatePreview from '@/pages/TemplatePreview';
 import StoryEditor from '@/pages/StoryEditor';
 import StoryPreview from '@/pages/StoryPreview';
@@ -28,6 +27,8 @@ import StoryPublished from '@/pages/StoryPublished';
 import PublicStory from '@/pages/PublicStory';
 import OrderPayment from '@/pages/OrderPayment';
 import AdminOrders from '@/pages/AdminOrders';
+import AdminMusic from '@/pages/AdminMusic';
+import DemoStory from '@/pages/DemoStory';
 
 export const router = createBrowserRouter([
   // ── Public – with Navbar/Footer ──────────────────────────
@@ -59,6 +60,7 @@ export const router = createBrowserRouter([
       { path: 'admin/users',       element: <AdminRoute><AdminUsers /></AdminRoute> },
       { path: 'admin/revenue',     element: <AdminRoute><AdminRevenue /></AdminRoute> },
       { path: 'admin/orders',      element: <AdminRoute><AdminOrders /></AdminRoute> },
+      { path: 'admin/music',       element: <AdminRoute><AdminMusic /></AdminRoute> },
     ],
   },
 
@@ -71,7 +73,7 @@ export const router = createBrowserRouter([
   { path: '/s/eternal', element: <EternalLovePage /> },
   { path: '/s/minimal', element: <MinimalCouplePage /> },
   { path: '/preview/:templateCode', element: <TemplatePreview /> },
-  { path: '/demo/:scenarioId', element: <DynamicStoryTemplate /> },
+  { path: '/demo/:scenarioId', element: <DemoStory /> },
   { path: '/editor/:scenarioId', element: <ProtectedRoute><StoryEditor /></ProtectedRoute> },
   { path: '/editor/:scenarioId/preview', element: <ProtectedRoute><StoryPreview /></ProtectedRoute> },
   { path: '/editor/:scenarioId/published', element: <ProtectedRoute><StoryPublished /></ProtectedRoute> },
