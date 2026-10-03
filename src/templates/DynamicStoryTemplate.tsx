@@ -1,5 +1,6 @@
 import React, { useEffect, useState, lazy, Suspense } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
+import BackToTemplatesLink from '@/components/BackToTemplatesLink';
 import type { StoryData } from '@/data/mockScenarios';
 import { getTemplateTheme, type TemplateTheme } from '@/data/templateThemes';
 import { apiClient } from '@/services/api';
@@ -152,9 +153,7 @@ export default function DynamicStoryTemplate({ storyData }: { storyData?: StoryD
       style={{ background: theme.bg, color: theme.ink }}
     >
       {/* FLOAT BACK BUTTON */}
-      <Link to="/templates" className="fixed top-4 left-4 z-50 bg-black/50 backdrop-blur-md text-white p-2 rounded-full hover:bg-black/70 transition-colors">
-        <span className="material-symbols-outlined text-[20px] block">arrow_back</span>
-      </Link>
+      <BackToTemplatesLink className="fixed top-4 left-4 z-50 bg-black/50 backdrop-blur-md text-white p-2 rounded-full hover:bg-black/70 transition-colors" />
 
       <HeroSection data={data} theme={theme} />
       <SectionDivider theme={theme} />

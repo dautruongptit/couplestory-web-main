@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import BackToTemplatesLink from '@/components/BackToTemplatesLink';
 import { motion } from 'framer-motion';
 import { Heart, Play, Pause, Music2, MessageCircle, Sparkles, Calendar, Star, Coffee } from 'lucide-react';
 import ReactSlick from 'react-slick';
@@ -448,12 +448,8 @@ export default function TemplateRomanticAnniversary({ storyData }: { storyData: 
       <FallingHearts />
 
       {/* Back button */}
-      <Link
-        to="/templates"
-        className="fixed top-4 left-4 z-50 bg-black/50 backdrop-blur-md text-white p-2 rounded-full hover:bg-black/70 transition-colors"
-      >
-        <span className="material-symbols-outlined text-[20px] block">arrow_back</span>
-      </Link>
+      <BackToTemplatesLink
+        className="fixed top-4 left-4 z-50 bg-black/50 backdrop-blur-md text-white p-2 rounded-full hover:bg-black/70 transition-colors" />
 
       <div className="relative z-10">
         {/* ── Hero Section ─────────────────────────── */}

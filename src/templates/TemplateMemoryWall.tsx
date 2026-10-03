@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react';
-import { Link } from 'react-router-dom';
+import BackToTemplatesLink from '@/components/BackToTemplatesLink';
 import type { StoryData } from '@/data/mockScenarios';
 
 // ── Types ──────────────────────────────────────────────────
@@ -661,9 +661,7 @@ export default function TemplateMemoryWall({ storyData }: { storyData: StoryData
       <MemoryBackground />
 
       {/* Back button */}
-      <Link to="/templates" style={{ position: 'fixed', top: 16, left: 16, zIndex: 60, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', color: '#fff', padding: 8, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', transition: 'background 0.2s ease' }}>
-        <span className="material-symbols-outlined" style={{ fontSize: 20, display: 'block' }}>arrow_back</span>
-      </Link>
+      <BackToTemplatesLink style={{ position: 'fixed', top: 16, left: 16, zIndex: 60, background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', color: '#fff', padding: 8, borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', textDecoration: 'none', transition: 'background 0.2s ease' }} />
 
       <div style={{ position: 'relative', zIndex: 1 }}>
         {/* Header */}
