@@ -1,6 +1,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito+Sans:ital,opsz,wght@0,6..12,300..800;1,6..12,300..800&family=Dancing+Script:wght@400;500;600;700&family=Caveat:wght@400;500;600;700&family=Parisienne&display=swap');
 @import "tailwindcss";
 
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
 /* =============================================
    DESIGN TOKENS — Romantic Candy Pop
    ============================================= */

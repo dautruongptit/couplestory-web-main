@@ -250,25 +250,27 @@ export default function AccountModal({ onClose }: { onClose: () => void }) {
               <div className="mb-12">
                 <h2 className="text-lg font-bold text-[#2e1220] mb-2">Login history</h2>
                 <p className="text-[13px] text-[#594046] mb-6">
-                  Danh sách các thiết bị và trình duyệt bạn đã từng sử dụng để đăng nhập vào tài khoản này.
+                  Danh sách các lần đăng nhập gần đây vào tài khoản của bạn.
                 </p>
-                
+
                 <div className="w-full text-[13px]">
                   <div className="flex border-b border-[#f0e4e8] pb-2 text-[#594046] font-medium">
-                    <div className="w-[40%]">Thiết bị</div>
-                    <div className="w-[20%]">Nền tảng</div>
-                    <div className="w-[20%]">Đăng nhập lần đầu</div>
-                    <div className="w-[20%] text-right">Lần cuối hoạt động</div>
+                    <div className="w-[35%]">Thiết bị</div>
+                    <div className="w-[25%]">Địa chỉ IP</div>
+                    <div className="w-[15%]">Phương thức</div>
+                    <div className="w-[25%] text-right">Thời gian</div>
                   </div>
-                  {devices.length === 0 ? (
-                    <div className="py-4 text-[#8d7076]">Không có thiết bị cục bộ nào.</div>
+                  {loadingSessions ? (
+                    <div className="py-4 text-[#8d7076]">Đang tải...</div>
+                  ) : devices.length === 0 ? (
+                    <div className="py-4 text-[#8d7076]">Chưa có lịch sử đăng nhập.</div>
                   ) : (
                     devices.map(d => (
                       <div key={d.id} className="flex py-3 border-b border-[#f0e4e8] text-[#2e1220]">
-                        <div className="w-[40%] font-medium">{d.name}</div>
-                        <div className="w-[20%]">{d.platform || 'Web'}</div>
-                        <div className="w-[20%] text-[#594046]">{new Date(d.addedAt).toLocaleDateString('vi-VN')}</div>
-                        <div className="w-[20%] text-right text-[#594046]">{d.lastSeenAt ? new Date(d.lastSeenAt).toLocaleDateString('vi-VN') : 'Mới đây'}</div>
+                        <div className="w-[35%] font-medium">{d.name}</div>
+                        <div className="w-[25%] text-[#594046] break-all pr-2">{d.ipAddress || '—'}</div>
+                        <div className="w-[15%] text-[#594046]">{d.loginMethod === 'GOOGLE' ? 'Google' : 'Email'}</div>
+                        <div className="w-[25%] text-right text-[#594046]">{new Date(d.lastSeenAt || d.addedAt).toLocaleString('vi-VN')}</div>
                       </div>
                     ))
                   )}
@@ -278,18 +280,22 @@ export default function AccountModal({ onClose }: { onClose: () => void }) {
               {/* Active Sessions Section */}
               <div className="mb-10">
                 <h2 className="text-lg font-bold text-[#2e1220] mb-6">Active sessions</h2>
-                
+
                 <div className="w-full text-[13px]">
-                  <div className="flex items-center justify-between py-4 border-b border-[#f0e4e8]">
-                    <div>
-                      <p className="text-[#2e1220] font-medium mb-1">Windows â€¢ Chrome</p>
-                      <p className="text-[#594046]">Hanoi, Vietnam (Current session)</p>
+                  {devices.length === 0 ? (
+                    <div className="py-4 text-[#8d7076]">Không có phiên hoạt động nào.</div>
+                  ) : (
+                    <div className="flex items-center justify-between py-4 border-b border-[#f0e4e8]">
+                      <div>
+                        <p className="text-[#2e1220] font-medium mb-1">{devices[0].name}</p>
+                        <p className="text-[#594046]">{devices[0].ipAddress || '—'} (Phiên hiện tại)</p>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-[#FF4D8D]"></span>
+                        <span className="text-[#FF4D8D] font-medium">Active</span>
+                      </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-[#FF4D8D]"></span>
-                      <span className="text-[#FF4D8D] font-medium">Active</span>
-                    </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </>

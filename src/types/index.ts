@@ -21,6 +21,7 @@ export interface Template {
   minEventsForPublish: number;
   sortOrder: number;
   isActive: boolean;
+  usageCount?: number;
 }
 
 export interface Story {

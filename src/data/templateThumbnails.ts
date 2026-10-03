@@ -1,0 +1,11 @@
+export const TEMPLATE_THUMBNAILS: Record<string, string> = {
+  'romantic-anniversary': 'https://images.unsplash.com/photo-1519681393784-d120267933ba?auto=format&fit=crop&w=800&q=80',
+  'memory-wall': 'https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?auto=format&fit=crop&w=800&q=80',
+  'anniversary-journey': 'https://images.unsplash.com/photo-1522673607200-164d1b6ce486?auto=format&fit=crop&w=800&q=80',
+  'minimal-couple': 'https://lh3.googleusercontent.com/aida-public/AB6AXuAyfffKx5Igx2OlKzPympaxCrfoqfS-HZzKTrC--uOZWQncltCWRw8rXk5pr0CsOKmXj1Qves505wW0iqqc8HGiq1jI3zNQ19p3JvkG3_nzYGDlLgfl7rG5_qhLQc6IrW04TEmibYIPwvxHRzfL3IkIsA7majLvQ696XJdgv181VPqlIS4kLMC0lgxM7fPwNndgiCAhAWAJYEyoQKXAWHtzl_CEC1hxpl2LGXLENcNT9YTAqkwd1HuX',
+  'eternal-love': 'https://lh3.googleusercontent.com/aida-public/AB6AXuA77T18JUaOZbMW1KNkSVPfZ8e8Z4X_q8vnHenBFNos975r0EStE7OIoU9E9l-StOSgE8QPrzJSjcyJ1YmaPYQBRI-BpE10_TXbOUtuzlKY_3f-ZJnEC_CUhiz6kXlsx_2kj8geGmQry2ClLYxhYTmrZDb8ywxND88jWCBQtc6H5YpxI19_Gl8pl_LnjXnP5pfiELr2yQXkX4stoOOtWAy497hsRsDcAAy90n_Jrny0ZgFvSopmPPu3',
+  'autumn-paris': 'https://lh3.googleusercontent.com/aida-public/AB6AXuA3qjDK-27xfju7-_8h0C97DIYvKJFE6ZCGR5dYxaGo6DeZbQaXzpyp-72h0kALTBeGnzHNbnpfKHbWhfktmCnt9nuJ13rYNUVf8OR8vgez0wZCsNa30ByiLfdbDP_Qmjde-K3hWA_5YYM4CsUS0SAzmU1v1C6_SoDAXvh3MIlaiOSJBJvIrI9gpxYN8_s6BWH7GRevvNcOkBG0pJSc-SYko7y9lmnDXwIaeUvKSvOQpJzvMnD8U48R',
+  'sunset-horizon': 'https://lh3.googleusercontent.com/aida-public/AB6AXuAWY7tfCqnzKUI0Y94TKtMDAg1zS_uvSpcpx8ZgRgN4xHd-cGGT7lORTUeYRqwJTiYnAA1dLqZ6DszqtVbHT00CchxE5c_mI3dDzbdTORHcqfVr8sqK6KZ4lnghgz3PHuM-1PfO3KO3cTiz1FYThwXqhSi-Xymt2vVTTg6TiWg_jXU4-q34DBcwAUPHawtktHsbaqxYs5irgf2KUtXzqsjZeNt7faNLVO0bJFadVoGgZvJuSYEMv1nP',
+  'sweet-polaroid': 'https://lh3.googleusercontent.com/aida-public/AB6AXuCriEtK1gEP9yWnX35mz9tymj4ZJao7gd-faVskuvecelvfd7YTOroMS5cZpB9zcAC0lmo8oWSQafcpnyTz7PnNELFbuZ_sqoFAglOTWJbMK3M3JGc2Km04yio8yHYIG8rq2rfpI2rkdJOXpxt3dqMgZFOuvy1My5_57z505nqnfE80Pw6M_m-O49ZVUQu5sgyUMp1RY3lDJAnZIGUcgKHWpPa_87nZOEbvENnGZrR3h5JSrxR-LT_x',
+  'royal-wedding': 'https://lh3.googleusercontent.com/aida-public/AB6AXuBiH-OcuHntbbQ8UvFH0-L6HS9n2rVLZPHKjzGTBTpbn1SycA2pJX2KbHqBoqu3gIKtJ3yBO8q2yYeXEmbw845-gFhwqE7Y_4XtPFvoNnWIUJot7VNzECMI-9WF3BpGjAliIsfuA3fonx1PF7525heaaD6hjtBivKzm3ODAPBYRcqVuzEkXAwGTei_1mKSifGJ6MVGz28gdfWY78z2YXK38m4CmD53busZrpmG91sEHX3XUaWCEpUKW',
+};

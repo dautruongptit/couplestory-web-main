@@ -246,14 +246,16 @@ export function DashboardLayout() {
     { to: '/admin/orders', icon: 'receipt_long', label: 'Đơn hàng' },
     { to: '/admin/music', icon: 'library_music', label: 'Thư viện nhạc' },
     { to: '/home', icon: 'home', label: 'Home' },
+    { to: '/', icon: 'storefront', label: 'Trang giới thiệu' },
   ] : [
     { to: '/home', icon: 'home', label: 'Home' },
     { to: '/home#stories', icon: 'auto_stories', label: 'My Stories', badge: 'count' as const },
-    { to: '/home#templates', icon: 'palette', label: 'Templates' },
+    { to: '/home/templates', icon: 'palette', label: 'Templates' },
+    { to: '/', icon: 'storefront', label: 'Trang giới thiệu' },
   ];
 
   const isActive = (to: string) => {
-    if (to === '/home') return location.pathname === '/home';
+    if (to === '/home' || to === '/') return location.pathname === to;
     return location.pathname.startsWith(to);
   };
 
@@ -275,7 +277,7 @@ export function DashboardLayout() {
       <div className="px-4 mt-2 mb-4">
         <Link
           to="/create"
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#ff4d8d] to-[#e63e7b] text-white font-semibold text-sm shadow-[0_4px_16px_rgba(255,77,141,0.35)] hover:shadow-[0_6px_20px_rgba(255,77,141,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all"
+          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#ff4d8d] to-[#a855f7] text-white font-semibold text-sm shadow-[0_4px_16px_rgba(168,85,247,0.35)] hover:shadow-[0_6px_20px_rgba(168,85,247,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all"
         >
           <span className="material-symbols-outlined text-[18px]">add</span>
           Create New

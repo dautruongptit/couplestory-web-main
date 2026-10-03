@@ -7,6 +7,7 @@ import ConfirmModal from '@/components/ConfirmModal';
 import RenewModal from '@/components/RenewModal';
 import { usePlans } from '@/hooks/usePlans';
 import { useTemplates } from '@/hooks/useTemplates';
+import { TEMPLATE_THUMBNAILS } from '@/data/templateThumbnails';
 
 export interface StoryResponse {
   id: string;
@@ -323,7 +324,7 @@ export default function Dashboard() {
                 <h2 className="text-lg font-bold text-[#2e1220]">Khám phá giao diện</h2>
                 <p className="text-xs text-[#594046]">Những mẫu giao diện xinh xắn dành riêng cho các cặp đôi</p>
               </div>
-              <Link to="/templates" className="text-[#ff4d8d] text-sm font-semibold hover:underline whitespace-nowrap">
+              <Link to="/home/templates" className="text-[#ff4d8d] text-sm font-semibold hover:underline whitespace-nowrap">
                 Xem tất cả →
               </Link>
             </div>
@@ -334,9 +335,18 @@ export default function Dashboard() {
                     <div className="aspect-[3/4] rounded-2xl bg-gradient-to-br from-[#ffe8ef] to-[#ffd6e6] overflow-hidden mb-2 border border-[#f0e4e8] group-hover:shadow-md transition-shadow relative">
                       {/* Optional Overlay on hover */}
                       <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <div className="w-full h-full flex items-center justify-center">
-                        <span className="material-symbols-outlined text-[40px] text-[#ff4d8d]/30">palette</span>
-                      </div>
+                      {(t.previewImage || TEMPLATE_THUMBNAILS[t.code]) ? (
+                        <img
+                          src={t.previewImage || TEMPLATE_THUMBNAILS[t.code]}
+                          alt={t.name}
+                          loading="lazy"
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center">
+                          <span className="material-symbols-outlined text-[40px] text-[#ff4d8d]/30">palette</span>
+                        </div>
+                      )}
                     </div>
                   </Link>
                   <p className="font-semibold text-sm text-[#2e1220] truncate">{t.name}</p>

@@ -9,6 +9,7 @@ import Register from '@/pages/Register';
 import ForgotPassword from '@/pages/ForgotPassword';
 import PricingResponsive from '@/pages/PricingResponsive';
 import TemplatesGallery from '@/pages/TemplatesGallery';
+import HomeTemplates from '@/pages/HomeTemplates';
 import CreateType from '@/pages/CreateType';
 import Dashboard from '@/pages/Dashboard';
 import DashboardUpgrade from '@/pages/DashboardUpgrade';
@@ -55,7 +56,8 @@ export const router = createBrowserRouter([
     children: [
       { path: 'home',         element: <ProtectedRoute><Dashboard /></ProtectedRoute> },
       { path: 'home/upgrade', element: <ProtectedRoute><DashboardUpgrade /></ProtectedRoute> },
-      
+      { path: 'home/templates', element: <ProtectedRoute><HomeTemplates /></ProtectedRoute> },
+
       { path: 'notifications', element: <ProtectedRoute><AllNotifications /></ProtectedRoute> },
         { path: 'admin',             element: <Navigate to="/admin/users" replace /> },
       { path: 'admin/users',       element: <AdminRoute><AdminUsers /></AdminRoute> },
