@@ -367,10 +367,17 @@ export function DashboardLayout() {
       <div className={`${SIDEBAR_ML} flex flex-col min-h-screen`}>
         {/* Top bar */}
         <header className="sticky top-0 h-14 bg-white/80 backdrop-blur-xl z-40 flex items-center justify-between px-4 md:px-6 border-b border-[#f0e4e8]/60">
-          {/* Mobile hamburger */}
-          <button onClick={() => setMobileOpen(true)} className="md:hidden w-9 h-9 flex items-center justify-center rounded-xl hover:bg-[#fff5f9] text-[#594046]">
-            <span className="material-symbols-outlined text-[22px]">menu</span>
-          </button>
+          {/* Mobile: hamburger for admin, logo for users (users navigate with the bottom tab bar) */}
+          {isAdmin ? (
+            <button onClick={() => setMobileOpen(true)} className="md:hidden w-9 h-9 flex items-center justify-center rounded-xl hover:bg-[#fff5f9] text-[#594046]">
+              <span className="material-symbols-outlined text-[22px]">menu</span>
+            </button>
+          ) : (
+            <Link to="/home" className="md:hidden flex items-center gap-1.5 text-[#ff4d8d] font-bold text-lg tracking-tight">
+              <span className="material-symbols-outlined text-[20px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
+              CoupleStory
+            </Link>
+          )}
 
           {/* Together counter */}
           <div className="hidden md:flex items-center gap-1.5 text-sm text-[#8d7076]">
@@ -405,10 +412,37 @@ export function DashboardLayout() {
         </header>
 
         {/* Page content */}
-        <main className="flex-1 w-full">
+        <main className={`flex-1 w-full ${isAdmin ? '' : 'pb-24 md:pb-0'}`}>
           <Outlet />
         </main>
       </div>
+
+      {!isAdmin && (
+        <nav className="md:hidden fixed bottom-0 inset-x-0 z-40 h-16 bg-white/95 backdrop-blur-xl border-t border-[#ffd6e6] flex items-end justify-around px-2 pb-[env(safe-area-inset-bottom)]">
+          {([
+            { label: 'Trang chủ', icon: 'home', to: '/home', active: location.pathname === '/home' && location.hash !== '#stories' },
+            { label: 'Story', icon: 'auto_stories', to: '/home#stories', active: location.pathname === '/home' && location.hash === '#stories' },
+          ]).map(tab => (
+            <Link key={tab.label} to={tab.to} className={`flex-1 flex flex-col items-center gap-0.5 pb-2 pt-1 text-[11px] font-medium ${tab.active ? 'text-[#ff4d8d]' : 'text-[#8d7076]'}`}>
+              <span className="material-symbols-outlined text-[24px]" style={tab.active ? { fontVariationSettings: "'FILL' 1" } : undefined}>{tab.icon}</span>
+              {tab.label}
+            </Link>
+          ))}
+          <Link to="/create" aria-label="Tạo mới" className="flex-1 flex justify-center">
+            <span className="-mt-6 w-14 h-14 rounded-full bg-gradient-to-br from-[#ff4d8d] to-[#a855f7] text-white flex items-center justify-center shadow-[0_6px_18px_rgba(168,85,247,0.45)] border-4 border-white">
+              <span className="material-symbols-outlined text-[28px]">add</span>
+            </span>
+          </Link>
+          <Link to="/home/templates" className={`flex-1 flex flex-col items-center gap-0.5 pb-2 pt-1 text-[11px] font-medium ${location.pathname === '/home/templates' ? 'text-[#ff4d8d]' : 'text-[#8d7076]'}`}>
+            <span className="material-symbols-outlined text-[24px]" style={location.pathname === '/home/templates' ? { fontVariationSettings: "'FILL' 1" } : undefined}>palette</span>
+            Mẫu
+          </Link>
+          <button onClick={() => setShowAccountModal(true)} className="flex-1 flex flex-col items-center gap-0.5 pb-2 pt-1 text-[11px] font-medium text-[#8d7076]">
+            <span className="material-symbols-outlined text-[24px]">person</span>
+            Cá nhân
+          </button>
+        </nav>
+      )}
 
       {showAccountModal && <AccountModal onClose={() => setShowAccountModal(false)} />}
     </div>

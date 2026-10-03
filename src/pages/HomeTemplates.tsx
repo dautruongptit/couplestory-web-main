@@ -33,6 +33,15 @@ export default function HomeTemplates() {
   const [hasMore, setHasMore] = useState(true);
   const [loading, setLoading] = useState(false);
   const [failed, setFailed] = useState(false);
+  const [selected, setSelected] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(() => window.matchMedia('(max-width: 639px)').matches);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 639px)');
+    const onChange = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', onChange);
+    return () => mq.removeEventListener('change', onChange);
+  }, []);
 
   const nextPage = useRef(0);
   const requestId = useRef(0);
@@ -79,6 +88,11 @@ export default function HomeTemplates() {
   }, [loadMore]);
 
   useEffect(() => {
+    if (items.length === 0) setSelected(null);
+    else if (!selected || !items.some(t => t.code === selected)) setSelected(items[0].code);
+  }, [items, selected]);
+
+  useEffect(() => {
     const el = sentinel.current;
     if (!el || !hasMore || loading || failed) return;
     const observer = new IntersectionObserver(
@@ -95,7 +109,7 @@ export default function HomeTemplates() {
     }`;
 
   return (
-    <div className="px-4 md:px-6 py-6 max-w-7xl mx-auto">
+    <div className="px-4 md:px-6 pt-6 pb-20 sm:pb-6 max-w-7xl mx-auto">
       <div className="flex items-center gap-1.5 text-xs text-[#8d7076] mb-3">
         <Link to="/home" className="hover:text-[#ff4d8d]">Home</Link>
         <span>›</span>
@@ -106,7 +120,7 @@ export default function HomeTemplates() {
         Chọn một thiết kế lãng mạn cho kỷ niệm, đám cưới hay nhật ký tình yêu của hai bạn. Tùy chỉnh chỉ trong vài phút với những khoảnh khắc yêu thích.
       </p>
 
-      <div className="sticky top-14 z-30 -mx-4 md:-mx-6 px-4 md:px-6 py-2 mb-5 bg-[#faf7f8]/90 backdrop-blur">
+      <div className="sm:sticky sm:top-14 z-30 -mx-4 md:-mx-6 px-4 md:px-6 py-2 mb-5 bg-[#faf7f8]/90 backdrop-blur">
         <div className="bg-white/80 backdrop-blur rounded-2xl border border-[#ffd6e6] shadow-[0_4px_20px_rgba(255,77,141,0.08)] p-3 md:p-4 flex flex-col gap-3">
           <div className="flex flex-col sm:flex-row gap-3 sm:items-center">
             <div className="flex-1 flex items-center gap-2 px-3.5 py-2.5 rounded-xl bg-[#faf7f8] border border-[#f0e4e8] focus-within:border-[#ff4d8d]/50">
@@ -146,9 +160,10 @@ export default function HomeTemplates() {
         {items.map(t => {
           const image = t.previewImage || TEMPLATE_THUMBNAILS[t.code];
           const locked = !canUsePackage(user?.plan, t.package);
+          const isSelected = isMobile && selected === t.code;
           return (
-            <div key={t.code} className="group bg-white/70 backdrop-blur rounded-3xl border border-[#ffd6e6] shadow-[0_4px_20px_rgba(255,77,141,0.08)] hover:shadow-[0_8px_28px_rgba(168,85,247,0.15)] transition-shadow p-3 flex flex-col">
-              <Link to={`/preview/${t.code}`} className="block">
+            <div key={t.code} onClick={() => isMobile && setSelected(t.code)} className={`${isSelected ? 'ring-2 ring-[#ff4d8d] ' : ''}group bg-white/70 backdrop-blur rounded-3xl border border-[#ffd6e6] shadow-[0_4px_20px_rgba(255,77,141,0.08)] hover:shadow-[0_8px_28px_rgba(168,85,247,0.15)] transition-shadow p-3 flex flex-col`}>
+              <Link to={`/preview/${t.code}`} onClick={e => { if (isMobile) e.preventDefault(); }} className="block">
                 <div className="aspect-[4/5] rounded-2xl bg-gradient-to-br from-[#ffe8ef] to-[#ffd6e6] overflow-hidden relative">
                   {image ? (
                     <img src={image} alt={t.name} loading="lazy" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
@@ -162,6 +177,11 @@ export default function HomeTemplates() {
                   }`}>
                     {t.package === 'FREE' ? '● FREE' : `✦ ${t.package}`}
                   </span>
+                  {isSelected && (
+                    <span className="absolute bottom-3 left-3 inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-[#ff4d8d] text-white text-[11px] font-bold shadow">
+                      <span className="material-symbols-outlined text-[14px]">check_circle</span>Đang chọn
+                    </span>
+                  )}
                   {locked && (
                     <span className="absolute top-3 right-3 w-7 h-7 rounded-full bg-black/45 text-white flex items-center justify-center">
                       <span className="material-symbols-outlined text-[16px]">lock</span>
@@ -180,15 +200,15 @@ export default function HomeTemplates() {
                 <h3 className="text-lg font-semibold text-[#2e1220] leading-snug">{t.name}</h3>
                 <p className="text-sm text-[#8d7076] line-clamp-2 mt-1 mb-4 min-h-[2.5rem]">{t.description}</p>
                 <div className="flex items-center gap-2 mt-auto">
-                  <Link to={`/preview/${t.code}`} className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-semibold bg-[#fff0f4] text-[#b90a5a] hover:bg-[#ffe0eb] transition-colors">
+                  <Link to={`/preview/${t.code}`} className="flex-1 inline-flex items-center justify-center gap-1.5 py-3 sm:py-2.5 rounded-full text-sm font-semibold bg-[#fff0f4] text-[#b90a5a] hover:bg-[#ffe0eb] transition-colors">
                     <span className="material-symbols-outlined text-[16px]">visibility</span>Xem trước
                   </Link>
                   {locked ? (
-                    <Link to="/home/upgrade" className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-semibold bg-gradient-to-r from-[#b5179e] to-[#7c3aed] text-white hover:opacity-90 transition-opacity">
+                    <Link to="/home/upgrade" className="flex-1 hidden sm:inline-flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-semibold bg-gradient-to-r from-[#b5179e] to-[#7c3aed] text-white hover:opacity-90 transition-opacity">
                       <span className="material-symbols-outlined text-[16px]">lock</span>Nâng cấp
                     </Link>
                   ) : (
-                    <Link to={`/home?applyTemplate=${t.code}`} className="flex-1 inline-flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-semibold bg-gradient-to-r from-[#ff4d8d] to-[#a855f7] text-white shadow-[0_4px_14px_rgba(168,85,247,0.35)] hover:shadow-[0_6px_18px_rgba(168,85,247,0.45)] transition-shadow">
+                    <Link to={`/home?applyTemplate=${t.code}`} className="flex-1 hidden sm:inline-flex items-center justify-center gap-1.5 py-2.5 rounded-full text-sm font-semibold bg-gradient-to-r from-[#ff4d8d] to-[#a855f7] text-white shadow-[0_4px_14px_rgba(168,85,247,0.35)] hover:shadow-[0_6px_18px_rgba(168,85,247,0.45)] transition-shadow">
                       Dùng mẫu<span className="material-symbols-outlined text-[16px]">arrow_forward</span>
                     </Link>
                   )}
@@ -223,6 +243,27 @@ export default function HomeTemplates() {
         <p className="text-center py-8 text-xs text-[#8d7076]">Bạn đã xem hết các mẫu 💕</p>
       )}
       <div ref={sentinel} className="h-1" />
+
+      {(() => {
+        const current = items.find(t => t.code === selected);
+        if (!current) return null;
+        const locked = !canUsePackage(user?.plan, current.package);
+        return (
+          <div className="sm:hidden fixed bottom-16 inset-x-0 z-30 px-4 pt-6 pb-2 bg-gradient-to-t from-white via-white/90 to-transparent pointer-events-none [&>*]:pointer-events-auto">
+            <Link
+              to={locked ? '/home/upgrade' : `/home?applyTemplate=${current.code}`}
+              className={`w-full inline-flex items-center justify-center gap-2 py-3.5 rounded-full text-base font-semibold text-white shadow-[0_6px_20px_rgba(168,85,247,0.45)] ${
+                locked ? 'bg-gradient-to-r from-[#b5179e] to-[#7c3aed]' : 'bg-gradient-to-r from-[#ff4d8d] to-[#a855f7]'
+              }`}
+            >
+              {locked
+                ? <><span className="material-symbols-outlined text-[18px]">lock</span>Nâng cấp để dùng mẫu này</>
+                : <>Tiếp tục với mẫu này<span className="material-symbols-outlined text-[18px]">arrow_forward</span></>}
+            </Link>
+            <p className="text-center text-[11px] text-[#8d7076] mt-1.5">Có thể thay đổi mẫu bất kỳ lúc nào</p>
+          </div>
+        );
+      })()}
     </div>
   );
 }
