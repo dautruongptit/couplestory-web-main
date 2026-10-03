@@ -344,175 +344,205 @@ export default function StoryEditor() {
 
             {/* MEMORIES */}
             {activeSection === 'memories' && (
-              <div className="p-4 flex flex-col gap-3">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h2 className="font-bold text-gray-800 text-base flex items-center gap-2">
-                      Timeline Memories
-                      <span className="text-sm font-normal text-gray-400">({draftDoneCount}/{totalEvents})</span>
-                    </h2>
-                    {totalEvents > 0 && draftDoneCount < totalEvents && (
-                      <p className="text-[12px] text-orange-500 font-medium mt-0.5">
-                        🔥 Almost done! • {totalEvents - draftDoneCount} milestone cards left
-                      </p>
-                    )}
+              <div className="p-4 flex flex-col gap-4">
+                {/* Header Section */}
+                <div className="bg-white rounded-2xl p-4 shadow-sm border border-rose-50 flex flex-col gap-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <h2 className="font-bold text-gray-800 text-lg">Dòng thời gian</h2>
+                      <span className="px-2 py-0.5 rounded-full bg-rose-100 text-rose-500 text-xs font-bold">
+                        {totalEvents}/{maxVisible} kỷ niệm
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => {
+                        const events = [...story.timeline_block.events, { id: '', date: '', title: '', description: '', location: '', is_visible: visibleCount < maxVisible, media_url: '' }];
+                        setStory({ ...story, timeline_block: { ...story.timeline_block, is_enabled: true, events } });
+                        setExpandedEventIdx(events.length - 1);
+                      }}
+                      className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-rose-50 text-rose-500 text-xs font-bold hover:bg-rose-100 transition-colors"
+                    >
+                      <span className="material-symbols-outlined text-[14px]">swap_vert</span>
+                      Tự động sắp xếp
+                    </button>
                   </div>
-                  <button
-                    onClick={() => {
-                      const events = [...story.timeline_block.events, { id: '', date: '', title: '', description: '', location: '', is_visible: visibleCount < maxVisible, media_url: '' }];
-                      setStory({ ...story, timeline_block: { ...story.timeline_block, is_enabled: true, events } });
-                      setExpandedEventIdx(events.length - 1);
-                    }}
-                    className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-white border border-gray-200 text-gray-600 text-xs font-medium hover:bg-gray-50 transition-colors shadow-sm"
-                  >
-                    <span className="material-symbols-outlined text-[14px]">auto_fix_high</span>
-                    Auto-order
-                  </button>
-                </div>
-
-                {/* Day label */}
-                {story.timeline_block.events.length > 0 && (
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1 h-px bg-rose-100" />
-                    <span className="text-[11px] text-rose-400 font-semibold">OUR DAY #1 ♡</span>
-                    <div className="flex-1 h-px bg-rose-100" />
-                  </div>
-                )}
-
-                {story.timeline_block.events.length === 0 && (
-                  <div className="text-center py-12 text-gray-400">
-                    <span className="material-symbols-outlined text-4xl opacity-30 mb-2 block">event_note</span>
-                    <p className="font-medium text-sm">Chưa có kỷ niệm nào</p>
-                    <p className="text-xs opacity-70 mt-1">Thêm kỷ niệm đầu tiên của hai bạn</p>
-                  </div>
-                )}
-
-                {story.timeline_block.events.map((ev, idx) => {
-                  const isExpanded = expandedEventIdx === idx;
-                  const isDone = !!(ev.title && ev.description);
-                  return (
-                    <div key={ev.id || idx} className={`bg-white rounded-2xl border transition-all duration-200 overflow-hidden shadow-sm ${isExpanded ? 'border-rose-200 shadow-rose-100/50' : 'border-gray-100 hover:border-rose-100'}`}>
-                      {!isExpanded ? (
-                        <button className="w-full flex items-center gap-3 px-4 py-3 text-left" onClick={() => setExpandedEventIdx(idx)}>
-                          <div className="w-12 h-12 rounded-xl bg-rose-50 flex-shrink-0 overflow-hidden">
-                            {ev.media_url
-                              ? <img src={ev.media_url} alt="" className="w-full h-full object-cover" />
-                              : <div className="w-full h-full flex items-center justify-center"><span className="material-symbols-outlined text-rose-200 text-[20px]">photo</span></div>
-                            }
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2">
-                              <span className="px-2 py-0.5 rounded-full bg-rose-500 text-white text-[11px] font-bold">{String(idx + 1).padStart(2, '0')}</span>
-                              <span className="font-semibold text-gray-800 text-sm truncate">{ev.title || 'Kỷ niệm mới'} {isDone ? '✨' : ''}</span>
-                            </div>
-                            {ev.date && (
-                              <p className="text-[11px] text-gray-400 mt-0.5">
-                                📅 {new Date(ev.date).toLocaleDateString('vi-VN')}
-                                {ev.location ? ` • 📍 ${ev.location}` : ''}
-                              </p>
-                            )}
-                          </div>
-                          <div className="flex items-center gap-1.5 flex-shrink-0">
-                            {isDone && <span className="w-5 h-5 rounded-full bg-emerald-100 flex items-center justify-center"><span className="material-symbols-outlined text-emerald-500 text-[12px]">check</span></span>}
-                            <span className="material-symbols-outlined text-gray-300 text-[18px]">expand_more</span>
-                          </div>
-                        </button>
-                      ) : (
-                        <div className="flex flex-col">
-                          {/* Expanded header */}
-                          <div className="flex items-center justify-between px-4 pt-4 pb-2">
-                            <span className="flex items-center gap-1.5">
-                              <span className="px-2 py-0.5 rounded-full bg-rose-500 text-white text-[11px] font-bold">{String(idx + 1).padStart(2, '0')}</span>
-                              <span className="font-bold text-rose-500 text-sm">{ev.title || 'Kỷ niệm mới'} {isDone ? '✨' : ''}</span>
-                            </span>
-                            <div className="flex items-center gap-1">
-                              <button onClick={() => setExpandedEventIdx(null)} className="w-7 h-7 rounded-full hover:bg-gray-100 flex items-center justify-center text-gray-400">
-                                <span className="material-symbols-outlined text-[16px]">expand_less</span>
-                              </button>
-                              <button onClick={() => { const events = story.timeline_block.events.filter((_, i) => i !== idx); setStory({ ...story, timeline_block: { ...story.timeline_block, events, is_enabled: events.length > 0 } }); setExpandedEventIdx(null); }} className="w-7 h-7 rounded-full hover:bg-red-50 flex items-center justify-center text-gray-300 hover:text-red-400 transition-colors">
-                                <span className="material-symbols-outlined text-[16px]">delete</span>
-                              </button>
-                            </div>
-                          </div>
-
-                          {/* Cover photo */}
-                          <div className="mx-4 mb-3 rounded-xl overflow-hidden bg-gray-50 border border-gray-100 relative" style={{ aspectRatio: '16/7' }}>
-                            {ev.media_url
-                              ? <img src={ev.media_url} alt="" className="w-full h-full object-cover" />
-                              : <div className="w-full h-full flex flex-col items-center justify-center text-gray-300"><span className="material-symbols-outlined text-3xl">add_photo_alternate</span><span className="text-xs mt-1">Thêm ảnh bìa</span></div>
-                            }
-                            <button className="absolute bottom-2 right-2 flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-gray-600 text-xs font-medium shadow-sm border border-gray-200">
-                              <span className="material-symbols-outlined text-[14px]">photo_camera</span>
-                              Đổi ảnh
-                            </button>
-                          </div>
-
-                          {ev.description && (
-                            <p className="mx-4 mb-3 text-rose-400 italic text-xs">"{ev.description.slice(0, 80)}{ev.description.length > 80 ? '...' : ''}"</p>
-                          )}
-
-                          <div className="px-4 pb-4 flex flex-col gap-3">
-                            <div>
-                              <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider flex items-center gap-1 mb-1.5">💬 What happened?</label>
-                              <input type="text" placeholder="Tên kỷ niệm..." maxLength={100} value={ev.title}
-                                onChange={e => { const events = [...story.timeline_block.events]; events[idx] = { ...events[idx], title: e.target.value }; setStory({ ...story, timeline_block: { ...story.timeline_block, events } }); }}
-                                className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200 transition-all" />
-                            </div>
-                            <textarea rows={3} maxLength={500} placeholder="Kể lại câu chuyện trong kỷ niệm này..."
-                              value={ev.description}
-                              onChange={e => { const events = [...story.timeline_block.events]; events[idx] = { ...events[idx], description: e.target.value }; setStory({ ...story, timeline_block: { ...story.timeline_block, events } }); }}
-                              className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200 resize-none transition-all" />
-
-                            {/* Location + Date */}
-                            <div className="grid grid-cols-2 gap-2">
-                              <div>
-                                <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider flex items-center gap-1 mb-1.5">
-                                  <span className="material-symbols-outlined text-[12px]">location_on</span> Where was this?
-                                </label>
-                                <div className="relative">
-                                  <span className="absolute left-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-300 text-[14px]">location_on</span>
-                                  <input type="text" placeholder="Địa điểm..." maxLength={150} value={ev.location || ''}
-                                    onChange={e => { const events = [...story.timeline_block.events]; events[idx] = { ...events[idx], location: e.target.value }; setStory({ ...story, timeline_block: { ...story.timeline_block, events } }); }}
-                                    className="w-full h-9 pl-6 pr-2 rounded-lg bg-gray-50 border border-gray-200 text-xs focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200 transition-all" />
-                                </div>
-                              </div>
-                              <div>
-                                <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider flex items-center gap-1 mb-1.5">
-                                  <span className="material-symbols-outlined text-[12px]">calendar_month</span> Milestone Date
-                                </label>
-                                <div className="relative">
-                                  <span className="absolute left-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-300 text-[14px]">calendar_month</span>
-                                  <input type="date" value={ev.date ? ev.date.split('T')[0] : ''}
-                                    onChange={e => { const events = [...story.timeline_block.events]; events[idx] = { ...events[idx], date: e.target.value }; setStory({ ...story, timeline_block: { ...story.timeline_block, events } }); }}
-                                    className="w-full h-9 pl-6 pr-2 rounded-lg bg-gray-50 border border-gray-200 text-xs focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200 transition-all" />
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Visibility */}
-                            <label className="flex items-center gap-2 cursor-pointer select-none">
-                              <div className="relative">
-                                <input type="checkbox" className="sr-only peer" checked={ev.is_visible !== false}
-                                  disabled={ev.is_visible === false && visibleCount >= maxVisible}
-                                  onChange={e => { const events = [...story.timeline_block.events]; events[idx] = { ...events[idx], is_visible: e.target.checked }; setStory({ ...story, timeline_block: { ...story.timeline_block, events } }); }} />
-                                <div className="w-8 h-4 bg-gray-200 peer-checked:bg-rose-400 rounded-full transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-4" />
-                              </div>
-                              <span className="text-xs text-gray-500">Hiển thị trên trang ({visibleCount}/{maxVisible})</span>
-                            </label>
-                          </div>
-                        </div>
+                  
+                  {/* Progress Bar Area */}
+                  <div className="flex flex-col gap-1.5">
+                    <div className="w-full h-1.5 bg-rose-50 rounded-full overflow-hidden flex">
+                      <div className="h-full bg-gradient-to-r from-purple-500 to-rose-400" style={{ width: `${Math.min(100, Math.round((draftDoneCount / (totalEvents || 1)) * 100))}%` }}></div>
+                    </div>
+                    <div className="flex items-center justify-between text-[11px] font-medium">
+                      <span className="text-gray-500">Tiến độ hoàn thiện trang: {Math.round((draftDoneCount / (totalEvents || 1)) * 100)}%</span>
+                      {totalEvents < maxVisible && (
+                        <span className="text-rose-400">Thêm {maxVisible - totalEvents} cột mốc để mở khóa quà ✨</span>
                       )}
                     </div>
-                  );
-                })}
+                  </div>
+                </div>
+
+                {/* Event cards */}
+                <div className="flex flex-col gap-3">
+                  {story.timeline_block.events.length === 0 && (
+                    <div className="text-center py-12 text-gray-400">
+                      <span className="material-symbols-outlined text-4xl opacity-30 mb-2 block">event_note</span>
+                      <p className="font-medium text-sm">Chưa có kỷ niệm nào</p>
+                      <p className="text-xs opacity-70 mt-1">Thêm kỷ niệm đầu tiên của hai bạn</p>
+                    </div>
+                  )}
+
+                  {story.timeline_block.events.map((ev, idx) => {
+                    const isExpanded = expandedEventIdx === idx;
+                    const isDone = !!(ev.title && ev.description);
+                    return (
+                      <div key={ev.id || idx} className={`bg-white rounded-[24px] border transition-all duration-200 overflow-hidden shadow-sm ${isExpanded ? 'border-rose-100 shadow-rose-50' : 'border-transparent hover:border-rose-50'}`}>
+                        {!isExpanded ? (
+                          <div className="w-full flex items-center gap-3 px-4 py-3">
+                            <div className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer" onClick={() => setExpandedEventIdx(idx)}>
+                              <span className="material-symbols-outlined text-gray-300 text-[18px] cursor-grab">drag_indicator</span>
+                              <div className="w-10 h-10 rounded-full bg-rose-50 flex-shrink-0 overflow-hidden">
+                                {ev.media_url
+                                  ? <img src={ev.media_url} alt="" className="w-full h-full object-cover" />
+                                  : <div className="w-full h-full flex items-center justify-center"><span className="material-symbols-outlined text-rose-200 text-[18px]">photo</span></div>
+                                }
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <div className="flex items-center gap-1.5">
+                                  <span className="font-bold text-gray-800 text-sm truncate">{ev.title || 'Kỷ niệm mới'} {isDone ? '✨' : ''}</span>
+                                </div>
+                                {(ev.date || ev.location) && (
+                                  <p className="text-[11px] text-gray-500 mt-0.5 flex items-center gap-1 truncate">
+                                    {ev.date && <><span className="material-symbols-outlined text-[12px]">calendar_month</span> {new Date(ev.date).toLocaleDateString('vi-VN')}</>}
+                                    {ev.date && ev.location && <span>•</span>}
+                                    {ev.location && <><span className="material-symbols-outlined text-[12px] text-rose-400">location_on</span> {ev.location}</>}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3 flex-shrink-0">
+                              <button
+                                onClick={e => {
+                                  e.stopPropagation();
+                                  const events = [...story.timeline_block.events];
+                                  events[idx] = { ...events[idx], is_visible: ev.is_visible === false };
+                                  setStory({ ...story, timeline_block: { ...story.timeline_block, events } });
+                                }}
+                                className={`flex items-center justify-center ${ev.is_visible !== false ? 'text-rose-500' : 'text-gray-300'}`}
+                              >
+                                <span className="material-symbols-outlined text-[18px]">{ev.is_visible !== false ? 'visibility' : 'visibility_off'}</span>
+                              </button>
+                              <button onClick={() => setExpandedEventIdx(idx)} className="text-gray-400">
+                                <span className="material-symbols-outlined text-[20px]">expand_more</span>
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col">
+                            {/* Expanded header */}
+                            <div className="flex items-center justify-between px-4 pt-4 pb-2 border-b border-gray-50">
+                              <div className="flex items-center gap-2">
+                                <span className="material-symbols-outlined text-gray-300 text-[18px] cursor-grab">drag_indicator</span>
+                                <span className="px-3 py-1 rounded-full bg-rose-500 text-white text-[11px] font-bold">
+                                  Đang chỉnh sửa #{idx + 1}
+                                </span>
+                              </div>
+                              <label className="flex items-center gap-2 cursor-pointer">
+                                <span className="text-[11px] text-gray-600 font-bold">Hiển thị</span>
+                                <div className="relative">
+                                  <input type="checkbox" className="sr-only peer" checked={ev.is_visible !== false}
+                                    disabled={ev.is_visible === false && visibleCount >= maxVisible}
+                                    onChange={e => { const events = [...story.timeline_block.events]; events[idx] = { ...events[idx], is_visible: e.target.checked }; setStory({ ...story, timeline_block: { ...story.timeline_block, events } }); }} />
+                                  <div className="w-8 h-4 bg-gray-200 peer-checked:bg-rose-400 rounded-full transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-4" />
+                                </div>
+                              </label>
+                            </div>
+
+                            <div className="pt-4">
+                              <div className="mx-4 mb-3 rounded-xl overflow-hidden bg-gray-50 border border-gray-100 relative" style={{ aspectRatio: '16/7' }}>
+                                {ev.media_url
+                                  ? <img src={ev.media_url} alt="" className="w-full h-full object-cover" />
+                                  : <div className="w-full h-full flex flex-col items-center justify-center text-gray-300"><span className="material-symbols-outlined text-3xl">add_photo_alternate</span><span className="text-xs mt-1">Thêm ảnh bìa</span></div>
+                                }
+                                <button className="absolute bottom-2 right-2 flex items-center gap-1 px-2.5 py-1 rounded-full bg-white/90 backdrop-blur-sm text-gray-600 text-xs font-medium shadow-sm border border-gray-200">
+                                  <span className="material-symbols-outlined text-[14px]">photo_camera</span>
+                                  Đổi ảnh
+                                </button>
+                              </div>
+
+                              {ev.description && (
+                                <p className="mx-4 mb-3 text-rose-400 italic text-xs">"{ev.description.slice(0, 80)}{ev.description.length > 80 ? '...' : ''}"</p>
+                              )}
+
+                              <div className="px-4 flex flex-col gap-3">
+                                <div>
+                                  <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider flex items-center gap-1 mb-1.5">💬 What happened?</label>
+                                  <input type="text" placeholder="Tên kỷ niệm..." maxLength={100} value={ev.title}
+                                    onChange={e => { const events = [...story.timeline_block.events]; events[idx] = { ...events[idx], title: e.target.value }; setStory({ ...story, timeline_block: { ...story.timeline_block, events } }); }}
+                                    className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200 transition-all" />
+                                </div>
+                                <textarea rows={3} maxLength={500} placeholder="Kể lại câu chuyện trong kỷ niệm này..."
+                                  value={ev.description}
+                                  onChange={e => { const events = [...story.timeline_block.events]; events[idx] = { ...events[idx], description: e.target.value }; setStory({ ...story, timeline_block: { ...story.timeline_block, events } }); }}
+                                  className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200 resize-none transition-all" />
+
+                                {/* Location + Date */}
+                                <div className="grid grid-cols-2 gap-2">
+                                  <div>
+                                    <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider flex items-center gap-1 mb-1.5">
+                                      <span className="material-symbols-outlined text-[12px]">location_on</span> Where was this?
+                                    </label>
+                                    <div className="relative">
+                                      <span className="absolute left-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-300 text-[14px]">location_on</span>
+                                      <input type="text" placeholder="Địa điểm..." maxLength={150} value={ev.location || ''}
+                                        onChange={e => { const events = [...story.timeline_block.events]; events[idx] = { ...events[idx], location: e.target.value }; setStory({ ...story, timeline_block: { ...story.timeline_block, events } }); }}
+                                        className="w-full h-9 pl-6 pr-2 rounded-lg bg-gray-50 border border-gray-200 text-xs focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200 transition-all" />
+                                    </div>
+                                  </div>
+                                  <div>
+                                    <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider flex items-center gap-1 mb-1.5">
+                                      <span className="material-symbols-outlined text-[12px]">calendar_month</span> Milestone Date
+                                    </label>
+                                    <div className="relative">
+                                      <span className="absolute left-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-300 text-[14px]">calendar_month</span>
+                                      <input type="date" value={ev.date ? ev.date.split('T')[0] : ''}
+                                        onChange={e => { const events = [...story.timeline_block.events]; events[idx] = { ...events[idx], date: e.target.value }; setStory({ ...story, timeline_block: { ...story.timeline_block, events } }); }}
+                                        className="w-full h-9 pl-6 pr-2 rounded-lg bg-gray-50 border border-gray-200 text-xs focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200 transition-all" />
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Expanded Footer */}
+                            <div className="mt-4 px-4 py-3 bg-rose-50/50 border-t border-rose-50 flex items-center justify-between">
+                              <button
+                                onClick={() => { const events = story.timeline_block.events.filter((_, i) => i !== idx); setStory({ ...story, timeline_block: { ...story.timeline_block, events, is_enabled: events.length > 0 } }); setExpandedEventIdx(null); }}
+                                className="flex items-center gap-1.5 text-red-500 hover:text-red-600 text-xs font-bold transition-colors"
+                              >
+                                <span className="material-symbols-outlined text-[16px]">delete</span>
+                                Xoá cột mốc này
+                              </button>
+                              <button
+                                onClick={() => setExpandedEventIdx(null)}
+                                className="px-4 py-1.5 rounded-full bg-rose-500 hover:bg-rose-600 text-white text-xs font-bold transition-colors"
+                              >
+                                Lưu thay đổi ✨
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
 
                 {/* Add memory */}
                 <button
                   onClick={() => { const events = [...story.timeline_block.events, { id: '', date: '', title: '', description: '', location: '', is_visible: visibleCount < maxVisible, media_url: '' }]; setStory({ ...story, timeline_block: { ...story.timeline_block, is_enabled: true, events } }); setExpandedEventIdx(events.length - 1); }}
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-2xl border-2 border-dashed border-rose-200 text-rose-400 text-sm font-medium hover:bg-rose-50 hover:border-rose-300 transition-all"
+                  className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-white text-rose-500 text-sm font-bold hover:bg-rose-50 transition-all shadow-sm border border-rose-50"
                 >
-                  <span className="material-symbols-outlined text-[18px]">add</span>
-                  Thêm khoảnh khắc mới ✨
+                  <span className="material-symbols-outlined text-[18px]">add_circle</span>
+                  Thêm cột mốc mới ✨
                 </button>
 
                 {/* Publish CTA */}
