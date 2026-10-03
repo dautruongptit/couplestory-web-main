@@ -222,6 +222,14 @@ export function DashboardLayout() {
 
   useEffect(() => { setMobileOpen(false); }, [location]);
 
+  // Arriving from the mobile account page on a wide screen: open the account dialog.
+  useEffect(() => {
+    if ((location.state as { openAccount?: boolean } | null)?.openAccount) {
+      setShowAccountModal(true);
+      navigate(location.pathname + location.search + location.hash, { replace: true, state: null });
+    }
+  }, [location, navigate]);
+
   // Fetch unread notifications count
   useEffect(() => {
     const fetchUnread = () => {
