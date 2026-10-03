@@ -21,7 +21,7 @@ export default function Register() {
       try {
         const res = await googleLogin(credential);
         if (!res.ok) throw new Error(res.error);
-        navigate('/dashboard');
+        navigate('/home');
       } catch (err: any) {
         setError(err.message || 'Đăng nhập Google thất bại');
       } finally {
@@ -42,7 +42,7 @@ export default function Register() {
       setIsLoading(true);
       const res = await register(name, email, password);
       if (!res.ok) throw new Error(res.error);
-      navigate('/dashboard');
+      navigate('/home');
     } catch (err: any) {
       setError(err.message || 'Đăng ký thất bại');
     } finally {
@@ -263,3 +263,4 @@ export default function Register() {
     </div>
   );
 }
+

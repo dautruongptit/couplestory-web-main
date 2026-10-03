@@ -16,7 +16,6 @@ import Checkout from '@/pages/Checkout';
 import CheckoutSuccess from '@/pages/CheckoutSuccess';
 import AdminUsers from '@/pages/AdminUsers';
 import AdminRevenue from '@/pages/AdminRevenue';
-import Account from '@/pages/Account';
 import NotFound404 from '@/pages/NotFound404';
 import Forbidden403 from '@/pages/Forbidden403';
 import { EternalLovePage, MinimalCouplePage } from '@/templates/TemplateEternalLoveResponsive';
@@ -29,6 +28,7 @@ import OrderPayment from '@/pages/OrderPayment';
 import AdminOrders from '@/pages/AdminOrders';
 import AdminMusic from '@/pages/AdminMusic';
 import DemoStory from '@/pages/DemoStory';
+import AllNotifications from '@/pages/AllNotifications';
 
 export const router = createBrowserRouter([
   // ── Public – with Navbar/Footer ──────────────────────────
@@ -53,17 +53,17 @@ export const router = createBrowserRouter([
     path: '/',
     element: <DashboardLayout />,
     children: [
-      { path: 'dashboard',         element: <ProtectedRoute><Dashboard /></ProtectedRoute> },
-      { path: 'dashboard/upgrade', element: <ProtectedRoute><DashboardUpgrade /></ProtectedRoute> },
+      { path: 'home',         element: <ProtectedRoute><Dashboard /></ProtectedRoute> },
+      { path: 'home/upgrade', element: <ProtectedRoute><DashboardUpgrade /></ProtectedRoute> },
       
-      { path: 'admin',             element: <Navigate to="/admin/users" replace /> },
+      { path: 'notifications', element: <ProtectedRoute><AllNotifications /></ProtectedRoute> },
+        { path: 'admin',             element: <Navigate to="/admin/users" replace /> },
       { path: 'admin/users',       element: <AdminRoute><AdminUsers /></AdminRoute> },
       { path: 'admin/revenue',     element: <AdminRoute><AdminRevenue /></AdminRoute> },
       { path: 'admin/orders',      element: <AdminRoute><AdminOrders /></AdminRoute> },
       { path: 'admin/music',       element: <AdminRoute><AdminMusic /></AdminRoute> },
 
       // Protected pages inside sidebar layout
-      { path: 'account',           element: <ProtectedRoute><Account /></ProtectedRoute> },
       { path: 'editor/:scenarioId/published', element: <ProtectedRoute><StoryPublished /></ProtectedRoute> },
       { path: 'orders/:orderId',   element: <ProtectedRoute><OrderPayment /></ProtectedRoute> },
     ],
@@ -86,3 +86,4 @@ export const router = createBrowserRouter([
   { path: '/403', element: <Forbidden403 /> },
   { path: '*',    element: <NotFound404 /> },
 ]);
+

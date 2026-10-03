@@ -21,7 +21,7 @@ export default function Login() {
       try {
         const res = await googleLogin(credential);
         if (!res.ok) throw new Error(res.error);
-        navigate('/dashboard');
+        navigate('/home');
       } catch (err: any) {
         setError(err.message || 'Đăng nhập Google thất bại');
       } finally {
@@ -39,7 +39,7 @@ export default function Login() {
     try {
       const res = await login(email, password);
       if (!res.ok) throw new Error(res.error);
-      navigate('/dashboard');
+      navigate('/home');
     } catch (err: any) {
       setError(err.message || 'Đăng nhập thất bại');
     } finally {
@@ -288,3 +288,4 @@ export default function Login() {
     </main>
   );
 }
+

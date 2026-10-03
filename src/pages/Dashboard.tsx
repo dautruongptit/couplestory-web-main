@@ -50,9 +50,19 @@ export default function Dashboard() {
     const tpl = params.get('applyTemplate');
     if (tpl) {
       setApplyModal(tpl);
-      navigate('/dashboard', { replace: true });
+      navigate('/home', { replace: true });
     }
   }, [location.search, navigate]);
+
+  useEffect(() => {
+    if (location.hash === '#templates') {
+      const el = document.getElementById('templates');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    } else if (location.hash === '#stories') {
+      const el = document.getElementById('stories');
+      if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [location.hash, loading]);
 
   const handleCreateWithTemplate = async () => {
     if (!name1.trim() || !name2.trim()) {
@@ -161,7 +171,7 @@ export default function Dashboard() {
         </section>
 
         {/* Stories section */}
-        <section className="mb-8">
+        <section id="stories" className="mb-8 scroll-mt-24">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-bold text-[#2e1220] flex items-center gap-2">
               <span className="text-[#ff4d8d]">●</span> Câu chuyện của bạn
@@ -306,7 +316,7 @@ export default function Dashboard() {
 
         {/* Template inspiration */}
         {showTemplates.length > 0 && (
-          <section>
+          <section id="templates" className="scroll-mt-24">
             <div className="flex items-center justify-between mb-4">
               <div>
                 <p className="text-[10px] font-bold text-[#ff4d8d] tracking-widest uppercase mb-0.5">● Giao diện đề xuất</p>
@@ -319,15 +329,27 @@ export default function Dashboard() {
             </div>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
               {showTemplates.map(t => (
-                <Link key={t.code} to={`/preview/${t.code}`} className="group">
-                  <div className="aspect-[3/4] rounded-2xl bg-gradient-to-br from-[#ffe8ef] to-[#ffd6e6] overflow-hidden mb-2 border border-[#f0e4e8] group-hover:shadow-md transition-shadow">
-                    <div className="w-full h-full flex items-center justify-center">
-                      <span className="material-symbols-outlined text-[40px] text-[#ff4d8d]/30">palette</span>
+                <div key={t.code} className="group flex flex-col">
+                  <Link to={`/preview/${t.code}`} className="block">
+                    <div className="aspect-[3/4] rounded-2xl bg-gradient-to-br from-[#ffe8ef] to-[#ffd6e6] overflow-hidden mb-2 border border-[#f0e4e8] group-hover:shadow-md transition-shadow relative">
+                      {/* Optional Overlay on hover */}
+                      <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                      <div className="w-full h-full flex items-center justify-center">
+                        <span className="material-symbols-outlined text-[40px] text-[#ff4d8d]/30">palette</span>
+                      </div>
                     </div>
-                  </div>
+                  </Link>
                   <p className="font-semibold text-sm text-[#2e1220] truncate">{t.name}</p>
-                  <p className="text-[11px] text-[#8d7076]">{t.package === 'FREE' ? 'Miễn phí' : `Gói ${t.package}`}</p>
-                </Link>
+                  <p className="text-[11px] text-[#8d7076] mb-2">{t.package === 'FREE' ? 'Miễn phí' : `Gói ${t.package}`}</p>
+                  <div className="flex items-center gap-2 mt-auto">
+                    <Link to={`/preview/${t.code}`} className="flex-1 py-1.5 rounded-lg text-[11px] font-semibold text-center bg-[#fff0f4] text-[#b90a5a] hover:bg-[#ffe0eb] transition-colors">
+                      Xem demo
+                    </Link>
+                    <Link to={`/home?applyTemplate=${t.code}`} className="flex-1 py-1.5 rounded-lg text-[11px] font-semibold text-center bg-[#ff4d8d] text-white shadow-sm hover:bg-[#e63e7b] transition-colors">
+                      Dùng mẫu
+                    </Link>
+                  </div>
+                </div>
               ))}
             </div>
           </section>
@@ -390,3 +412,4 @@ export default function Dashboard() {
     </>
   );
 }
+

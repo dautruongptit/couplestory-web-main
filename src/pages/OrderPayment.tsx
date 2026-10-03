@@ -124,8 +124,9 @@ export default function OrderPayment() {
           </>
         )}
 
-        <Link to="/dashboard" className="font-label-md text-primary hover:underline">Về trang quản lý</Link>
+        <Link to="/home" className="font-label-md text-primary hover:underline">Về trang quản lý</Link>
       </div>
     </main>
   );
 }
+

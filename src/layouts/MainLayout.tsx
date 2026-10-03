@@ -37,7 +37,7 @@ export const MainLayout = () => {
                 links: [
                   { label: 'Đăng nhập', to: '/login' },
                   { label: 'Đăng ký', to: '/register' },
-                  { label: 'Home', to: '/dashboard' },
+                  { label: 'Home', to: '/home' },
                 ],
               },
               {
@@ -80,3 +80,4 @@ export const MainLayout = () => {
     </div>
   );
 };
+

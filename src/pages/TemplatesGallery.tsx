@@ -13,13 +13,13 @@ function UseTemplateLink({ code, className }: { code: string; className: string 
   }
   if (required && !canUsePackage(user?.plan, required)) {
     return (
-      <Link className={className} to="/dashboard/upgrade" title={`Cần gói ${required}`}>
+      <Link className={className} to="/home/upgrade" title={`Cần gói ${required}`}>
         <span className="material-symbols-outlined text-[18px]">lock</span>
         Nâng cấp {required}
       </Link>
     );
   }
-  return <Link className={className} to={`/dashboard?applyTemplate=${code}`}>Dùng Mẫu Này</Link>;
+  return <Link className={className} to={`/home?applyTemplate=${code}`}>Dùng Mẫu Này</Link>;
 }
 
 export default function TemplatesGallery() {
@@ -693,3 +693,4 @@ export default function TemplatesGallery() {
     </div>
   );
 }
+

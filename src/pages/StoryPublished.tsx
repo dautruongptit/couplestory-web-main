@@ -56,7 +56,7 @@ export default function StoryPublished() {
       <div className="w-full max-w-[640px]">
         {/* Breadcrumb */}
         <div className="flex items-center gap-1.5 text-xs text-[#8d7076] mb-6">
-          <Link to="/dashboard" className="hover:text-[#ff4d8d]">Story của tôi</Link>
+          <Link to="/home" className="hover:text-[#ff4d8d]">Story của tôi</Link>
           <span>›</span>
           <span className="text-[#594046] truncate max-w-[200px]">{coupleNames}</span>
           <span>›</span>
@@ -148,7 +148,7 @@ export default function StoryPublished() {
                   {planCode === 'FREE' ? 'Bản miễn phí hết hạn sau 30 ngày. Đừng để ký ức bị gián đoạn.' : 'Nâng cấp để mở thêm tính năng.'}
                 </p>
               </div>
-              <Link to="/dashboard/upgrade" className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#ff4d8d] to-[#e63e7b] text-white text-xs font-semibold shadow-md hover:shadow-lg transition-all whitespace-nowrap">
+              <Link to="/home/upgrade" className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#ff4d8d] to-[#e63e7b] text-white text-xs font-semibold shadow-md hover:shadow-lg transition-all whitespace-nowrap">
                 Nâng cấp ngay →
               </Link>
             </div>
@@ -170,7 +170,7 @@ export default function StoryPublished() {
 
         {/* View live button */}
         <div className="flex flex-col sm:flex-row justify-center gap-3 mt-4">
-          <Link to="/dashboard" className="px-5 py-2.5 rounded-xl bg-white border border-[#f0e4e8] text-sm font-medium text-[#594046] hover:bg-[#fff5f9] transition-colors flex items-center gap-1.5">
+          <Link to="/home" className="px-5 py-2.5 rounded-xl bg-white border border-[#f0e4e8] text-sm font-medium text-[#594046] hover:bg-[#fff5f9] transition-colors flex items-center gap-1.5">
             <span className="material-symbols-outlined text-[16px]">arrow_back</span>
             Quay về Home
           </Link>
@@ -183,3 +183,4 @@ export default function StoryPublished() {
     </div>
   );
 }
+

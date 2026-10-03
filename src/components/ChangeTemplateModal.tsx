@@ -570,7 +570,7 @@ export default function ChangeTemplateModal({ storyId, storyType, currentCode, o
                       </div>
                     ) : !canUsePackage(user?.plan, previewTemplate.package) ? (
                       <Link
-                        to="/dashboard/upgrade"
+                        to="/home/upgrade"
                         className="flex-1 py-2.5 rounded-full bg-surface-container text-on-surface-variant font-label-md text-center flex items-center justify-center gap-2 hover:bg-surface-container-high transition-colors"
                       >
                         <span className="material-symbols-outlined text-[18px]">lock</span>
@@ -623,3 +623,4 @@ export default function ChangeTemplateModal({ storyId, storyType, currentCode, o
     </div>
   );
 }
+

@@ -1,11 +1,11 @@
 import { useState, useRef, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext';
-import { mockNotifications } from '@/data/notifications';
 
 // ── Notification Panel ─────────────────────────────────────
-function NotificationPanel({ onClose }: { onClose: () => void }) {
-  const [notifications, setNotifications] = useState(mockNotifications);
+function NotificationPanel({ onClose, setUnreadCount }: { onClose: () => void; setUnreadCount: React.Dispatch<React.SetStateAction<number>> }) {
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const unread = notifications.filter(n => !n.read).length;
   const ref = useRef<HTMLDivElement>(null);
 
@@ -17,8 +17,57 @@ function NotificationPanel({ onClose }: { onClose: () => void }) {
     return () => document.removeEventListener('mousedown', handler);
   }, [onClose]);
 
-  const markAllRead = () => setNotifications(ns => ns.map(n => ({ ...n, read: true })));
-  const markRead = (id: string) => setNotifications(ns => ns.map(n => n.id === id ? { ...n, read: true } : n));
+  useEffect(() => {
+    import('@/services/api').then(({ apiClient }) => {
+      apiClient.get('/notifications').then((data: any[]) => {
+        setNotifications(data);
+        setLoading(false);
+      }).catch(err => {
+        console.error('Failed to fetch notifications', err);
+        setLoading(false);
+      });
+    });
+  }, []);
+
+  const markAllRead = () => {
+    setNotifications(ns => ns.map(n => ({ ...n, read: true })));
+    setUnreadCount(0);
+    import('@/services/api').then(({ apiClient }) => {
+      apiClient.put('/notifications/read-all', {}).then(() => {
+        window.dispatchEvent(new Event('notifications_updated'));
+      }).catch(console.error);
+    });
+  };
+  
+  const markRead = (id: string) => {
+    setNotifications(ns => {
+      const target = ns.find(n => n.id === id);
+      if (target && !target.read) {
+        setUnreadCount(prev => Math.max(0, prev - 1));
+      }
+      return ns.map(n => n.id === id ? { ...n, read: true } : n);
+    });
+    import('@/services/api').then(({ apiClient }) => {
+      apiClient.put(`/notifications/${id}/read`, {}).then(() => {
+        window.dispatchEvent(new Event('notifications_updated'));
+      }).catch(console.error);
+    });
+  };
+
+  const getIcon = (type: string) => {
+    switch(type) {
+      case 'SYSTEM': return 'security';
+      case 'PAYMENT': return 'payments';
+      case 'STORY': return 'auto_stories';
+      default: return 'notifications';
+    }
+  };
+
+  const formatTime = (isoString: string) => {
+    if (!isoString) return 'Vừa xong';
+    const date = new Date(isoString);
+    return new Intl.DateTimeFormat('vi-VN', { hour: '2-digit', minute: '2-digit', day: '2-digit', month: '2-digit' }).format(date);
+  };
 
   return (
     <div ref={ref} className="absolute right-0 top-12 w-80 sm:w-96 bg-white rounded-2xl shadow-[0_8px_32px_rgba(61,31,45,0.15)] border border-[#ffe0eb] z-50 overflow-hidden">
@@ -30,40 +79,47 @@ function NotificationPanel({ onClose }: { onClose: () => void }) {
             <span className="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#ff4d8d] text-white text-[11px] font-bold">{unread}</span>
           )}
         </div>
-        {unread > 0 && (
-          <button onClick={markAllRead} className="text-label-sm text-label-sm text-[#ff4d8d] hover:underline font-medium">
-            Đánh dấu tất cả đã đọc
-          </button>
-        )}
+        <button
+          onClick={markAllRead}
+          disabled={unread === 0}
+          className={`text-label-sm text-label-sm font-medium ${unread > 0 ? 'text-[#ff4d8d] hover:underline' : 'text-gray-400 cursor-not-allowed'}`}
+        >
+          Đánh dấu tất cả đã đọc
+        </button>
       </div>
 
       {/* List */}
       <div className="max-h-[400px] overflow-y-auto">
-        {notifications.map(n => (
-          <button
-            key={n.id}
-            onClick={() => markRead(n.id)}
-            className={`w-full text-left px-4 py-3 flex gap-3 hover:bg-[#fff5f9] transition-colors border-b border-[#ffe0eb]/50 ${!n.read ? 'bg-[#fff0f4]' : ''}`}
-          >
-            <div className={`w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center ${!n.read ? 'bg-[#ff4d8d]' : 'bg-[#ffe8ef]'}`}>
-              <span className={`material-symbols-outlined text-[18px] ${!n.read ? 'text-white' : 'text-[#ff4d8d]'}`}
-                style={{ fontVariationSettings: "'FILL' 1" }}>
-                {n.icon}
-              </span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className={`text-body-sm font-semibold text-[#2e1220] ${!n.read ? 'text-[#b90a5a]' : ''}`}>{n.title}</p>
-              <p className="text-label-sm text-label-sm text-[#594046] mt-0.5 line-clamp-2">{n.message}</p>
-              <p className="text-label-sm text-label-sm text-[#8d7076] mt-1">{n.time}</p>
-            </div>
-            {!n.read && <div className="w-2 h-2 rounded-full bg-[#ff4d8d] mt-1.5 flex-shrink-0" />}
-          </button>
-        ))}
+        {loading ? (
+          <div className="p-4 text-center text-sm text-[#8d7076]">Đang tải...</div>
+        ) : notifications.length === 0 ? (
+          <div className="p-4 text-center text-sm text-[#8d7076]">Không có thông báo nào</div>
+        ) : (
+          notifications.map(n => (
+            <button
+              key={n.id}
+              onClick={() => markRead(n.id)}
+              className={`w-full text-left px-4 py-3 flex gap-3 hover:bg-[#fff5f9] transition-colors border-b border-[#ffe0eb]/50 ${!n.read ? 'bg-[#fff0f4]' : ''}`}
+            >
+              <div className={`w-9 h-9 rounded-full flex-shrink-0 flex items-center justify-center ${!n.read ? 'bg-[#ff4d8d]' : 'bg-[#ffe8ef]'}`}>
+                <span className={`material-symbols-outlined text-[18px] ${!n.read ? 'text-white' : 'text-[#ff4d8d]'}`}
+                  style={{ fontVariationSettings: "'FILL' 1" }}>
+                  {getIcon(n.type)}
+                </span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className={`text-body-sm font-semibold text-[#2e1220] ${!n.read ? 'text-[#b90a5a]' : ''}`}>{n.title}</p>
+                <p className="text-label-sm text-label-sm text-[#594046] mt-0.5 line-clamp-2">{n.content}</p>
+                <p className="text-label-sm text-label-sm text-[#8d7076] mt-1">{formatTime(n.createdAt)}</p>
+              </div>
+              {!n.read && <div className="w-2 h-2 rounded-full bg-[#ff4d8d] mt-1.5 flex-shrink-0" />}
+            </button>
+          ))
+        )}
       </div>
 
-      {/* Footer */}
       <div className="px-4 py-3 text-center border-t border-[#ffe0eb]">
-        <button className="text-label-md text-label-md text-[#ff4d8d] hover:underline font-medium">Xem tất cả thông báo</button>
+        <Link to="/notifications" onClick={onClose} className="text-label-md text-label-md text-[#ff4d8d] hover:underline font-medium">Xem tất cả thông báo</Link>
       </div>
     </div>
   );
@@ -90,10 +146,10 @@ function UserMenu({ onClose }: { onClose: () => void }) {
   };
 
   const menuItems = [
-    { icon: 'home', label: 'Home', to: '/dashboard' },
+    { icon: 'home', label: 'Home', to: '/home' },
     { icon: 'person', label: 'Tài khoản', to: '/account' },
-    { icon: 'photo_album', label: 'Story của tôi', to: '/dashboard' },
-    { icon: 'workspace_premium', label: 'Nâng cấp gói', to: '/dashboard/upgrade' },
+    { icon: 'photo_album', label: 'Story của tôi', to: '/home' },
+    { icon: 'workspace_premium', label: 'Nâng cấp gói', to: '/home/upgrade' },
     ...(isAdmin ? [{ icon: 'admin_panel_settings', label: 'Quản trị', to: '/admin/users' }] : []),
   ];
 
@@ -174,7 +230,7 @@ function MobileMenu({
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-5 h-16 border-b border-[#ffe0eb]">
-          <Link to={isAuthenticated ? '/dashboard' : '/'} onClick={onClose} className="flex items-center gap-2 text-[#ff4d8d] font-headline-md text-headline-md">
+          <Link to={isAuthenticated ? '/home' : '/'} onClick={onClose} className="flex items-center gap-2 text-[#ff4d8d] font-headline-md text-headline-md">
             <span className="material-symbols-outlined" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
             CoupleStory
           </Link>
@@ -188,7 +244,7 @@ function MobileMenu({
             { to: '/', label: 'Trang chủ', icon: 'home' },
             { to: '/templates', label: 'Kho template', icon: 'grid_view' },
             { to: '/pricing', label: 'Bảng giá', icon: 'payments' },
-            { to: '/s/eternal', label: 'Xem demo story', icon: 'visibility' },
+            { to: '/templates', label: 'Kho giao diện', icon: 'grid_view' },
           ].map(item => (
             <Link key={item.to} to={item.to} onClick={onClose}
               className="flex items-center gap-3 px-5 py-3 text-[#2e1220] hover:bg-[#fff5f9] hover:text-[#ff4d8d] transition-colors">
@@ -201,9 +257,9 @@ function MobileMenu({
             <>
               <div className="my-2 mx-5 border-t border-[#ffe0eb]" />
               {[
-                { to: '/dashboard', label: 'Home', icon: 'home' },
+                { to: '/home', label: 'Home', icon: 'home' },
                 { to: '/account', label: 'Tài khoản', icon: 'person' },
-                { to: '/dashboard/upgrade', label: 'Nâng cấp gói', icon: 'workspace_premium' },
+                { to: '/home/upgrade', label: 'Nâng cấp gói', icon: 'workspace_premium' },
               ].map(item => (
                 <Link key={item.to} to={item.to} onClick={onClose}
                   className="flex items-center gap-3 px-5 py-3 text-[#2e1220] hover:bg-[#fff5f9] hover:text-[#ff4d8d] transition-colors">
@@ -248,7 +304,23 @@ export default function Navbar() {
   const [showMobileMenu, setShowMobileMenu] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  const unreadCount = mockNotifications.filter(n => !n.read).length;
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  // Fetch unread notifications count
+  useEffect(() => {
+    const fetchUnread = () => {
+      if (isAuthenticated) {
+        import('@/services/api').then(({ apiClient }) => {
+          apiClient.get('/notifications/unread-count')
+            .then((count: any) => setUnreadCount(count))
+            .catch(console.error);
+        });
+      }
+    };
+    fetchUnread();
+    window.addEventListener('notifications_updated', fetchUnread);
+    return () => window.removeEventListener('notifications_updated', fetchUnread);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 10);
@@ -280,9 +352,9 @@ export default function Navbar() {
         <div className="h-16 max-w-7xl mx-auto px-4 md:px-8 flex items-center justify-between gap-4">
 
           {/* Logo */}
-          <Link to={isAuthenticated ? '/dashboard' : '/'} className="flex items-center gap-2 font-headline-md text-headline-md text-[#ff4d8d] tracking-tight shrink-0">
+          <Link to={isAuthenticated ? '/home' : '/'} className="flex items-center gap-2 font-headline-md text-headline-md text-[#ff4d8d] tracking-tight shrink-0">
             <span className="material-symbols-outlined text-[22px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-            <span>CoupleStory</span>
+            <span className="font-bold">CoupleStory</span>
           </Link>
 
           {/* Desktop nav */}
@@ -312,12 +384,12 @@ export default function Navbar() {
                   >
                     <span className="material-symbols-outlined text-[20px]">notifications</span>
                     {unreadCount > 0 && (
-                      <span className="absolute top-1 right-1 w-4 h-4 bg-[#ff4d8d] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
-                        {unreadCount}
+                      <span className="absolute top-0 -right-1 w-4 h-4 bg-[#ff4d8d] text-white text-[10px] font-bold rounded-full flex items-center justify-center">
+                        {unreadCount > 99 ? '99+' : unreadCount}
                       </span>
                     )}
                   </button>
-                  {showNotif && <NotificationPanel onClose={() => setShowNotif(false)} />}
+                  {showNotif && <NotificationPanel onClose={() => setShowNotif(false)} setUnreadCount={setUnreadCount} />}
                 </div>
 
                 {/* User avatar + menu */}
@@ -373,3 +445,4 @@ export default function Navbar() {
     </>
   );
 }
+

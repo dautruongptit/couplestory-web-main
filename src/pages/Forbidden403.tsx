@@ -114,7 +114,7 @@ export default function Forbidden403() {
           </div>
         </div>
         <div className="mt-space-lg w-full flex flex-col sm:flex-row items-center justify-center gap-space-md">
-          <Link className="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-space-lg py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-md hover:bg-primary/90 hover:scale-[1.02] transition-all" to="/dashboard">
+          <Link className="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-space-lg py-3 rounded-full bg-primary text-on-primary font-label-md text-label-md shadow-md hover:bg-primary/90 hover:scale-[1.02] transition-all" to="/home">
             <span className="material-symbols-outlined text-[18px]">favorite</span>
             <span>Về Bảng Điều Khiển Cá Nhân</span>
           </Link>
@@ -185,3 +185,4 @@ export default function Forbidden403() {
     </div>
   );
 }
+
