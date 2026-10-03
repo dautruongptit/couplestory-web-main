@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import type { StoryData } from '@/data/mockScenarios';
 import DynamicStoryTemplate from '@/templates/DynamicStoryTemplate';
@@ -26,14 +26,12 @@ interface ServerPhoto {
   sortOrder?: number;
 }
 
-type SectionTab = 'intro' | 'memories' | 'letter' | 'vibes';
 type PreviewDevice = 'mobile' | 'desktop';
 
 export default function StoryEditor() {
   const { scenarioId } = useParams();
   const navigate = useNavigate();
   const [story, setStory] = useState<StoryData | null>(null);
-  const [activeSection, setActiveSection] = useState<SectionTab>('memories');
   const [previewDevice, setPreviewDevice] = useState<PreviewDevice>('mobile');
   const [library, setLibrary] = useState<MusicTrack[]>([]);
   const [musicIds, setMusicIds] = useState<string[]>([]);
@@ -43,11 +41,11 @@ export default function StoryEditor() {
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [photos, setPhotos] = useState<ServerPhoto[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const [storyType, setStoryType] = useState('LOVE_STORY');
   const [showChangeTemplate, setShowChangeTemplate] = useState(false);
   const [expandedEventIdx, setExpandedEventIdx] = useState<number | null>(0);
+  const [dragIdx, setDragIdx] = useState<number | null>(null);
+  const [dragOverIdx, setDragOverIdx] = useState<number | null>(null);
   const { templates } = useTemplates();
   const currentTemplate = templates.find(t => t.code === story?.template_id);
   const maxVisible = currentTemplate?.maxDisplayEvents ?? 6;
@@ -231,13 +229,6 @@ export default function StoryEditor() {
   const totalEvents = story.timeline_block.events.length;
   const draftDoneCount = story.timeline_block.events.filter(e => e.title && e.description).length;
 
-  const SECTION_TABS: { key: SectionTab; label: string }[] = [
-    { key: 'intro', label: 'Intro' },
-    { key: 'memories', label: 'Memories' },
-    { key: 'letter', label: 'Letter' },
-    { key: 'vibes', label: 'Vibes' },
-  ];
-
   // Unused var silencer
   void minPublish;
   void user;
@@ -270,22 +261,7 @@ export default function StoryEditor() {
           </span>
         </div>
 
-        {/* Section tabs */}
-        <nav className="flex-1 flex items-center justify-center gap-1">
-          {SECTION_TABS.map(tab => (
-            <button
-              key={tab.key}
-              onClick={() => setActiveSection(tab.key)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
-                activeSection === tab.key
-                  ? 'bg-rose-500 text-white shadow-sm'
-                  : 'text-gray-500 hover:text-gray-800 hover:bg-rose-50'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-        </nav>
+        <div className="flex-1" />
 
         {/* Right actions */}
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -342,10 +318,43 @@ export default function StoryEditor() {
         <aside className="w-[420px] flex-shrink-0 flex flex-col overflow-hidden border-r border-rose-100 bg-[#fdf6f9]">
           <div className="flex-1 overflow-y-auto">
 
-            {/* MEMORIES */}
-            {activeSection === 'memories' && (
-              <div className="p-4 flex flex-col gap-4">
-                {/* Header Section */}
+            <div className="p-4 flex flex-col gap-4">
+                {/* Intro */}
+                <div className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col gap-3 shadow-sm">
+                  <span className="font-semibold text-gray-700 text-sm flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-rose-400 text-[18px]">info</span>
+                    Giới thiệu chung
+                  </span>
+                  <div>
+                    <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5 block">Tên cặp đôi</label>
+                    <div className="flex gap-2 items-center">
+                      <input type="text" value={story.hero_block.partner_a.name} onChange={e => setStory({ ...story, hero_block: { ...story.hero_block, partner_a: { ...story.hero_block.partner_a, name: e.target.value } } })} className="flex-1 h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" placeholder="Tên bạn..." />
+                      <span className="text-rose-300 font-bold">&</span>
+                      <input type="text" value={story.hero_block.partner_b.name} onChange={e => setStory({ ...story, hero_block: { ...story.hero_block, partner_b: { ...story.hero_block.partner_b, name: e.target.value } } })} className="flex-1 h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" placeholder="Tên người ấy..." />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5 block">Tiêu đề story</label>
+                    <input type="text" value={story.hero_block.title} onChange={e => setStory({ ...story, hero_block: { ...story.hero_block, title: e.target.value } })} className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5 block">Câu trích dẫn</label>
+                    <input type="text" value={story.hero_block.short_quote || ''} onChange={e => setStory({ ...story, hero_block: { ...story.hero_block, short_quote: e.target.value } })} className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" placeholder="Câu trích dẫn lãng mạn..." />
+                  </div>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider">Bộ đếm ngày yêu</span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" checked={story.counter_block.is_enabled} onChange={e => setStory({ ...story, counter_block: { ...story.counter_block, is_enabled: e.target.checked } })} />
+                      <div className="w-8 h-4 bg-gray-200 peer-checked:bg-rose-400 rounded-full transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-4" />
+                    </label>
+                  </div>
+                  <div className={story.counter_block.is_enabled ? '' : 'opacity-40 pointer-events-none'}>
+                    <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5 block">Ngày bắt đầu yêu</label>
+                    <input type="date" value={story.counter_block.target_date ? story.counter_block.target_date.split('T')[0] : ''} onChange={e => setStory({ ...story, counter_block: { ...story.counter_block, target_date: new Date(e.target.value).toISOString() } })} className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" />
+                  </div>
+                </div>
+
+                {/* Timeline Header */}
                 <div className="bg-white rounded-2xl p-4 shadow-sm border border-rose-50 flex flex-col gap-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -356,14 +365,19 @@ export default function StoryEditor() {
                     </div>
                     <button
                       onClick={() => {
-                        const events = [...story.timeline_block.events, { id: '', date: '', title: '', description: '', location: '', is_visible: visibleCount < maxVisible, media_url: '' }];
-                        setStory({ ...story, timeline_block: { ...story.timeline_block, is_enabled: true, events } });
-                        setExpandedEventIdx(events.length - 1);
+                        const sorted = [...story.timeline_block.events].sort((a, b) => {
+                          if (!a.date && !b.date) return 0;
+                          if (!a.date) return 1;
+                          if (!b.date) return -1;
+                          return a.date.localeCompare(b.date);
+                        });
+                        setStory({ ...story, timeline_block: { ...story.timeline_block, events: sorted } });
+                        setExpandedEventIdx(-1);
                       }}
-                      className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-rose-50 text-rose-500 text-xs font-bold hover:bg-rose-100 transition-colors"
+                      title="Sắp xếp theo ngày"
+                      className="flex items-center justify-center w-8 h-8 rounded-full bg-rose-50 text-rose-500 hover:bg-rose-100 transition-colors"
                     >
-                      <span className="material-symbols-outlined text-[14px]">swap_vert</span>
-                      Tự động sắp xếp
+                      <span className="material-symbols-outlined text-[16px]">sort</span>
                     </button>
                   </div>
                   
@@ -395,11 +409,29 @@ export default function StoryEditor() {
                     const isExpanded = expandedEventIdx === idx;
                     const isDone = !!(ev.title && ev.description);
                     return (
-                      <div key={ev.id || idx} className={`bg-white rounded-[24px] border transition-all duration-200 overflow-hidden shadow-sm ${isExpanded ? 'border-rose-100 shadow-rose-50' : 'border-transparent hover:border-rose-50'}`}>
+                      <div
+                        key={ev.id || idx}
+                        draggable={!isExpanded}
+                        onDragStart={() => { setDragIdx(idx); setExpandedEventIdx(null); }}
+                        onDragOver={e => { e.preventDefault(); setDragOverIdx(idx); }}
+                        onDragLeave={() => setDragOverIdx(null)}
+                        onDrop={e => {
+                          e.preventDefault();
+                          if (dragIdx !== null && dragIdx !== idx) {
+                            const events = [...story.timeline_block.events];
+                            const [moved] = events.splice(dragIdx, 1);
+                            events.splice(idx, 0, moved);
+                            setStory({ ...story, timeline_block: { ...story.timeline_block, events } });
+                          }
+                          setDragIdx(null); setDragOverIdx(null);
+                        }}
+                        onDragEnd={() => { setDragIdx(null); setDragOverIdx(null); }}
+                        className={`bg-white rounded-[24px] border transition-all duration-200 overflow-hidden shadow-sm ${isExpanded ? 'border-rose-100 shadow-rose-50' : 'border-transparent hover:border-rose-50'} ${dragIdx === idx ? 'opacity-40' : ''} ${dragOverIdx === idx && dragIdx !== idx ? 'border-rose-300 border-dashed bg-rose-50/30' : ''}`}
+                      >
                         {!isExpanded ? (
                           <div className="w-full flex items-center gap-3 px-4 py-3">
                             <div className="flex items-center gap-3 flex-1 min-w-0 cursor-pointer" onClick={() => setExpandedEventIdx(idx)}>
-                              <span className="material-symbols-outlined text-gray-300 text-[18px] cursor-grab">drag_indicator</span>
+                              <span className="material-symbols-outlined text-gray-300 text-[18px] cursor-grab" onMouseDown={e => e.stopPropagation()}>drag_indicator</span>
                               <div className="w-10 h-10 rounded-full bg-rose-50 flex-shrink-0 overflow-hidden">
                                 {ev.media_url
                                   ? <img src={ev.media_url} alt="" className="w-full h-full object-cover" />
@@ -447,7 +479,7 @@ export default function StoryEditor() {
                                 </span>
                               </div>
                               <label className="flex items-center gap-2 cursor-pointer">
-                                <span className="text-[11px] text-gray-600 font-bold">Hiển thị</span>
+                                
                                 <div className="relative">
                                   <input type="checkbox" className="sr-only peer" checked={ev.is_visible !== false}
                                     disabled={ev.is_visible === false && visibleCount >= maxVisible}
@@ -475,7 +507,7 @@ export default function StoryEditor() {
 
                               <div className="px-4 flex flex-col gap-3">
                                 <div>
-                                  <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider flex items-center gap-1 mb-1.5">💬 What happened?</label>
+                                 
                                   <input type="text" placeholder="Tên kỷ niệm..." maxLength={100} value={ev.title}
                                     onChange={e => { const events = [...story.timeline_block.events]; events[idx] = { ...events[idx], title: e.target.value }; setStory({ ...story, timeline_block: { ...story.timeline_block, events } }); }}
                                     className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200 transition-all" />
@@ -488,9 +520,7 @@ export default function StoryEditor() {
                                 {/* Location + Date */}
                                 <div className="grid grid-cols-2 gap-2">
                                   <div>
-                                    <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider flex items-center gap-1 mb-1.5">
-                                      <span className="material-symbols-outlined text-[12px]">location_on</span> Where was this?
-                                    </label>
+                                    
                                     <div className="relative">
                                       <span className="absolute left-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-300 text-[14px]">location_on</span>
                                       <input type="text" placeholder="Địa điểm..." maxLength={150} value={ev.location || ''}
@@ -499,9 +529,7 @@ export default function StoryEditor() {
                                     </div>
                                   </div>
                                   <div>
-                                    <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider flex items-center gap-1 mb-1.5">
-                                      <span className="material-symbols-outlined text-[12px]">calendar_month</span> Milestone Date
-                                    </label>
+                                   
                                     <div className="relative">
                                       <span className="absolute left-2 top-1/2 -translate-y-1/2 material-symbols-outlined text-gray-300 text-[14px]">calendar_month</span>
                                       <input type="date" value={ev.date ? ev.date.split('T')[0] : ''}
@@ -537,138 +565,21 @@ export default function StoryEditor() {
                 </div>
 
                 {/* Add memory */}
-                <button
-                  onClick={() => { const events = [...story.timeline_block.events, { id: '', date: '', title: '', description: '', location: '', is_visible: visibleCount < maxVisible, media_url: '' }]; setStory({ ...story, timeline_block: { ...story.timeline_block, is_enabled: true, events } }); setExpandedEventIdx(events.length - 1); }}
-                  className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-white text-rose-500 text-sm font-bold hover:bg-rose-50 transition-all shadow-sm border border-rose-50"
-                >
-                  <span className="material-symbols-outlined text-[18px]">add_circle</span>
-                  Thêm cột mốc mới ✨
-                </button>
+                {totalEvents >= maxVisible ? (
+                  <div className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-gray-50 text-gray-400 text-sm font-bold border border-gray-100 cursor-not-allowed">
+                    <span className="material-symbols-outlined text-[18px]">block</span>
+                    Đã đạt tối đa {maxVisible} cột mốc
+                  </div>
+                ) : (
+                  <button
+                    onClick={() => { const events = [...story.timeline_block.events, { id: '', date: '', title: '', description: '', location: '', is_visible: visibleCount < maxVisible, media_url: '' }]; setStory({ ...story, timeline_block: { ...story.timeline_block, is_enabled: true, events } }); setExpandedEventIdx(events.length - 1); }}
+                    className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-white text-rose-500 text-sm font-bold hover:bg-rose-50 transition-all shadow-sm border border-rose-50"
+                  >
+                    <span className="material-symbols-outlined text-[18px]">add_circle</span>
+                    Thêm cột mốc mới ✨
+                  </button>
+                )}
 
-                {/* Publish CTA */}
-                <div className="mt-2 p-4 rounded-2xl bg-white border border-rose-100 shadow-sm">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center flex-shrink-0">
-                      <span className="material-symbols-outlined text-rose-400 text-[20px]">favorite</span>
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-bold text-gray-800 text-sm">Ready to share your love story?</p>
-                      <p className="text-xs text-gray-400 mt-0.5">Publish will create a password-protected personal website for your anniversary.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-2 mt-3">
-                    <button onClick={async () => { if (await handleSave()) navigate(`/editor/${scenarioId}/preview`); }} className="flex-1 py-2 rounded-xl border border-gray-200 text-gray-600 text-xs font-medium hover:bg-gray-50 transition-colors">Preview Full Website</button>
-                    <button onClick={handleSave} className="flex-1 py-2 rounded-xl bg-rose-500 text-white text-xs font-bold hover:bg-rose-600 transition-colors flex items-center justify-center gap-1">
-                      <span className="material-symbols-outlined text-[14px]">rocket_launch</span>
-                      Publish Now 🚀
-                    </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* INTRO */}
-            {activeSection === 'intro' && (
-              <div className="p-4 flex flex-col gap-4 animate-in fade-in duration-200">
-                <h2 className="font-bold text-gray-800 text-base">Giới thiệu chung</h2>
-                <div className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col gap-3 shadow-sm">
-                  <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider">Tên cặp đôi</label>
-                  <div className="flex gap-2 items-center">
-                    <input type="text" value={story.hero_block.partner_a.name} onChange={e => setStory({ ...story, hero_block: { ...story.hero_block, partner_a: { ...story.hero_block.partner_a, name: e.target.value } } })} className="flex-1 h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" placeholder="Tên bạn..." />
-                    <span className="text-rose-300 font-bold">&</span>
-                    <input type="text" value={story.hero_block.partner_b.name} onChange={e => setStory({ ...story, hero_block: { ...story.hero_block, partner_b: { ...story.hero_block.partner_b, name: e.target.value } } })} className="flex-1 h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" placeholder="Tên người ấy..." />
-                  </div>
-                  <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider">Tiêu đề story</label>
-                  <input type="text" value={story.hero_block.title} onChange={e => setStory({ ...story, hero_block: { ...story.hero_block, title: e.target.value } })} className="h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" />
-                  <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider">Câu trích dẫn</label>
-                  <input type="text" value={story.hero_block.short_quote || ''} onChange={e => setStory({ ...story, hero_block: { ...story.hero_block, short_quote: e.target.value } })} className="h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" placeholder="Câu trích dẫn lãng mạn..." />
-                </div>
-                <div className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col gap-3 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-gray-700 text-sm">Bộ đếm ngày yêu</span>
-                    <label className="relative inline-flex items-center cursor-pointer">
-                      <input type="checkbox" className="sr-only peer" checked={story.counter_block.is_enabled} onChange={e => setStory({ ...story, counter_block: { ...story.counter_block, is_enabled: e.target.checked } })} />
-                      <div className="w-8 h-4 bg-gray-200 peer-checked:bg-rose-400 rounded-full transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-4" />
-                    </label>
-                  </div>
-                  <div className={story.counter_block.is_enabled ? '' : 'opacity-40 pointer-events-none'}>
-                    <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5 block">Ngày bắt đầu yêu</label>
-                    <input type="date" value={story.counter_block.target_date ? story.counter_block.target_date.split('T')[0] : ''} onChange={e => setStory({ ...story, counter_block: { ...story.counter_block, target_date: new Date(e.target.value).toISOString() } })} className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* LETTER */}
-            {activeSection === 'letter' && (
-              <div className="p-4 flex flex-col gap-4 animate-in fade-in duration-200">
-                <div className="flex items-center justify-between">
-                  <h2 className="font-bold text-gray-800 text-base">Thư tình 💌</h2>
-                  <label className="relative inline-flex items-center cursor-pointer">
-                    <input type="checkbox" className="sr-only peer" checked={story.letter_block.is_enabled} onChange={e => setStory({ ...story, letter_block: { ...story.letter_block, is_enabled: e.target.checked } })} />
-                    <div className="w-8 h-4 bg-gray-200 peer-checked:bg-rose-400 rounded-full transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-4" />
-                  </label>
-                </div>
-                <div className={`bg-white rounded-2xl border border-gray-100 p-4 flex flex-col gap-3 shadow-sm ${story.letter_block.is_enabled ? '' : 'opacity-40 pointer-events-none'}`}>
-                  <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider">Tiêu đề thư</label>
-                  <input type="text" value={story.letter_block.heading || ''} onChange={e => setStory({ ...story, letter_block: { ...story.letter_block, heading: e.target.value } })} className="h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" placeholder="Gửi em, cô gái tháng 9..." />
-                  <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider">Nội dung</label>
-                  <textarea rows={8} value={story.letter_block.content || ''} onChange={e => setStory({ ...story, letter_block: { ...story.letter_block, content: e.target.value } })} className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200 resize-none" placeholder="Viết những lời chân thành nhất của bạn..." />
-                  <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider">Ký tên</label>
-                  <input type="text" value={story.letter_block.signature || ''} onChange={e => setStory({ ...story, letter_block: { ...story.letter_block, signature: e.target.value } })} className="h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" placeholder="Yêu em mãi, ..." />
-                </div>
-              </div>
-            )}
-
-            {/* VIBES */}
-            {activeSection === 'vibes' && (
-              <div className="p-4 flex flex-col gap-4 animate-in fade-in duration-200">
-                <h2 className="font-bold text-gray-800 text-base">Vibes 🎵📸</h2>
-                {/* Gallery */}
-                <div className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col gap-3 shadow-sm">
-                  <div className="flex items-center justify-between">
-                    <span className="font-semibold text-gray-700 text-sm flex items-center gap-1.5">
-                      <span className="material-symbols-outlined text-rose-400 text-[18px]">photo_library</span>
-                      Bộ sưu tập ảnh ({photos.length})
-                    </span>
-                    <button type="button" disabled={isUploading} onClick={() => fileInputRef.current?.click()} className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-rose-500 text-white text-xs font-semibold hover:bg-rose-600 disabled:opacity-50 transition-colors">
-                      <span className="material-symbols-outlined text-[14px]">{isUploading ? 'progress_activity' : 'add_photo_alternate'}</span>
-                      {isUploading ? 'Đang tải...' : 'Thêm ảnh'}
-                    </button>
-                    <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/gif,image/webp" multiple className="hidden"
-                      onChange={async (e) => {
-                        const files = e.target.files;
-                        if (!files || !scenarioId) return;
-                        setIsUploading(true);
-                        try {
-                          for (const file of Array.from(files)) {
-                            const formData = new FormData();
-                            formData.append('file', file);
-                            const uploaded = await apiClient.postFormData(`/stories/${scenarioId}/photos`, formData) as any;
-                            setPhotos(prev => [...prev, { id: uploaded.id, url: uploaded.url, thumbnailUrl: uploaded.thumbnailUrl, filenameOriginal: uploaded.filenameOriginal }]);
-                            setStory(prev => { if (!prev) return prev; return { ...prev, gallery_block: { ...prev.gallery_block, is_enabled: true, images: [...prev.gallery_block.images, { url: uploaded.url, caption: '' }] } }; });
-                          }
-                          toast('Tải ảnh thành công', 'success');
-                        } catch { toast('Lỗi khi tải ảnh', 'error'); }
-                        finally { setIsUploading(false); e.target.value = ''; }
-                      }} />
-                  </div>
-                  {photos.length === 0
-                    ? <div className="text-center py-8 text-gray-400"><span className="material-symbols-outlined text-4xl opacity-30 block mb-1">add_photo_alternate</span><p className="text-xs">Tải lên những khoảnh khắc đẹp nhất</p></div>
-                    : <div className="grid grid-cols-3 gap-2">
-                        {photos.map(photo => (
-                          <div key={photo.id} className="relative group rounded-xl overflow-hidden bg-gray-50 border border-gray-100 aspect-square">
-                            <img src={photo.thumbnailUrl || photo.url} alt="" className="w-full h-full object-cover" />
-                            <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                              <button type="button" onClick={async () => { if (!scenarioId) return; try { await apiClient.delete(`/stories/${scenarioId}/photos/${photo.id}`); setPhotos(p => p.filter(x => x.id !== photo.id)); setStory(prev => { if (!prev) return prev; const imgs = prev.gallery_block.images.filter(i => i.url !== photo.url); return { ...prev, gallery_block: { ...prev.gallery_block, images: imgs, is_enabled: imgs.length > 0 } }; }); toast('Đã xóa ảnh', 'success'); } catch { toast('Lỗi khi xóa ảnh', 'error'); } }} className="w-8 h-8 rounded-full bg-red-500/90 text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow-lg">
-                                <span className="material-symbols-outlined text-[16px]">delete</span>
-                              </button>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                  }
-                </div>
                 {/* Music */}
                 <div className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col gap-3 shadow-sm">
                   <span className="font-semibold text-gray-700 text-sm flex items-center gap-1.5">
@@ -704,8 +615,56 @@ export default function StoryEditor() {
                   </>}
                   {library.length === 0 && <p className="text-xs text-gray-400">Thư viện nhạc đang trống.</p>}
                 </div>
+
+                {/* Letter */}
+                <div className="bg-white rounded-2xl border border-gray-100 p-4 flex flex-col gap-3 shadow-sm">
+                  <div className="flex items-center justify-between">
+                    <span className="font-semibold text-gray-700 text-sm flex items-center gap-1.5">
+                      <span className="material-symbols-outlined text-rose-400 text-[18px]">mail</span>
+                      Thư tình
+                    </span>
+                    <label className="relative inline-flex items-center cursor-pointer">
+                      <input type="checkbox" className="sr-only peer" checked={story.letter_block.is_enabled} onChange={e => setStory({ ...story, letter_block: { ...story.letter_block, is_enabled: e.target.checked } })} />
+                      <div className="w-8 h-4 bg-gray-200 peer-checked:bg-rose-400 rounded-full transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-3 after:w-3 after:transition-all peer-checked:after:translate-x-4" />
+                    </label>
+                  </div>
+                  <div className={`flex flex-col gap-3 ${story.letter_block.is_enabled ? '' : 'opacity-40 pointer-events-none'}`}>
+                    <div>
+                      <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5 block">Tiêu đề thư</label>
+                      <input type="text" value={story.letter_block.heading || ''} onChange={e => setStory({ ...story, letter_block: { ...story.letter_block, heading: e.target.value } })} className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" placeholder="Gửi em, cô gái tháng 9..." />
+                    </div>
+                    <div>
+                      <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5 block">Nội dung</label>
+                      <textarea rows={4} value={story.letter_block.content || ''} onChange={e => setStory({ ...story, letter_block: { ...story.letter_block, content: e.target.value } })} className="w-full p-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200 resize-none" placeholder="Viết những lời chân thành nhất của bạn..." />
+                    </div>
+                    <div>
+                      <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5 block">Ký tên</label>
+                      <input type="text" value={story.letter_block.signature || ''} onChange={e => setStory({ ...story, letter_block: { ...story.letter_block, signature: e.target.value } })} className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" placeholder="Yêu em mãi, ..." />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Publish CTA */}
+                <div className="mt-2 p-4 rounded-2xl bg-white border border-rose-100 shadow-sm">
+                  <div className="flex items-start gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-rose-50 flex items-center justify-center flex-shrink-0">
+                      <span className="material-symbols-outlined text-rose-400 text-[20px]">favorite</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-bold text-gray-800 text-sm">Ready to share your love story?</p>
+                      <p className="text-xs text-gray-400 mt-0.5">Publish will create a password-protected personal website for your anniversary.</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2 mt-3">
+                    <button onClick={async () => { if (await handleSave()) navigate(`/editor/${scenarioId}/preview`); }} className="flex-1 py-2 rounded-xl border border-gray-200 text-gray-600 text-xs font-medium hover:bg-gray-50 transition-colors">Preview Full Website</button>
+                    <button onClick={handleSave} className="flex-1 py-2 rounded-xl bg-rose-500 text-white text-xs font-bold hover:bg-rose-600 transition-colors flex items-center justify-center gap-1">
+                      <span className="material-symbols-outlined text-[14px]">rocket_launch</span>
+                      Publish Now 🚀
+                    </button>
+                  </div>
+                </div>
               </div>
-            )}
+
           </div>
         </aside>
 

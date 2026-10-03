@@ -713,6 +713,36 @@ export default function TemplateMemoryWall({ storyData }: { storyData: StoryData
         )}
       </div>
 
+      {/* Love Letter */}
+      {storyData.letter_block.is_enabled && storyData.letter_block.content && (
+        <section style={{ padding: 'clamp(2rem, 6vw, 4rem) clamp(1rem, 4vw, 3.5rem)', display: 'flex', justifyContent: 'center' }}>
+          <div style={{
+            maxWidth: 520, width: '100%', background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)',
+            borderRadius: 24, border: '1px solid rgba(184,92,122,0.15)', padding: 'clamp(1.5rem, 4vw, 2.5rem)', textAlign: 'center',
+            boxShadow: '0 8px 32px rgba(184,92,122,0.08)',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8, marginBottom: '1.2rem' }}>
+              <div style={{ height: 1, width: 40, background: 'linear-gradient(90deg, transparent, rgba(184,92,122,0.3))' }} />
+              <span style={{ fontSize: '1.4rem' }}>💌</span>
+              <div style={{ height: 1, width: 40, background: 'linear-gradient(90deg, rgba(184,92,122,0.3), transparent)' }} />
+            </div>
+            {storyData.letter_block.heading && (
+              <p style={{ fontFamily: "'Dancing Script', cursive", fontSize: 'clamp(1.1rem, 3vw, 1.4rem)', color: '#B85C7A', marginBottom: '1rem', fontWeight: 600 }}>
+                {storyData.letter_block.heading}
+              </p>
+            )}
+            <p style={{ fontFamily: "'Nunito Sans', sans-serif", fontSize: 'clamp(0.85rem, 2.2vw, 0.95rem)', color: '#7D655C', lineHeight: 1.8, whiteSpace: 'pre-wrap', marginBottom: '1.2rem' }}>
+              {storyData.letter_block.content}
+            </p>
+            {storyData.letter_block.signature && (
+              <p style={{ fontFamily: "'Dancing Script', cursive", fontSize: 'clamp(0.95rem, 2.5vw, 1.15rem)', color: '#B85C7A', fontStyle: 'italic' }}>
+                {storyData.letter_block.signature} 💕
+              </p>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* Detail Overlay */}
       {selectedIndex !== null && (
         <MemoryDetail memories={filtered} currentIndex={selectedIndex} onClose={() => setSelectedIndex(null)} onNavigate={setSelectedIndex} />
