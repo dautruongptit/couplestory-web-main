@@ -4,16 +4,21 @@ import { useAuth } from '@/context/AuthContext';
 import { apiClient } from '@/services/api';
 import { toast } from '@/utils/toast';
 import ConfirmModal from '@/components/ConfirmModal';
+import QrModal from '@/components/QrModal';
+import ShareModal from '@/components/ShareModal';
 import RenewModal from '@/components/RenewModal';
 import { usePlans } from '@/hooks/usePlans';
 import { useTemplates } from '@/hooks/useTemplates';
 import { TEMPLATE_THUMBNAILS } from '@/data/templateThumbnails';
+import { getStoryPublicUrl } from '@/utils/publicStory';
 
 export interface StoryResponse {
   id: string;
   coupleName1: string;
+  title?: string;
   coupleName2: string;
   subdomain: string;
+  slug?: string;
   startDate?: string;
   templateCode?: string;
   createdAt: string;
@@ -39,6 +44,8 @@ export default function Dashboard() {
   const [stories, setStories] = useState<StoryResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [qrStory, setQrStory] = useState<StoryResponse | null>(null);
+  const [shareStory, setShareStory] = useState<StoryResponse | null>(null);
   const [renewTarget, setRenewTarget] = useState<string | null>(null);
 
   const [applyModal, setApplyModal] = useState<string | null>(null);
@@ -115,9 +122,8 @@ export default function Dashboard() {
   };
 
   const firstName = user?.name?.split(' ').pop() || 'bạn';
-  const planCode = user?.plan ?? 'FREE';
-  const published = stories.filter(s => s.status === 'published').length;
-  const drafts = stories.filter(s => s.status !== 'published').length;
+  const published = stories.filter(s => s.status?.toLowerCase() === 'published').length;
+  const drafts = stories.filter(s => s.status?.toLowerCase() !== 'published').length;
   const firstStory = stories[0];
   const daysCount = daysSince(firstStory?.startDate);
 
@@ -144,14 +150,6 @@ export default function Dashboard() {
               ? <>Bạn có <strong>{published}</strong> câu chuyện đã xuất bản{drafts > 0 && <> và <strong>{drafts}</strong> bản nháp</>}.</>
               : 'Bắt đầu tạo câu chuyện tình yêu đầu tiên của bạn.'}
           </p>
-
-          <div className="flex flex-wrap gap-3">
-            <button onClick={openCreate} className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#ff4d8d] to-[#e63e7b] text-white font-semibold text-sm shadow-[0_4px_16px_rgba(255,77,141,0.3)] hover:shadow-[0_6px_20px_rgba(255,77,141,0.4)] hover:scale-[1.02] active:scale-[0.98] transition-all">
-              <span className="material-symbols-outlined text-[18px]">add</span>
-              Tạo Story mới
-            </button>
-          </div>
-
           {/* Stats row */}
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-6">
             {[
@@ -203,79 +201,98 @@ export default function Dashboard() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {stories.map(story => {
-                const isPublished = story.status === 'published';
+                const isPublished = story.status?.toLowerCase() === 'published';
                 const days = daysSince(story.startDate);
                 return (
-                  <article key={story.id} className="bg-white rounded-2xl border border-[#f0e4e8] shadow-sm hover:shadow-md transition-all overflow-hidden group">
+                  <article key={story.id} className="relative bg-white rounded-[32px] p-4 p-5 shadow-[0_4px_20px_rgba(255,77,141,0.06)] border border-[#fff0f4] flex flex-col mt-4 group hover:-translate-y-1 transition-transform duration-300">
+                    {/* Top Floating Badge */}
+                    <div className={`absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 rounded-sm text-[10px] font-bold tracking-widest uppercase shadow-sm whitespace-nowrap ${isPublished ? 'bg-[#ffe4ec] text-[#b90a5a]' : 'bg-[#faebd7] text-[#8b4513]'}`}>
+                      {isPublished ? 'OUR JOURNEY' : 'DAILY MEMENTO'}
+                    </div>
+
                     {/* Thumbnail */}
-                    <div className="relative aspect-[16/10] bg-gradient-to-br from-[#ffe8ef] to-[#ffd6e6] overflow-hidden">
+                    <div className="relative aspect-[4/3] rounded-3xl bg-gradient-to-br from-[#ffe8ef] to-[#ffd6e6] overflow-hidden mb-4 border border-[#f0e4e8]/50">
                       <div className="absolute inset-0 flex items-center justify-center">
                         <span className="material-symbols-outlined text-[48px] text-[#ff4d8d]/30">image</span>
                       </div>
-                      {/* Status badges */}
-                      <div className="absolute top-3 left-3 right-3 flex items-start justify-between">
-                        <span className="px-2.5 py-1 rounded-lg bg-[#ff4d8d] text-white text-[10px] font-bold uppercase tracking-wider shadow-sm">
-                          {story.templateCode || 'Love Story'}
+                      
+                      {/* Top-Left Pill */}
+                      <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+                        <span className={`w-2 h-2 rounded-full ${isPublished ? 'bg-[#10b981]' : 'bg-[#f59e0b]'}`} />
+                        <span className="text-[11px] font-bold text-[#2e1220]">
+                          {isPublished ? 'Published' : 'Draft'} • {days !== null && days > 0 ? (isPublished ? `${days} days` : '85% Completed') : (isPublished ? 'Just now' : '85% Completed')}
                         </span>
-                        <span className={`flex items-center gap-1 px-2 py-1 rounded-lg text-[10px] font-semibold shadow-sm ${
-                          isPublished ? 'bg-white/90 text-emerald-600' : 'bg-amber-50/90 text-amber-700'
-                        }`}>
-                          <span className={`w-1.5 h-1.5 rounded-full ${isPublished ? 'bg-emerald-500' : 'bg-amber-500'}`} />
-                          {isPublished ? 'Đã xuất bản' : 'Bản nháp'}
-                          {days !== null && days > 0 && <> · {days} ngày</>}
-                        </span>
+                      </div>
+
+                      {/* Bottom-Right Pill */}
+                      <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
+                        {isPublished ? (
+                          <>
+                            <span className="text-[12px]">💕</span>
+                            <span className="text-[11px] font-bold text-[#2e1220]">{Math.floor(Math.random() * 500) + 100} views</span>
+                          </>
+                        ) : (
+                          <>
+                            <span className="material-symbols-outlined text-[14px] text-[#7c3aed]">photo_camera</span>
+                            <span className="text-[11px] font-bold text-[#2e1220]">12 photos</span>
+                          </>
+                        )}
                       </div>
                     </div>
 
                     {/* Content */}
-                    <div className="p-4">
-                      <h3 className="font-bold text-[#2e1220] text-base mb-0.5 truncate">
-                        {story.coupleName1} &amp; {story.coupleName2}
-                      </h3>
-                      <p className="text-xs text-[#8d7076] mb-3 truncate">
-                        {story.subdomain ? `${story.subdomain}.couplestory.site` : 'Chưa có đường dẫn'}
-                      </p>
-
-                      {/* Expiry info */}
-                      {story.expiresAt && (
-                        <p className="text-[11px] text-[#8d7076] mb-3 flex items-center gap-1">
-                          <span className="material-symbols-outlined text-[14px]">schedule</span>
-                          Hết hạn: {new Date(story.expiresAt).toLocaleDateString('vi-VN')}
-                        </p>
+                    <div className="flex flex-col flex-1 px-1">
+                      <div className="flex items-start justify-between gap-2 mb-1">
+                        <h3 className="font-bold text-[#2e1220] text-[20px] leading-tight">
+                          {story.title || `${story.coupleName1} & ${story.coupleName2}`} {!isPublished && "☕"}
+                          {isPublished && <div className="text-[16px] mt-1">💕</div>}
+                        </h3>
+                        <span className={`px-3 py-1 rounded-full text-[11px] font-bold shrink-0 ${isPublished ? 'bg-[#eeebfd] text-[#5b21b6]' : 'bg-[#fce7f3] text-[#9d174d]'}`}>
+                          {isPublished ? 'Live' : 'Draft'}
+                        </span>
+                      </div>
+                      
+                      {isPublished ? (
+                         <p className="text-[13px] text-[#594046] mb-8 mt-1">
+                           Dedicated to {story.coupleName2 || 'your partner'} • Last edited {new Date(story.createdAt || Date.now()).toLocaleDateString('vi-VN')}
+                         </p>
+                      ) : (
+                         <p className="text-[13px] text-[#594046] mb-8 mt-1">
+                           For My Dearest {story.coupleName2 || 'partner'} • {days !== null && days > 0 ? `${days} days until publish` : 'Almost ready'}
+                         </p>
                       )}
 
                       {/* Actions */}
-                      <div className="flex items-center gap-2">
-                        <Link
-                          to={`/editor/${story.id}`}
-                          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-gradient-to-r from-[#ff4d8d] to-[#e63e7b] text-white text-xs font-semibold hover:opacity-95 transition-opacity"
-                        >
-                          <span className="material-symbols-outlined text-[16px]">edit</span>
-                          Chỉnh sửa
-                        </Link>
-                        <Link
-                          to={`/demo/${story.id}`}
-                          className="flex items-center justify-center gap-1 py-2 px-3 rounded-xl bg-[#f5eef1] text-[#594046] text-xs font-medium hover:bg-[#ffe8ef] transition-colors"
-                          title="Xem"
-                        >
-                          <span className="material-symbols-outlined text-[16px]">visibility</span>
-                        </Link>
-                        {story.expiresAt && planCode !== 'PREMIUM' && (
-                          <button
-                            onClick={() => setRenewTarget(story.id)}
-                            className="flex items-center justify-center py-2 px-3 rounded-xl bg-[#f5eef1] text-[#594046] text-xs font-medium hover:bg-[#ffe8ef] transition-colors"
-                            title="Gia hạn"
-                          >
-                            <span className="material-symbols-outlined text-[16px]">update</span>
-                          </button>
+                      <div className="flex items-center justify-between mt-auto">
+                        {isPublished ? (
+                          <>
+                            <div className="flex items-center gap-2">
+                              <Link to={`/editor/${story.id}`} className="w-9 h-9 rounded-full bg-[#fcf8fa] text-[#594046] flex items-center justify-center hover:bg-[#ffe0eb] transition-colors shadow-sm" title="Edit">
+                                <span className="material-symbols-outlined text-[16px]">edit</span>
+                              </Link>
+                              <button onClick={() => setShareStory(story)} className="w-9 h-9 rounded-full bg-[#fcf8fa] text-[#594046] flex items-center justify-center hover:bg-[#ffe0eb] transition-colors shadow-sm" title="Share">
+                                <span className="material-symbols-outlined text-[16px]">share</span>
+                              </button>
+                              <button onClick={() => setQrStory(story)} className="w-9 h-9 rounded-full bg-[#fcf8fa] text-[#594046] flex items-center justify-center hover:bg-[#ffe0eb] transition-colors shadow-sm" title="QR Code">
+                                <span className="material-symbols-outlined text-[16px]">qr_code_2</span>
+                              </button>
+                            </div>
+                            <a href={story.slug ? getStoryPublicUrl(story.slug) : `/demo/${story.id}`} target="_blank" rel="noreferrer" className="px-5 py-2.5 rounded-full bg-[#ffe0eb] text-[#b90a5a] font-bold text-[13px] flex items-center gap-1.5 hover:bg-[#ffcce0] transition-colors whitespace-nowrap shadow-sm">
+                              View Sanctuary <span className="material-symbols-outlined text-[14px]">open_in_new</span>
+                            </a>
+                          </>
+                        ) : (
+                          <>
+                            <div className="flex items-center gap-2 text-[#8d7076] text-[12px] font-medium leading-tight ml-1">
+                              <span className="material-symbols-outlined text-[18px]">schedule</span>
+                              Saved 14m<br/>ago
+                            </div>
+                            <Link to={`/editor/${story.id}`} className="px-6 py-3 rounded-full bg-[#b90a5a] text-white font-bold text-[14px] flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-sm">
+                              <span className="material-symbols-outlined text-[18px]">edit_document</span>
+                              Continue Editing
+                            </Link>
+                          </>
                         )}
-                        <button
-                          onClick={() => setDeleteTarget(story.id)}
-                          className="flex items-center justify-center py-2 px-3 rounded-xl bg-[#fef1f1] text-[#ba1a1a] text-xs font-medium hover:bg-[#ffdad6] transition-colors"
-                          title="Xóa"
-                        >
-                          <span className="material-symbols-outlined text-[16px]">delete</span>
-                        </button>
                       </div>
                     </div>
                   </article>
@@ -365,6 +382,10 @@ export default function Dashboard() {
           </section>
         )}
       </div>
+
+      <ShareModal isOpen={!!shareStory} onClose={() => setShareStory(null)} story={shareStory} />
+
+      <QrModal isOpen={!!qrStory} onClose={() => setQrStory(null)} story={qrStory} />
 
       <ConfirmModal
         open={!!deleteTarget}
