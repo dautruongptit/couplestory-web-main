@@ -240,7 +240,7 @@ export function DashboardLayout() {
 
   const handleLogout = () => { logout(); navigate('/'); };
 
-  const navItems = isAdmin ? [
+  const navItems: Array<{ to: string, icon: string, label: string, badge?: "count" | "new" }> = isAdmin ? [
     { to: '/admin/users', icon: 'group', label: 'Người dùng' },
     { to: '/admin/revenue', icon: 'payments', label: 'Doanh thu' },
     { to: '/admin/orders', icon: 'receipt_long', label: 'Đơn hàng' },

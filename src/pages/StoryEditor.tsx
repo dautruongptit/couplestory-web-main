@@ -40,7 +40,7 @@ export default function StoryEditor() {
   const maxTracks = plans.find(p => p.code === (user?.plan ?? 'FREE'))?.maxMusicTracks ?? 1;
   const [isSaving, setIsSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
-  const [photos, setPhotos] = useState<ServerPhoto[]>([]);
+  const [, setPhotos] = useState<ServerPhoto[]>([]);
   const [storyType, setStoryType] = useState('LOVE_STORY');
   const [showChangeTemplate, setShowChangeTemplate] = useState(false);
   const [expandedEventIdx, setExpandedEventIdx] = useState<number | null>(0);

@@ -4,7 +4,7 @@ import { QRCodeSVG } from 'qrcode.react';
 import { apiClient } from '@/services/api';
 import { toast } from '@/utils/toast';
 import { useAuth } from '@/context/AuthContext';
-import { usePlans } from '@/hooks/usePlans';
+
 import { getStoryPublicUrl } from '@/utils/publicStory';
 
 interface StoryInfo {
@@ -20,7 +20,7 @@ interface StoryInfo {
 export default function StoryPublished() {
   const { scenarioId } = useParams();
   const { user } = useAuth();
-  const { plans } = usePlans();
+  // const { plans } = usePlans();
   const [story, setStory] = useState<StoryInfo | null>(null);
   const [failed, setFailed] = useState(false);
 

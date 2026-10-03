@@ -184,7 +184,7 @@ export default function Pricing() {
                 {card.code === 'FREE' ? (
                   <button disabled className={`w-full py-3 rounded-xl text-sm font-semibold ${card.ctaStyle}`}>{card.cta}</button>
                 ) : (
-                  <StartOrderButton planCode={card.code} className={`w-full py-3 rounded-xl text-sm font-bold transition-all ${card.ctaStyle}`}>
+                  <StartOrderButton planCode={card.code as import('@/types').PackageCode} className={`w-full py-3 rounded-xl text-sm font-bold transition-all ${card.ctaStyle}`}>
                     {card.cta}
                   </StartOrderButton>
                 )}

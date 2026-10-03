@@ -8,7 +8,6 @@ export default function AccountModal({ onClose }: { onClose: () => void }) {
   const [name, setName] = useState(user?.name || '');
   const [activeTab, setActiveTab] = useState<'general' | 'account'>('general');
   const [theme, setTheme] = useState<'system' | 'light' | 'dark'>('system');
-  const [sessions, setSessions] = useState<any[]>([]);
   const [devices, setDevices] = useState<any[]>([]);
   const [loadingSessions, setLoadingSessions] = useState(true);
   const [saved, setSaved] = useState(false);
@@ -28,8 +27,7 @@ export default function AccountModal({ onClose }: { onClose: () => void }) {
         Promise.all([
           apiClient.get('/auth/sessions').catch(() => []),
           apiClient.get('/users/devices').catch(() => [])
-        ]).then(([sessionsData, devicesData]) => {
-          setSessions(sessionsData || []);
+        ]).then(([_, devicesData]) => {
           setDevices(devicesData || []);
           setLoadingSessions(false);
         });
@@ -54,7 +52,7 @@ export default function AccountModal({ onClose }: { onClose: () => void }) {
     });
   };
 
-  const handleLogout = () => { logout(); onClose(); navigate('/'); };
+  
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-0 md:p-6 bg-black/50 backdrop-blur-sm" onClick={onClose}>
@@ -232,7 +230,7 @@ export default function AccountModal({ onClose }: { onClose: () => void }) {
                 <div className="space-y-6">
                   <div className="flex items-center justify-between">
                     <p className="text-[14px] font-medium text-[#2e1220]">Log out of all devices</p>
-                    <button onClick={handleLogout} className="px-4 py-1.5 bg-[#faf7f8] hover:bg-[#FF4D8D] hover:text-white hover:bg-[#FF4D8D] hover:border-[#FF4D8D] text-[#2e1220] text-[13px] font-medium rounded-md transition-colors border border-[#e1bec5]">
+                    <button onClick={handleLogoutAll} className="px-4 py-1.5 bg-[#faf7f8] hover:bg-[#FF4D8D] hover:text-white hover:bg-[#FF4D8D] hover:border-[#FF4D8D] text-[#2e1220] text-[13px] font-medium rounded-md transition-colors border border-[#e1bec5]">
                       Log out
                     </button>
                   </div>
