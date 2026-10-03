@@ -155,9 +155,9 @@ function MemoryStop({ memory, index, onOpen, onVisible }: {
       viewport={{ once: true, amount: 0.35 }}
       onViewportEnter={() => onVisible(index)}
       transition={{ duration: 0.8 }}
-      className="relative grid h-[530px] grid-cols-2 items-center gap-5 px-6 md:h-[420px] md:gap-24 md:px-[12%]"
+      className="relative grid min-h-[480px] grid-cols-2 items-center gap-4 px-4 sm:min-h-[530px] sm:gap-5 sm:px-6 md:min-h-[420px] md:gap-24 md:px-[12%]"
     >
-      <div className={`relative z-10 col-span-2 mx-auto w-[230px] self-end md:col-span-1 md:w-full md:max-w-[280px] md:self-center ${reversed ? 'translate-x-8 rotate-[3deg] md:col-start-2 md:row-start-1 md:translate-x-0' : '-translate-x-8 -rotate-[4deg] md:translate-x-0'}`}>
+      <div className={`relative z-10 col-span-2 mx-auto w-[190px] self-end sm:w-[230px] md:col-span-1 md:w-full md:max-w-[280px] md:self-center ${reversed ? 'translate-x-4 rotate-[3deg] sm:translate-x-8 md:col-start-2 md:row-start-1 md:translate-x-0' : '-translate-x-4 -rotate-[4deg] sm:-translate-x-8 md:translate-x-0'}`}>
         <PaperPhoto src={memory.coverPhoto} note={NOTE_LABELS[index % 7]} onClick={onOpen} />
         {memory.featured && (
           <span className={`absolute -bottom-2 ${reversed ? '-right-4' : '-left-4'} flex size-10 rotate-12 items-center justify-center rounded-full border border-[#b17b7360] bg-[#e8c1b3] text-[#8e605a] shadow-sm`}>
@@ -172,7 +172,7 @@ function MemoryStop({ memory, index, onOpen, onVisible }: {
       <div className={`relative z-10 col-span-2 mx-auto mb-6 max-w-[310px] self-end text-center md:col-span-1 md:mb-0 md:self-center md:text-left ${reversed ? 'md:col-start-1 md:row-start-1 md:pr-3' : 'md:pl-3'}`}>
         <p className="mb-3 text-[10px] font-semibold uppercase tracking-[.18em] text-primary">{dateLabel(memory.date)}</p>
         <button onClick={onOpen} className="group text-left">
-          <h2 className="font-display text-[34px] leading-[1.15] md:text-[39px]">
+          <h2 className="font-display text-[26px] leading-[1.15] sm:text-[34px] md:text-[39px]">
             {memory.title}
             <span className="ml-2 inline-block text-primary opacity-0 transition-opacity group-hover:opacity-100">↗</span>
           </h2>
@@ -259,7 +259,7 @@ function MemoryModal({ items, selected, setSelected, onClose }: {
               <Icon className="size-3.5" /> {memory.category}
             </span>
             <p className="text-[11px] uppercase tracking-[.16em] text-muted-foreground">{dateLabel(memory.date)}</p>
-            <h2 id="memory-title" className="mt-3 font-display text-5xl leading-[1.1]">{memory.title}</h2>
+            <h2 id="memory-title" className="mt-3 font-display text-3xl leading-[1.1] sm:text-4xl md:text-5xl">{memory.title}</h2>
             <p className="mt-6 text-sm leading-[1.95] text-muted-foreground">{memory.description}</p>
             {memory.location && (
               <p className="mt-6 flex items-center gap-2 text-xs text-primary"><MapPin className="size-4" />{memory.location}</p>
@@ -398,7 +398,7 @@ export default function TemplateAnniversaryJourney({ storyData }: { storyData: S
           <span className="flex size-8 rotate-[-8deg] items-center justify-center rounded-full border border-[#c7898c]/50 text-[#a95671]">
             <Heart className="size-4" strokeWidth={1.5} />
           </span>
-          <span className="font-display text-[25px]">{title}<span className="text-[#a95671]">.</span></span>
+          <span className="font-display text-[20px] truncate max-w-[45vw] sm:max-w-none sm:text-[25px]">{title}<span className="text-[#a95671]">.</span></span>
         </div>
         <nav className="flex items-center gap-7 text-[11px] text-[#81706a] md:gap-9">
           <a href="#journey" className="hidden transition-colors hover:text-[#a95671] sm:block">Our journey</a>
@@ -420,7 +420,7 @@ export default function TemplateAnniversaryJourney({ storyData }: { storyData: S
             <p className="mb-5 flex items-center justify-center gap-3 text-[10px] font-semibold uppercase tracking-[.28em] text-[#a95671]">
               <span className="h-px w-7 bg-[#d8aaa6]" /> Our love story <span className="h-px w-7 bg-[#d8aaa6]" />
             </p>
-            <h1 className="font-display text-[76px] leading-[1.03] md:text-[88px] lg:text-[112px]">
+            <h1 className="font-display text-[clamp(40px,11vw,76px)] leading-[1.03] md:text-[88px] lg:text-[112px]">
               {title.split('&').length > 1 ? (
                 <>{title.split('&')[0]}<span className="relative inline-block italic text-[#a95671]">&amp; {title.split('&')[1]}
                   <Heart className="absolute -right-7 -top-1 size-5 rotate-18 text-[#c18184] md:-right-9 md:top-2 md:size-6" strokeWidth={1.2} />
@@ -431,7 +431,7 @@ export default function TemplateAnniversaryJourney({ storyData }: { storyData: S
                 </span>
               )}
             </h1>
-            <p className="mt-5 font-hand text-[24px] text-[#a37d66] md:text-[27px]">{quote}</p>
+            <p className="mt-5 px-2 font-hand text-[20px] text-[#a37d66] sm:text-[24px] md:text-[27px]">{quote}</p>
             {startDate && endDate && (
               <p className="mt-6 text-[10px] font-medium tracking-[.18em] text-[#8a7770]">
                 {startDate.split('-').reverse().join('.')} <span className="mx-3 text-[#b78d8d]">—</span> {endDate.split('-').reverse().join('.')}
@@ -443,13 +443,13 @@ export default function TemplateAnniversaryJourney({ storyData }: { storyData: S
           </motion.div>
           {items[0] && (
             <motion.div initial={reduced ? false : { opacity: 0, rotate: -12, y: 20 }} animate={{ opacity: 1, rotate: -9, y: 0 }} transition={{ delay: 0.3, duration: 1 }}
-              className="absolute left-5 top-[405px] z-10 w-[140px] md:left-[2%] md:top-35 md:w-[160px] lg:left-[6%] lg:top-28 lg:w-[206px]">
+              className="absolute left-2 top-[405px] z-10 w-[110px] sm:left-5 sm:w-[140px] md:left-[2%] md:top-35 md:w-[160px] lg:left-[6%] lg:top-28 lg:w-[206px]">
               <PaperPhoto src={items[0].coverPhoto} note="my favorite person ♡" eager onClick={() => setSelected(0)} />
             </motion.div>
           )}
           {items[2] && (
             <motion.div initial={reduced ? false : { opacity: 0, rotate: 13, y: 20 }} animate={{ opacity: 1, rotate: 9, y: 0 }} transition={{ delay: 0.5, duration: 1 }}
-              className="absolute right-5 top-[432px] z-10 w-[135px] md:right-[2%] md:top-40 md:w-[150px] lg:right-[7%] lg:top-33 lg:w-[195px]">
+              className="absolute right-2 top-[432px] z-10 w-[105px] sm:right-5 sm:w-[135px] md:right-[2%] md:top-40 md:w-[150px] lg:right-[7%] lg:top-33 lg:w-[195px]">
               <PaperPhoto src={items[Math.min(2, items.length - 1)].coverPhoto} note="our kind of forever" eager onClick={() => setSelected(Math.min(2, items.length - 1))} />
               <Heart aria-hidden="true" className="absolute -left-7 -top-5 size-8 -rotate-25 text-[#bf8b81]/60" strokeWidth={1} />
             </motion.div>
@@ -484,25 +484,25 @@ export default function TemplateAnniversaryJourney({ storyData }: { storyData: S
         {/* Forever */}
         <section id="forever" className="relative mx-auto max-w-[1000px] px-6 pb-24 pt-17 text-center">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,#f6e2e333_0%,transparent_65%)]" />
-          <h2 className="relative mt-4 font-display text-5xl md:text-6xl">Look how far we've come.</h2>
-          <div className="relative mt-7 flex items-center justify-center gap-7 text-[10px] text-[#81706a]">
+          <h2 className="relative mt-4 font-display text-3xl sm:text-5xl md:text-6xl">Look how far we've come.</h2>
+          <div className="relative mt-7 flex items-center justify-center gap-4 text-[10px] text-[#81706a] sm:gap-7">
             <span>
-              <strong className="block font-display text-3xl font-normal text-[#a95671]">{daysTogether}</strong>
+              <strong className="block font-display text-2xl font-normal text-[#a95671] sm:text-3xl">{daysTogether}</strong>
               <span className="mt-1 block uppercase tracking-[.12em]">Days together</span>
             </span>
             <span className="h-8 w-px bg-[#eaddd4]" />
             <span>
-              <strong className="block font-display text-3xl font-normal text-[#a95671]">{items.length}</strong>
+              <strong className="block font-display text-2xl font-normal text-[#a95671] sm:text-3xl">{items.length}</strong>
               <span className="mt-1 block uppercase tracking-[.12em]">Precious memories</span>
             </span>
             <span className="h-8 w-px bg-[#eaddd4]" />
             <span>
-              <strong className="block font-display text-3xl font-normal text-[#a95671]">∞</strong>
+              <strong className="block font-display text-2xl font-normal text-[#a95671] sm:text-3xl">∞</strong>
               <span className="mt-1 block uppercase tracking-[.12em]">Still to make</span>
             </span>
           </div>
           <Heart aria-hidden="true" className="relative mx-auto mt-12 size-6 text-[#bf8b91]" strokeWidth={1.2} />
-          <p className="relative mt-5 font-display text-[35px] leading-[1.25] italic md:text-[46px]">
+          <p className="relative mt-5 font-display text-[24px] leading-[1.25] italic sm:text-[35px] md:text-[46px]">
             And I still want to walk<br />every road with you.
           </p>
           {loveLetter?.is_enabled && loveLetter.content && (
@@ -529,7 +529,7 @@ export default function TemplateAnniversaryJourney({ storyData }: { storyData: S
         </section>
       </main>
 
-      <footer className="mx-auto flex max-w-[1280px] items-center justify-center border-t border-[#eaddd4] px-6 pb-28 pt-7 text-[10px] text-[#81706a] md:justify-between md:pb-10">
+      <footer className="mx-auto flex max-w-[1280px] items-center justify-center border-t border-[#eaddd4] px-6 pb-20 pt-7 text-[10px] text-[#81706a] md:justify-between md:pb-10">
         <span>Made with love. Kept forever.</span>
         <span className="hidden items-center gap-1.5 md:flex">
           Two hearts. One story. <Heart className="size-3 text-[#a95671]" />

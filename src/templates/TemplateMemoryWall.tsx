@@ -218,6 +218,13 @@ const SCOPED_CSS = `
 .mw-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .mw-scrollbar::-webkit-scrollbar-thumb { background: rgba(233,138,175,0.3); border-radius: 4px; }
 .mw-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(184,92,122,0.5); }
+@media (max-width: 480px) {
+  .mw-detail-card { border-radius: 0 !important; max-height: 100vh !important; }
+  .mw-detail-photo { min-height: 200px !important; flex-basis: 100% !important; }
+  .mw-detail-info { padding: 1.2rem 1rem 1rem !important; }
+  .mw-music-player { right: 12px !important; bottom: 12px !important; max-width: calc(100vw - 24px) !important; width: calc(100vw - 24px) !important; }
+  .mw-overlay-in { padding: 0 !important; }
+}
 `;
 
 // ── MemoryBackground ───────────────────────────────────────
@@ -473,13 +480,13 @@ function MemoryDetail({ memories, currentIndex, onClose, onNavigate }: {
     <div className="mw-overlay-in" onClick={onClose} style={{ position: 'fixed', inset: 0, zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '1rem' }}>
       <div style={{ position: 'absolute', inset: 0, background: 'rgba(61,44,44,0.62)', backdropFilter: 'blur(8px) saturate(120%)', WebkitBackdropFilter: 'blur(8px) saturate(120%)' }} />
 
-      <div className="mw-detail-in" onClick={(e) => e.stopPropagation()} style={{ position: 'relative', zIndex: 10, background: '#FFFDF9', borderRadius: 4, boxShadow: '0 32px 100px rgba(61,44,44,0.35)', width: '100%', maxWidth: 960, maxHeight: 'calc(100vh - 2rem)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <div className="mw-detail-in mw-detail-card" onClick={(e) => e.stopPropagation()} style={{ position: 'relative', zIndex: 10, background: '#FFFDF9', borderRadius: 4, boxShadow: '0 32px 100px rgba(61,44,44,0.35)', width: '100%', maxWidth: 960, maxHeight: 'calc(100vh - 2rem)', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
         <div className="mw-tape" style={{ position: 'absolute', top: -10, left: '50%', transform: 'translateX(-50%) rotate(-0.5deg)', zIndex: 20 }} />
 
         <div style={{ display: 'flex', flex: 1, overflow: 'hidden', flexDirection: 'column' }}>
-          <div style={{ display: 'flex', flex: 1, overflow: 'hidden', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', flex: 1, overflow: 'auto', flexWrap: 'wrap' }}>
             {/* Photo section */}
-            <div style={{ flex: '1 1 340px', background: 'linear-gradient(135deg, #F8DDE8 0%, #F3E8F0 100%)', display: 'flex', flexDirection: 'column', position: 'relative', minHeight: 320 }}>
+            <div className="mw-detail-photo" style={{ flex: '1 1 340px', background: 'linear-gradient(135deg, #F8DDE8 0%, #F3E8F0 100%)', display: 'flex', flexDirection: 'column', position: 'relative', minHeight: 320 }}>
               <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
                 <img key={photoKey} src={allPhotos[photoIndex]} alt={memory.title} className="mw-photo-in" style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', backgroundColor: '#F3B6C6' }} />
                 {allPhotos.length > 1 && (
@@ -500,7 +507,7 @@ function MemoryDetail({ memories, currentIndex, onClose, onNavigate }: {
             </div>
 
             {/* Info section */}
-            <div style={{ flex: '1 1 280px', padding: '2rem 2rem 1.5rem', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
+            <div className="mw-detail-info" style={{ flex: '1 1 280px', padding: '2rem 2rem 1.5rem', display: 'flex', flexDirection: 'column', overflowY: 'auto' }}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 12px', borderRadius: 20, background: 'rgba(184,92,122,0.1)', color: '#B85C7A', fontFamily: "'Nunito Sans', sans-serif", fontSize: '0.72rem', fontWeight: 600, letterSpacing: '0.07em', textTransform: 'uppercase' as const, alignSelf: 'flex-start', marginBottom: '1.1rem' }}>
                 {catInfo.emoji} {catInfo.label}
               </span>

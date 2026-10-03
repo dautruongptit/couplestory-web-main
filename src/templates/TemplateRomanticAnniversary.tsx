@@ -196,7 +196,7 @@ function PhotoCarousel({ images }: { images: { url: string; caption: string }[] 
                 <img
                   src={photo.url}
                   alt={photo.caption || `Photo ${index + 1}`}
-                  className="w-full h-[500px] object-cover"
+                  className="w-full h-[280px] sm:h-[400px] md:h-[500px] object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </motion.div>
@@ -248,12 +248,12 @@ function TimelineSection({ events }: { events: { id: string; date: string; title
               index % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'
             }`}
           >
-            <div className="absolute left-8 md:left-1/2 w-16 h-16 -ml-8 bg-white rounded-full border-4 border-pink-200 shadow-lg flex items-center justify-center z-10">
+            <div className="absolute left-8 md:left-1/2 w-12 h-12 sm:w-16 sm:h-16 -ml-6 sm:-ml-8 bg-white rounded-full border-4 border-pink-200 shadow-lg flex items-center justify-center z-10">
               {TIMELINE_ICONS[index % TIMELINE_ICONS.length]}
             </div>
 
             <div
-              className={`w-full md:w-5/12 pl-24 md:pl-0 ${
+              className={`w-full md:w-5/12 pl-20 sm:pl-24 md:pl-0 ${
                 index % 2 === 0 ? 'md:pr-16 md:text-right' : 'md:pl-16'
               }`}
             >
@@ -286,7 +286,7 @@ function TimelineSection({ events }: { events: { id: string; date: string; title
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="bg-white rounded-3xl p-8 max-w-2xl w-full max-h-[90vh] overflow-auto shadow-2xl relative"
+            className="bg-white rounded-3xl p-5 sm:p-8 max-w-2xl w-full max-h-[90vh] overflow-auto shadow-2xl relative"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -298,7 +298,7 @@ function TimelineSection({ events }: { events: { id: string; date: string; title
 
             <div className="space-y-6">
               <div className="text-center">
-                <h3 className="text-3xl text-pink-500 mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>
+                <h3 className="text-2xl sm:text-3xl text-pink-500 mb-2" style={{ fontFamily: "'Dancing Script', cursive" }}>
                   {selectedEvent.title}
                 </h3>
                 <p className="text-pink-400" style={{ fontFamily: "'Dancing Script', cursive" }}>
@@ -373,7 +373,7 @@ function AnniversaryCounter({ targetDate }: { targetDate: string }) {
           scale: [1, 1.05, 1],
         }}
         transition={{ duration: 2, repeat: Infinity }}
-        className="text-8xl md:text-9xl text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 bg-clip-text"
+        className="text-6xl sm:text-8xl md:text-9xl text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 bg-clip-text"
         style={{ fontFamily: "'Dancing Script', cursive" }}
       >
         {days}
@@ -478,7 +478,7 @@ export default function TemplateRomanticAnniversary({ storyData }: { storyData: 
             </motion.div>
 
             <h1
-              className="text-6xl md:text-8xl mb-6 text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 bg-clip-text"
+              className="text-4xl sm:text-6xl md:text-8xl mb-6 text-transparent bg-gradient-to-r from-pink-400 via-purple-400 to-pink-400 bg-clip-text"
               style={{ fontFamily: "'Dancing Script', cursive" }}
             >
               {heroTitle} 💖
@@ -535,7 +535,7 @@ export default function TemplateRomanticAnniversary({ storyData }: { storyData: 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl text-center mb-8 text-pink-500"
+            className="text-3xl sm:text-4xl md:text-5xl text-center mb-8 text-pink-500"
             style={{ fontFamily: "'Dancing Script', cursive" }}
           >
             Our Song 🎵
@@ -549,7 +549,7 @@ export default function TemplateRomanticAnniversary({ storyData }: { storyData: 
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-5xl text-center mb-16 text-pink-500"
+              className="text-3xl sm:text-4xl md:text-5xl text-center mb-16 text-pink-500"
               style={{ fontFamily: "'Dancing Script', cursive" }}
             >
               Our Memories 📷
@@ -564,7 +564,7 @@ export default function TemplateRomanticAnniversary({ storyData }: { storyData: 
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
-              className="text-4xl md:text-5xl text-center mb-20 text-pink-500"
+              className="text-3xl sm:text-4xl md:text-5xl text-center mb-10 sm:mb-16 md:mb-20 text-pink-500"
               style={{ fontFamily: "'Dancing Script', cursive" }}
             >
               Our Love Story 📖
@@ -585,7 +585,7 @@ export default function TemplateRomanticAnniversary({ storyData }: { storyData: 
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-5xl text-center mb-16 text-pink-500"
+            className="text-3xl sm:text-4xl md:text-5xl text-center mb-16 text-pink-500"
             style={{ fontFamily: "'Dancing Script', cursive" }}
           >
             Reasons I Love You 💌
@@ -595,7 +595,7 @@ export default function TemplateRomanticAnniversary({ storyData }: { storyData: 
 
         {/* ── Love Letter Section ──────────────────── */}
         {data.letter_block.is_enabled && (
-          <section className="py-32 px-4 bg-gradient-to-br from-pink-100 via-purple-100 to-pink-100 relative">
+          <section className="py-16 sm:py-24 md:py-32 px-4 bg-gradient-to-br from-pink-100 via-purple-100 to-pink-100 relative">
             <div
               className="absolute inset-0 opacity-10 bg-cover bg-center"
               style={{
@@ -607,7 +607,7 @@ export default function TemplateRomanticAnniversary({ storyData }: { storyData: 
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8 }}
-              className="max-w-3xl mx-auto text-center relative z-10 bg-white/80 backdrop-blur-sm p-12 rounded-3xl shadow-2xl border-2 border-pink-200"
+              className="max-w-3xl mx-auto text-center relative z-10 bg-white/80 backdrop-blur-sm p-6 sm:p-8 md:p-12 rounded-3xl shadow-2xl border-2 border-pink-200"
             >
               <Heart className="w-16 h-16 text-pink-400 fill-pink-400 mx-auto mb-8" />
 
@@ -675,14 +675,22 @@ export default function TemplateRomanticAnniversary({ storyData }: { storyData: 
 
       {/* Scoped carousel styles */}
       <style>{`
-        .slick-dots { bottom: -50px !important; }
-        .slick-dots li button:before { font-size: 12px !important; color: #E8B4D0 !important; opacity: 0.5 !important; }
+        .slick-dots { bottom: -40px !important; }
+        .slick-dots li button:before { font-size: 10px !important; color: #E8B4D0 !important; opacity: 0.5 !important; }
         .slick-dots li.slick-active button:before { opacity: 1 !important; color: #E8B4D0 !important; }
-        .slick-prev, .slick-next { width: 50px !important; height: 50px !important; z-index: 10 !important; }
-        .slick-prev:before, .slick-next:before { font-size: 40px !important; color: #E8B4D0 !important; opacity: 0.7 !important; }
+        .slick-prev, .slick-next { width: 32px !important; height: 32px !important; z-index: 10 !important; }
+        .slick-prev:before, .slick-next:before { font-size: 24px !important; color: #E8B4D0 !important; opacity: 0.7 !important; }
         .slick-prev:hover:before, .slick-next:hover:before { opacity: 1 !important; }
-        .slick-prev { left: 20px !important; }
-        .slick-next { right: 20px !important; }
+        .slick-prev { left: 8px !important; }
+        .slick-next { right: 8px !important; }
+        @media (min-width: 640px) {
+          .slick-dots { bottom: -50px !important; }
+          .slick-dots li button:before { font-size: 12px !important; }
+          .slick-prev, .slick-next { width: 50px !important; height: 50px !important; }
+          .slick-prev:before, .slick-next:before { font-size: 40px !important; }
+          .slick-prev { left: 20px !important; }
+          .slick-next { right: 20px !important; }
+        }
       `}</style>
     </div>
   );
