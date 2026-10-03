@@ -10,6 +10,7 @@ import ForgotPassword from '@/pages/ForgotPassword';
 import PricingResponsive from '@/pages/PricingResponsive';
 import TemplatesGallery from '@/pages/TemplatesGallery';
 import HomeTemplates from '@/pages/HomeTemplates';
+import AccountMobile from '@/pages/AccountMobile';
 import CreateType from '@/pages/CreateType';
 import Dashboard from '@/pages/Dashboard';
 import DashboardUpgrade from '@/pages/DashboardUpgrade';
@@ -57,6 +58,7 @@ export const router = createBrowserRouter([
       { path: 'home',         element: <ProtectedRoute><Dashboard /></ProtectedRoute> },
       { path: 'home/upgrade', element: <ProtectedRoute><DashboardUpgrade /></ProtectedRoute> },
       { path: 'home/templates', element: <ProtectedRoute><HomeTemplates /></ProtectedRoute> },
+      { path: 'home/account', element: <ProtectedRoute><AccountMobile /></ProtectedRoute> },
 
       { path: 'notifications', element: <ProtectedRoute><AllNotifications /></ProtectedRoute> },
         { path: 'admin',             element: <Navigate to="/admin/users" replace /> },

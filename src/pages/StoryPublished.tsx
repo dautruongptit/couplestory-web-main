@@ -5,7 +5,7 @@ import { apiClient } from '@/services/api';
 import { toast } from '@/utils/toast';
 import { useAuth } from '@/context/AuthContext';
 
-import { getStoryPublicUrl } from '@/utils/publicStory';
+import { getStoryDisplayHost, getStoryPublicUrl } from '@/utils/publicStory';
 
 interface StoryInfo {
   id: string;
@@ -87,7 +87,7 @@ export default function StoryPublished() {
               <span className="material-symbols-outlined text-[18px] text-[#8d7076] shrink-0">language</span>
               <div className="text-left min-w-0">
                 <p className="text-[10px] text-[#8d7076] font-medium">Đường dẫn Website Tình yêu</p>
-                <p className="text-sm text-[#2e1220] font-medium truncate">{url}</p>
+                <p className="text-sm text-[#2e1220] font-medium truncate">{getStoryDisplayHost(story.slug)}</p>
               </div>
             </div>
             <div className="flex items-center gap-2 justify-end">

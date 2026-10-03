@@ -18,13 +18,20 @@ export function getTenantSlug(hostname: string = window.location.hostname): stri
   return sub;
 }
 
+/** Address shown to users, always in the <slug>.couplestory.site form (also used for display in dev). */
+export function getStoryDisplayHost(slug: string): string {
+  return `${slug}.${ROOT_DOMAIN}`;
+}
+
 /** Public address of a published story: a subdomain in production, a /s/<slug> path elsewhere (dev). */
 export function getStoryPublicUrl(slug: string): string {
   const { hostname, origin, protocol } = window.location;
   if (hostname === ROOT_DOMAIN || hostname.endsWith(`.${ROOT_DOMAIN}`)) {
     return `${protocol}//${slug}.${ROOT_DOMAIN}`;
   }
-  return `${origin}/s/${slug}`;
+  // In dev, VITE_PUBLIC_ORIGIN (e.g. http://192.168.1.10:8091) makes links and QR codes reachable from a phone.
+  const devOrigin = (import.meta.env.VITE_PUBLIC_ORIGIN as string | undefined)?.replace(/\/+$/, '');
+  return `${devOrigin || origin}/s/${slug}`;
 }
 
 export function mapPublicStoryToStoryData(res: any, templateCode: string): StoryData {

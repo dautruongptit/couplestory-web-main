@@ -4,13 +4,14 @@ import { useAuth } from '@/context/AuthContext';
 import { apiClient } from '@/services/api';
 import { toast } from '@/utils/toast';
 import ConfirmModal from '@/components/ConfirmModal';
-import QrModal from '@/components/QrModal';
 import ShareModal from '@/components/ShareModal';
 import RenewModal from '@/components/RenewModal';
 import { usePlans } from '@/hooks/usePlans';
 import { useTemplates } from '@/hooks/useTemplates';
 import { TEMPLATE_THUMBNAILS } from '@/data/templateThumbnails';
-import { getStoryPublicUrl } from '@/utils/publicStory';
+import { getStoryPublicUrl, photoSrc } from '@/utils/publicStory';
+import { slugFromNames, toSlug } from '@/utils/slug';
+import SlugField from '@/components/SlugField';
 
 export interface StoryResponse {
   id: string;
@@ -19,6 +20,8 @@ export interface StoryResponse {
   coupleName2: string;
   subdomain: string;
   slug?: string;
+  thumbnailUrl?: string | null;
+  photoCount?: number;
   startDate?: string;
   templateCode?: string;
   createdAt: string;
@@ -44,7 +47,6 @@ export default function Dashboard() {
   const [stories, setStories] = useState<StoryResponse[]>([]);
   const [loading, setLoading] = useState(true);
   const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
-  const [qrStory, setQrStory] = useState<StoryResponse | null>(null);
   const [shareStory, setShareStory] = useState<StoryResponse | null>(null);
   const [renewTarget, setRenewTarget] = useState<string | null>(null);
 
@@ -52,6 +54,13 @@ export default function Dashboard() {
   const [name1, setName1] = useState('');
   const [name2, setName2] = useState('');
   const [creating, setCreating] = useState(false);
+  const [slug, setSlug] = useState('');
+  const [slugTouched, setSlugTouched] = useState(false);
+  const [slugOk, setSlugOk] = useState(false);
+
+  useEffect(() => {
+    if (!slugTouched) setSlug(slugFromNames(name1, name2));
+  }, [name1, name2, slugTouched]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -77,6 +86,10 @@ export default function Dashboard() {
       toast('Vui lòng nhập tên cả hai bạn', 'error');
       return;
     }
+    if (!slugOk) {
+      toast('Vui lòng chọn link còn trống cho Story', 'error');
+      return;
+    }
     setCreating(true);
     try {
       const tpl = templates.find(t => t.code === applyModal);
@@ -86,11 +99,12 @@ export default function Dashboard() {
         templateCode: applyModal,
         type: tpl?.type || 'LOVE_STORY',
         title: `${name1.trim()} & ${name2.trim()}`,
+        subdomain: toSlug(slug),
       });
       toast('Đã tạo Story thành công!', 'success');
       navigate(`/editor/${result.id}`);
-    } catch {
-      toast('Không thể tạo Story. Vui lòng thử lại.', 'error');
+    } catch (e) {
+      toast((e as Error).message || 'Không thể tạo Story. Vui lòng thử lại.', 'error');
     } finally {
       setCreating(false);
     }
@@ -212,9 +226,19 @@ export default function Dashboard() {
 
                     {/* Thumbnail */}
                     <div className="relative aspect-[4/3] rounded-3xl bg-gradient-to-br from-[#ffe8ef] to-[#ffd6e6] overflow-hidden mb-4 border border-[#f0e4e8]/50">
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="material-symbols-outlined text-[48px] text-[#ff4d8d]/30">image</span>
-                      </div>
+                      {(story.thumbnailUrl || TEMPLATE_THUMBNAILS[story.templateCode ?? '']) ? (
+                        <img
+                          src={photoSrc(story.thumbnailUrl) || TEMPLATE_THUMBNAILS[story.templateCode ?? '']}
+                          alt={story.title || `${story.coupleName1} & ${story.coupleName2}`}
+                          loading="lazy"
+                          onError={e => { const fallback = TEMPLATE_THUMBNAILS[story.templateCode ?? '']; if (fallback && e.currentTarget.src !== fallback) e.currentTarget.src = fallback; }}
+                          className="absolute inset-0 w-full h-full object-cover"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <span className="material-symbols-outlined text-[48px] text-[#ff4d8d]/30">image</span>
+                        </div>
+                      )}
                       
                       {/* Top-Left Pill */}
                       <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1.5 rounded-full flex items-center gap-1.5 shadow-sm">
@@ -234,7 +258,7 @@ export default function Dashboard() {
                         ) : (
                           <>
                             <span className="material-symbols-outlined text-[14px] text-[#7c3aed]">photo_camera</span>
-                            <span className="text-[11px] font-bold text-[#2e1220]">12 photos</span>
+                            <span className="text-[11px] font-bold text-[#2e1220]">{story.photoCount ?? 0} ảnh</span>
                           </>
                         )}
                       </div>
@@ -267,14 +291,14 @@ export default function Dashboard() {
                         {isPublished ? (
                           <>
                             <div className="flex items-center gap-2">
-                              <Link to={`/editor/${story.id}`} className="w-9 h-9 rounded-full bg-[#fcf8fa] text-[#594046] flex items-center justify-center hover:bg-[#ffe0eb] transition-colors shadow-sm" title="Edit">
-                                <span className="material-symbols-outlined text-[16px]">edit</span>
+                              <Link to={`/editor/${story.id}`} className="w-10 h-10 md:w-9 md:h-9 rounded-full bg-[#fcf8fa] text-[#594046] flex items-center justify-center hover:bg-[#ffe0eb] transition-colors shadow-sm" title="Sửa" aria-label="Sửa">
+                                <span className="material-symbols-outlined text-[18px]">edit</span>
                               </Link>
-                              <button onClick={() => setShareStory(story)} className="w-9 h-9 rounded-full bg-[#fcf8fa] text-[#594046] flex items-center justify-center hover:bg-[#ffe0eb] transition-colors shadow-sm" title="Share">
-                                <span className="material-symbols-outlined text-[16px]">share</span>
+                              <button onClick={() => setShareStory(story)} className="w-10 h-10 md:w-9 md:h-9 rounded-full bg-[#fcf8fa] text-[#594046] flex items-center justify-center hover:bg-[#ffe0eb] transition-colors shadow-sm" title="Chia sẻ & mã QR" aria-label="Chia sẻ">
+                                <span className="material-symbols-outlined text-[18px]">share</span>
                               </button>
-                              <button onClick={() => setQrStory(story)} className="w-9 h-9 rounded-full bg-[#fcf8fa] text-[#594046] flex items-center justify-center hover:bg-[#ffe0eb] transition-colors shadow-sm" title="QR Code">
-                                <span className="material-symbols-outlined text-[16px]">qr_code_2</span>
+                              <button onClick={() => setDeleteTarget(story.id)} className="w-10 h-10 md:w-9 md:h-9 rounded-full bg-[#fcf8fa] text-[#8d7076] flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-colors shadow-sm" title="Xóa" aria-label="Xóa">
+                                <span className="material-symbols-outlined text-[18px]">delete</span>
                               </button>
                             </div>
                             <a href={story.slug ? getStoryPublicUrl(story.slug) : `/demo/${story.id}`} target="_blank" rel="noreferrer" className="px-5 py-2.5 rounded-full bg-[#ffe0eb] text-[#b90a5a] font-bold text-[13px] flex items-center gap-1.5 hover:bg-[#ffcce0] transition-colors whitespace-nowrap shadow-sm">
@@ -283,10 +307,9 @@ export default function Dashboard() {
                           </>
                         ) : (
                           <>
-                            <div className="flex items-center gap-2 text-[#8d7076] text-[12px] font-medium leading-tight ml-1">
-                              <span className="material-symbols-outlined text-[18px]">schedule</span>
-                              Saved 14m<br/>ago
-                            </div>
+                            <button onClick={() => setDeleteTarget(story.id)} className="w-10 h-10 md:w-9 md:h-9 rounded-full bg-[#fcf8fa] text-[#8d7076] flex items-center justify-center hover:bg-red-50 hover:text-red-500 transition-colors shadow-sm" title="Xóa" aria-label="Xóa">
+                              <span className="material-symbols-outlined text-[18px]">delete</span>
+                            </button>
                             <Link to={`/editor/${story.id}`} className="px-6 py-3 rounded-full bg-[#b90a5a] text-white font-bold text-[14px] flex items-center gap-2 hover:opacity-90 transition-opacity whitespace-nowrap shadow-sm">
                               <span className="material-symbols-outlined text-[18px]">edit_document</span>
                               Continue Editing
@@ -385,12 +408,14 @@ export default function Dashboard() {
 
       <ShareModal isOpen={!!shareStory} onClose={() => setShareStory(null)} story={shareStory} />
 
-      <QrModal isOpen={!!qrStory} onClose={() => setQrStory(null)} story={qrStory} />
-
       <ConfirmModal
         open={!!deleteTarget}
         title="Xóa story này?"
-        message="Toàn bộ nội dung, ảnh và sự kiện sẽ bị xóa vĩnh viễn. Không thể hoàn tác."
+        message={
+          stories.find(s => s.id === deleteTarget)?.status?.toLowerCase() === 'published'
+            ? 'Website đang hoạt động sẽ ngừng truy cập được ngay và link được trả lại cho người khác. Toàn bộ nội dung, ảnh và sự kiện sẽ bị xóa vĩnh viễn, không thể hoàn tác.'
+            : 'Toàn bộ nội dung, ảnh và sự kiện sẽ bị xóa vĩnh viễn. Không thể hoàn tác.'
+        }
         confirmLabel="Xóa story"
         cancelLabel="Giữ lại"
         variant="danger"
@@ -421,6 +446,14 @@ export default function Dashboard() {
                 onChange={e => setName2(e.target.value)}
                 className="w-full px-4 py-2.5 rounded-xl border border-[#e1bec5] focus:border-[#ff4d8d] focus:ring-2 focus:ring-[#ff4d8d]/20 outline-none text-sm"
               />
+              <div>
+                <label className="block text-xs font-semibold text-[#594046] mb-1.5">Đường dẫn công khai</label>
+                <SlugField
+                  value={slug}
+                  onChange={v => { setSlug(v); setSlugTouched(true); }}
+                  onValidityChange={setSlugOk}
+                />
+              </div>
             </div>
             <div className="flex gap-3">
               <button
@@ -431,7 +464,7 @@ export default function Dashboard() {
               </button>
               <button
                 onClick={handleCreateWithTemplate}
-                disabled={creating}
+                disabled={creating || !slugOk}
                 className="flex-1 py-2.5 rounded-xl bg-gradient-to-r from-[#ff4d8d] to-[#e63e7b] text-white text-sm font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-60"
               >
                 {creating ? 'Đang tạo...' : 'Tạo Story'}

@@ -22,7 +22,7 @@ export default function AccountModal({ onClose }: { onClose: () => void }) {
   }, []);
 
   useEffect(() => {
-    if (activeTab === 'account') {
+    if (activeTab === 'account' || window.innerWidth < 768) {
       import('@/services/api').then(({ apiClient }) => {
         Promise.all([
           apiClient.get('/auth/sessions').catch(() => []),
@@ -64,12 +64,12 @@ export default function AccountModal({ onClose }: { onClose: () => void }) {
         {/* Mobile Header */}
         <div className="md:hidden flex flex-col bg-[#faf7f8] border-b border-[#f0e4e8] shrink-0 sticky top-0 z-20">
           <div className="flex items-center justify-between px-4 py-3">
-            <h2 className="text-lg font-bold text-[#2e1220]">Settings</h2>
+            <h2 className="text-lg font-bold text-[#2e1220]">Cá nhân & Cài đặt</h2>
             <button onClick={onClose} className="p-1.5 rounded-md transition-colors text-[#2e1220] hover:text-[#FF4D8D] hover:bg-[#FF4D8D]/10">
               <span className="material-symbols-outlined text-[20px]">close</span>
             </button>
           </div>
-          <div className="flex gap-2 px-4 pb-1 overflow-x-auto scrollbar-hide">
+          <div className="hidden">
             <button 
               onClick={() => setActiveTab('general')}
               className={`flex items-center gap-1.5 py-2 px-2 text-[13px] font-medium border-b-2 transition-colors whitespace-nowrap ${
@@ -131,8 +131,7 @@ export default function AccountModal({ onClose }: { onClose: () => void }) {
           {/* Scrollable Form Content */}
           <div className="flex-1 overflow-y-auto px-4 pb-4 md:px-10 md:pb-10">
           
-          {activeTab === 'general' && (
-            <>
+          <div className={`block ${activeTab === 'general' ? 'md:block' : 'md:hidden'}`}>
               {/* Appearance Section */}
               <div className="mb-12">
                 <h2 className="text-lg font-bold text-[#2e1220] mb-6">Appearance</h2>
@@ -186,11 +185,9 @@ export default function AccountModal({ onClose }: { onClose: () => void }) {
                   </div>
                 </div>
               </div>
-            </>
-          )}
+            </div>
 
-          {activeTab === 'account' && (
-            <>
+          <div className={`block ${activeTab === 'account' ? 'md:block' : 'md:hidden'}`}>
               {/* Profile Section */}
               <div className="mb-12">
                 <h2 className="text-lg font-bold text-[#2e1220] mb-6">Profile</h2>
@@ -252,25 +249,27 @@ export default function AccountModal({ onClose }: { onClose: () => void }) {
                 </p>
 
                 <div className="w-full text-[13px]">
-                  <div className="flex border-b border-[#f0e4e8] pb-2 text-[#594046] font-medium">
-                    <div className="w-[35%]">Thiết bị</div>
-                    <div className="w-[25%]">Địa chỉ IP</div>
-                    <div className="w-[15%]">Phương thức</div>
-                    <div className="w-[25%] text-right">Thời gian</div>
-                  </div>
+                  <div className="hidden sm:flex border-b border-[#f0e4e8] pb-2 text-[#594046] font-medium">
+  <div className="w-[35%]">Thiết bị</div>
+  <div className="w-[25%]">Địa chỉ IP</div>
+  <div className="w-[15%]">Phương thức</div>
+  <div className="w-[25%] text-right">Thời gian</div>
+</div>
                   {loadingSessions ? (
                     <div className="py-4 text-[#8d7076]">Đang tải...</div>
                   ) : devices.length === 0 ? (
                     <div className="py-4 text-[#8d7076]">Chưa có lịch sử đăng nhập.</div>
                   ) : (
                     devices.map(d => (
-                      <div key={d.id} className="flex py-3 border-b border-[#f0e4e8] text-[#2e1220]">
-                        <div className="w-[35%] font-medium">{d.name}</div>
-                        <div className="w-[25%] text-[#594046] break-all pr-2">{d.ipAddress || '—'}</div>
-                        <div className="w-[15%] text-[#594046]">{d.loginMethod === 'GOOGLE' ? 'Google' : 'Email'}</div>
-                        <div className="w-[25%] text-right text-[#594046]">{new Date(d.lastSeenAt || d.addedAt).toLocaleString('vi-VN')}</div>
-                      </div>
-                    ))
+                        <div key={d.id} className="py-3 border-b border-[#f0e4e8] text-[#2e1220]">
+                          <div className="flex flex-col sm:flex-row sm:items-center">
+                            <div className="w-full sm:w-[35%] font-medium mb-1 sm:mb-0">{d.name}</div>
+                            <div className="w-full sm:w-[25%] text-[#594046] break-all sm:pr-2 text-[12px] sm:text-[13px]"><span className="sm:hidden font-medium">IP: </span>{d.ipAddress || '—'}</div>
+                            <div className="w-full sm:w-[15%] text-[#594046] text-[12px] sm:text-[13px]"><span className="sm:hidden font-medium">Cách đăng nhập: </span>{d.loginMethod === 'GOOGLE' ? 'Google' : 'Email'}</div>
+                            <div className="w-full sm:w-[25%] sm:text-right text-[#594046] text-[12px] sm:text-[13px] mt-1 sm:mt-0">{new Date(d.lastSeenAt || d.addedAt).toLocaleString('vi-VN')}</div>
+                          </div>
+                        </div>
+                      ))
                   )}
                 </div>
               </div>
@@ -296,8 +295,7 @@ export default function AccountModal({ onClose }: { onClose: () => void }) {
                   )}
                 </div>
               </div>
-            </>
-          )}
+            </div>
 
           </div>
         </div>

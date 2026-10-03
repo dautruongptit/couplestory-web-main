@@ -277,7 +277,7 @@ export function DashboardLayout() {
       <div className="px-4 mt-2 mb-4">
         <Link
           to="/create"
-          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#ff4d8d] to-[#a855f7] text-white font-semibold text-sm shadow-[0_4px_16px_rgba(168,85,247,0.35)] hover:shadow-[0_6px_20px_rgba(168,85,247,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all"
+          className="w-full flex items-center justify-center gap-1.5 py-2 rounded-full bg-gradient-to-r from-[#ff4d8d] to-[#a855f7] text-white font-semibold text-[12px] shadow-[0_4px_16px_rgba(168,85,247,0.35)] hover:shadow-[0_6px_20px_rgba(168,85,247,0.45)] hover:scale-[1.02] active:scale-[0.98] transition-all"
         >
           <span className="material-symbols-outlined text-[18px]">add</span>
           Create New
@@ -328,20 +328,22 @@ export function DashboardLayout() {
           />
         )}
 
-        {/* User button - bấm để mở popup */}
-        <button
-          onClick={() => setShowUserPopup(v => !v)}
-          className="flex items-center gap-2.5 mx-1 px-3 py-2 border-t border-[#ffe0eb] hover:bg-[#fff5f9] rounded-xl transition-colors w-full text-left"
-        >
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#ff4d8d] to-[#b90a5a] flex items-center justify-center shrink-0">
-            <span className="text-white text-[13px] font-bold">{user?.name?.charAt(0).toUpperCase()}</span>
-          </div>
-          <div className="flex-1 min-w-0">
-            <p className="text-sm font-semibold text-[#2e1220] truncate leading-tight">{user?.name}</p>
-            <p className="text-[11px] text-[#8d7076] truncate leading-tight">{planLabel}</p>
-          </div>
-          <span className="material-symbols-outlined text-[18px] text-[#8d7076]">more_horiz</span>
-        </button>
+        {/* User button */}
+          <button
+            onClick={() => setShowUserPopup(v => !v)}
+            className="flex items-center gap-2 mx-1 px-3 py-3 bg-[#fff0f4] border border-[#ffe4ec] hover:border-[#ffcce0] rounded-[16px] transition-colors w-full text-left"
+          >
+            <div className="w-8 h-8 rounded-full bg-[#ffcce0] text-[#ff4d8d] flex items-center justify-center shrink-0">
+              <span className="material-symbols-outlined text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>star</span>
+            </div>
+            <div className="flex-1 min-w-0 flex flex-col justify-center">
+              <p className="text-[13px] font-bold text-[#2e1220] truncate leading-tight">{user?.name || 'Trường Đậu'}</p>
+              <p className="text-[11px] font-semibold text-[#ff4d8d] truncate leading-tight mt-0.5">{planLabel}</p>
+            </div>
+            <div className="px-2 py-1 rounded-full bg-[#ffe4ec] text-[#2e1220] text-[10px] font-bold">
+              Upgrade
+            </div>
+          </button>
       </div>
     </>
   );
@@ -380,16 +382,27 @@ export function DashboardLayout() {
           )}
 
           {/* Together counter */}
-          <div className="hidden md:flex items-center gap-1.5 text-sm text-[#8d7076]">
-            <span className="material-symbols-outlined text-[#ff4d8d] text-[16px]" style={{ fontVariationSettings: "'FILL' 1" }}>favorite</span>
-            <span>Yêu nhau mỗi ngày</span>
-          </div>
+          <div className="hidden md:flex items-center gap-2 text-[12px] font-medium text-[#594046]">
+              <span>Studio</span>
+              <span className="material-symbols-outlined text-[14px]">chevron_right</span>
+              <span className="text-[#ff4d8d]">Workspace</span>
+            </div>
+
+            {/* Search Bar Center */}
+            <div className="hidden md:flex flex-1 max-w-md mx-6">
+              <div className="flex w-full items-center gap-2 px-4 py-2 rounded-full bg-[#fff5f8] border border-rose-50 focus-within:border-rose-200 transition-colors">
+                <span className="material-symbols-outlined text-[16px] text-gray-400">search</span>
+                <input type="text" placeholder="Search memories, cards..." className="bg-transparent outline-none flex-1 text-[13px] text-[#2e1220] placeholder:text-gray-400" />
+              </div>
+            </div>
 
           <div className="flex items-center gap-2">
-            {/* Search */}
-            <button className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-[#fff5f9] text-[#8d7076] transition-colors">
-              <span className="material-symbols-outlined text-[20px]">search</span>
-            </button>
+            
+              {/* Favorites */}
+              <button className="w-9 h-9 flex items-center justify-center rounded-xl hover:bg-[#fff5f9] text-[#8d7076] transition-colors">
+                <span className="material-symbols-outlined text-[20px]">favorite_border</span>
+              </button>
+
 
             {/* Notifications */}
             <div className="relative">
@@ -437,10 +450,10 @@ export function DashboardLayout() {
             <span className="material-symbols-outlined text-[24px]" style={location.pathname === '/home/templates' ? { fontVariationSettings: "'FILL' 1" } : undefined}>palette</span>
             Mẫu
           </Link>
-          <button onClick={() => setShowAccountModal(true)} className="flex-1 flex flex-col items-center gap-0.5 pb-2 pt-1 text-[11px] font-medium text-[#8d7076]">
-            <span className="material-symbols-outlined text-[24px]">person</span>
-            Cá nhân
-          </button>
+          <Link to="/home/account" className={`flex-1 flex flex-col items-center gap-0.5 pb-2 pt-1 text-[11px] font-medium ${location.pathname === '/home/account' ? 'text-[#ff4d8d]' : 'text-[#8d7076]'}`}>
+              <span className="material-symbols-outlined text-[24px]" style={location.pathname === '/home/account' ? { fontVariationSettings: "'FILL' 1" } : undefined}>person</span>
+              Cá nhân
+            </Link>
         </nav>
       )}
 

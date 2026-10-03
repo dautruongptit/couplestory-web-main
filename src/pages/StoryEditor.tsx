@@ -8,6 +8,7 @@ import { apiClient } from '@/services/api';
 import { toast } from '@/utils/toast';
 import { useTemplates } from '@/hooks/useTemplates';
 import ChangeTemplateModal from '@/components/ChangeTemplateModal';
+import SlugField from '@/components/SlugField';
 import { useAuth } from '@/context/AuthContext';
 import { usePlans } from '@/hooks/usePlans';
 
@@ -42,6 +43,8 @@ export default function StoryEditor() {
   const [lastSaved, setLastSaved] = useState<Date | null>(null);
   const [, setPhotos] = useState<ServerPhoto[]>([]);
   const [storyType, setStoryType] = useState('LOVE_STORY');
+  const [slug, setSlug] = useState('');
+  const [slugOk, setSlugOk] = useState(false);
   const [showChangeTemplate, setShowChangeTemplate] = useState(false);
   const [expandedEventIdx, setExpandedEventIdx] = useState<number | null>(0);
   const [dragIdx, setDragIdx] = useState<number | null>(null);
@@ -119,6 +122,7 @@ export default function StoryEditor() {
         };
         setStoryType(storyRes.type || 'LOVE_STORY');
         setStory(mappedData);
+        setSlug(storyRes.slug || '');
         setPhotos(photosRes.map((p: any) => ({ id: p.id, url: p.url, thumbnailUrl: p.thumbnailUrl, filenameOriginal: p.filenameOriginal, sortOrder: p.sortOrder })));
       } catch (error) {
         console.error('Failed to fetch story data', error);
@@ -127,14 +131,21 @@ export default function StoryEditor() {
     fetchData();
   }, [scenarioId]);
 
-  const handleSave = async (): Promise<boolean> => {
+  const handleSave = async (isPublishing = false): Promise<boolean> => {
     if (!story || !scenarioId) return false;
+    const slugEditable = story.status?.toUpperCase() === 'DRAFT';
+    if (slugEditable && !slugOk) {
+      toast('Link công khai đang bị trùng hoặc chưa hợp lệ', 'error');
+      return false;
+    }
     setIsSaving(true);
     try {
       await apiClient.put(`/stories/${scenarioId}`, {
+        ...(slugEditable ? { subdomain: slug } : {}),
         coupleName1: story.hero_block.partner_a.name,
         coupleName2: story.hero_block.partner_b.name,
         title: story.hero_block.title,
+        status: isPublishing ? 'published' : story.status,
         shortQuote: story.hero_block.short_quote,
         startDate: story.counter_block.target_date,
       });
@@ -173,8 +184,9 @@ export default function StoryEditor() {
         await apiClient.put(`/stories/${scenarioId}/events/visibility`, visibleIds);
       }
       await apiClient.put(`/stories/${scenarioId}/music`, musicIds);
+      if (isPublishing) await apiClient.post(`/stories/${scenarioId}/publish`);
       setLastSaved(new Date());
-      toast('Đã lưu thành công ✨', 'success');
+      toast(isPublishing ? 'Đã xuất bản thành công!' : 'Đã lưu thành công!', 'success');
       return true;
     } catch (error) {
       toast((error as any)?.message || 'Lỗi khi lưu', 'error');
@@ -265,13 +277,13 @@ export default function StoryEditor() {
 
         {/* Right actions */}
         <div className="flex items-center gap-2 flex-shrink-0">
-          <button onClick={handleSave} disabled={isSaving} className="px-3 py-1.5 rounded-full border border-rose-200 text-rose-500 text-sm font-medium hover:bg-rose-50 disabled:opacity-50 transition-colors">
+          <button onClick={() => handleSave(false)} disabled={isSaving} className="px-3 py-1.5 rounded-full border border-rose-200 text-rose-500 text-sm font-medium hover:bg-rose-50 disabled:opacity-50 transition-colors">
             {isSaving ? 'Lưu...' : 'Lưu'}
           </button>
           <button
             disabled={isSaving}
-            onClick={async () => { if (await handleSave()) navigate(`/editor/${scenarioId}/preview`); }}
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-rose-500 hover:bg-rose-600 text-white text-sm font-semibold shadow-sm disabled:opacity-50 transition-all"
+            onClick={async () => { if (await handleSave(true)) navigate(`/editor/${scenarioId}/published`); }}
+              className="flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-rose-500 hover:bg-rose-600 text-white text-sm font-semibold shadow-sm disabled:opacity-50 transition-all"
           >
             <span className="material-symbols-outlined text-[16px]">rocket_launch</span>
             Publish
@@ -336,6 +348,16 @@ export default function StoryEditor() {
                   <div>
                     <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5 block">Tiêu đề story</label>
                     <input type="text" value={story.hero_block.title} onChange={e => setStory({ ...story, hero_block: { ...story.hero_block, title: e.target.value } })} className="w-full h-9 px-3 rounded-lg bg-gray-50 border border-gray-200 text-sm focus:outline-none focus:border-rose-300 focus:ring-1 focus:ring-rose-200" />
+                  </div>
+                  <div>
+                    <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5 block">Đường dẫn công khai</label>
+                    <SlugField
+                      value={slug}
+                      onChange={setSlug}
+                      onValidityChange={setSlugOk}
+                      storyId={scenarioId}
+                      locked={story.status?.toUpperCase() !== 'DRAFT'}
+                    />
                   </div>
                   <div>
                     <label className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-1.5 block">Câu trích dẫn</label>
@@ -657,7 +679,7 @@ export default function StoryEditor() {
                   </div>
                   <div className="flex gap-2 mt-3">
                     <button onClick={async () => { if (await handleSave()) navigate(`/editor/${scenarioId}/preview`); }} className="flex-1 py-2 rounded-xl border border-gray-200 text-gray-600 text-xs font-medium hover:bg-gray-50 transition-colors">Preview Full Website</button>
-                    <button onClick={handleSave} className="flex-1 py-2 rounded-xl bg-rose-500 text-white text-xs font-bold hover:bg-rose-600 transition-colors flex items-center justify-center gap-1">
+                    <button onClick={async () => { if (await handleSave(true)) navigate(`/editor/${scenarioId}/published`); }} className="flex-1 py-2 rounded-xl bg-rose-500 text-white text-xs font-bold hover:bg-rose-600 transition-colors flex items-center justify-center gap-1">
                       <span className="material-symbols-outlined text-[14px]">rocket_launch</span>
                       Publish Now 🚀
                     </button>
@@ -727,7 +749,7 @@ export default function StoryEditor() {
                   <div className="flex-1 flex justify-center">
                     <div className="bg-white px-4 py-1 rounded-full text-xs text-gray-400 border border-gray-200 flex items-center gap-1.5 max-w-xs w-full justify-center">
                       <span className="material-symbols-outlined text-[12px]">lock</span>
-                      couplestory.site/{story.slug}
+                      {slug || story.slug}.couplestory.site
                     </div>
                   </div>
                 </div>
