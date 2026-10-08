@@ -1,0 +1,21 @@
+# Nhật ký quyết định
+
+Sở hữu: **quyết định đã chốt và lý do**. Chi tiết quy tắc nằm ở tài liệu chủ quản (cột "Chi tiết"). Thêm mục mới ở cuối; không xóa mục cũ — nếu đổi quyết định thì thêm mục thay thế và ghi "thay thế Dn". Không ghi quyết định chưa được người dùng hoặc tài liệu kế hoạch xác nhận.
+
+| ID | Quyết định | Lý do | Phương án đã loại | Trạng thái, chốt bởi / nguồn | Chi tiết |
+|---|---|---|---|---|---|
+| D1 | Tên gói là `FREE / PLUS / COUPLE / PREMIUM`; tên cũ (TRIAL, PERMANENT, PRO) bỏ | Đã lưu trong `users.plan_type` và hiển thị với người dùng (V23) | Tên BA cũ (TRIAL / PERMANENT / PRO) | ACCEPTED — Người dùng, 2026-10-08 | `business-rules.md` §1 |
+| D2 | Gói gắn với **user**, không gắn với từng Story | Đơn giản; hạn mức đọc từ một nơi (`PlanLimitService`) | Gói gắn với từng Story (BA cũ) | ACCEPTED — Người dùng, 2026-10-08 | `business-rules.md` §1 |
+| D3 | Hạn website tính từ **lần xuất bản đầu tiên**; FREE 30 ngày; PREMIUM vĩnh viễn; hết hạn thì ẩn, chủ vẫn sửa/gia hạn được. Nâng gói thì **tự kéo dài** `expires_at` của Story đang xuất bản (người dùng, 2026-10-08); cách tính cụ thể: UNKNOWN; **code chưa làm** (CONFLICT cho tới khi triển khai) | Khớp hành vi code hiện tại | TRIAL 7 ngày (BA cũ) | ACCEPTED — Người dùng, 2026-10-08 | `business-rules.md` §2, §3 |
+| D4 | Monolith một instance, không Redis; rate limit và log queue giữ trong bộ nhớ (scale ngang thì chuyển Redis) | Quy mô hiện tại; giảm độ phức tạp | Redis ngay từ đầu | ACCEPTED — Kế hoạch Pha 2 (`reference/plans/`) | `architecture.md` §1, §3 |
+| D5 | Thanh toán hiện tại là chuyển khoản thủ công (admin xác nhận); VNPay ở Pha 3 | Có thể bán gói ngay mà chưa cần cổng thanh toán | Cổng thanh toán ngay (hoãn sang Pha 3) | ACCEPTED — Hiện trạng code; kế hoạch Pha 3 | `business-rules.md` §3 |
+| D6 | Một phiên đăng nhập hiệu lực: `token_version` tăng mỗi lần đăng nhập, JWT cũ bị từ chối; JWT 4 giờ trong cookie httpOnly, không refresh token | Chống hai nơi cùng sửa; token ngắn hạn | Refresh token (BA/Review cũ, chưa làm) | ACCEPTED — Hiện trạng code + yêu cầu gốc mục 7 (`reference/plans/update-10082026.md`) | `architecture.md` §2 |
+| D7 | Subdomain `<slug>.couplestory.site` do **frontend** xử lý, backend không biết tenant | Cloudflare Tunnel đưa mọi host vào nginx/SPA | Next.js làm BFF/tenant resolver (tài liệu cũ, không còn) | ACCEPTED — Hiện trạng code (tài liệu cũ nói Next.js: sai) | `architecture.md` §7 |
+| D8 | Tài liệu nằm trong repo WEB, thư mục `documentation/`, tiếng Việt (tên file/bảng/hàm/endpoint giữ tiếng Anh); `CLAUDE.md` ở gốc WEB | Claude Code mở session ở WEB; có lịch sử git | Repo tài liệu riêng; giữ trong `DOC/` (ngoài git) | ACCEPTED — Người dùng, 2026-10-08 | `CLAUDE.md` |
+| D9 | Hoãn: template hệ mặt trời, template game, OTP, cập nhật email, quên mật khẩu. Tạm ngưng triển khai tính năng Partner (phạm vi khi làm: xem D11) | Ưu tiên bảo mật và nền tảng trước | UNKNOWN | ACCEPTED — Người dùng, 2026-10-08 | `current-state.md` |
+| D10 | Không phát triển các việc ngoài phạm vi Pha 1 hiện tại (khóa chỉnh sửa, chống spam story, ma trận IDOR, bảo mật upload) cho tới khi người dùng yêu cầu | Phạm vi do người dùng giới hạn | UNKNOWN | ACCEPTED — Người dùng, 2026-10-08 | `current-state.md` |
+| D11 | Partner khi triển khai: phạm vi **chỉ xem** (đơn giản) | Giảm độ phức tạp so với đồng chỉnh sửa | Đồng chỉnh sửa (BA cũ) | ACCEPTED — Người dùng, 2026-10-08; chưa triển khai | `business-rules.md` §5 |
+| D12 | Khi gói hết hạn, user **về FREE**. Cơ chế cụ thể: UNKNOWN | Nhất quán với gói FREE là mặc định | UNKNOWN | ACCEPTED (nguyên tắc) — Người dùng, 2026-10-08 | `business-rules.md` §3 |
+| D13 | Máy dev tiếp tục dùng DB thật; **không** tách DB | Người dùng chấp nhận rủi ro | Tách DB riêng cho dev | ACCEPTED — Người dùng, 2026-10-08 | `CLAUDE.md` (an toàn) |
+| D14 | Chưa làm: cookie consent, điều khoản, chính sách riêng tư, footer pháp lý; chưa làm "mật khẩu cho trang" | Chưa cần ở giai đoạn này | UNKNOWN | ACCEPTED (hoãn) — Người dùng, 2026-10-08 | `business-rules.md` §1, §7 |
+| D15 | Cổng host của frontend trên server là **8091** | Khớp `docker-compose.yml` đã commit và nginx | `90:8091` (bản sửa dở chưa commit) | ACCEPTED — Người dùng, 2026-10-08 | `deployment.md` |
