@@ -9,7 +9,7 @@ services:
     container_name: couplestory-web
     restart: unless-stopped
     ports:
-      - "8091:8091"
+      - "90:8091"
     networks:
       - shared-network
 
